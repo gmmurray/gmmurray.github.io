@@ -1,16 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import Intro from '../components/intro';
 import About from '../components/about';
-import Experiences from '../components/experiences';
-import Projects from '../components/projects';
+import Experiences from '../components/experiences/experiences';
+import FeaturedProjects from '../components/projects/featured_projects';
 import Navigation from '../components/navigation';
 
 class IndexPage extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-
     componentDidMount() {
         this.spyScrolling();
     }
@@ -43,7 +38,7 @@ class IndexPage extends Component {
                 <Navigation />
                 <About />
                 <Experiences />
-                <Projects />
+                <FeaturedProjects />
             </Fragment>
         )
     }

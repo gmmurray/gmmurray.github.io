@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import logo from '../images/icons/personal_logo_resize.png';
-import { CSSTransitionGroup } from 'react-transition-group';
-import Tabs from './bulma/tabs';
-import TabContent from './bulma/tab_content';
-import ActiveTabContent from './bulma/active_tab_content';
+import Tabs from './tabs';
+import TabContent from './tab_content';
+import ActiveTabContent from './active_tab_content';
 
 class Experiences extends Component {
     constructor(props) {

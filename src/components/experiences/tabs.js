@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tab from './tab';
-import TabContent from './tab_content';
 
 class Tabs extends Component {
     static propTypes = { 
