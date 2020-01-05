@@ -1,0 +1,36 @@
+.tabs-content {
+  padding: 0 5px;
+  position: relative;
+}
+
+.tabs ul li a {
+  transition: color 300ms linear, border-color 300ms linear;
+}
+  
+// Transition group
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 150ms ease-in;
+  transition-delay: 150ms;
+}
+
+.fade-leave {
+  opacity: 1;
+}
+
+.fade-leave-active {
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+}
+
+.tabs ul {
+    border-bottom: initial !important;
+}
+
+.tabs li.is-active a {
+    border-bottom: 2px solid $theme-yellow;
+}

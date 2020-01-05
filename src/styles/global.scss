@@ -1,0 +1,41 @@
+@charset "utf-8";
+
+// Import a Google Font
+@import url('https://fonts.googleapis.com/css?family=Titillium+Web&display=swap');
+@import "config";
+@import "navigation";
+@import "tabs";
+
+// Update Bulma's global variables
+$family-sans-serif: "Titillium Web", sans-serif;
+$primary: $theme-blue;
+$link: $theme-yellow;
+$text: $theme-dark-yellow;
+$title-color: $theme-yellow;
+$link-hover: $theme-white;
+$link-visited: $theme-blue-secondary;
+$link-active: $theme-blue;
+// Update some of Bulma's component variables
+$body-background-color: $theme-dark-blue;
+$tabs-border-bottom-color: $text;
+$tabs-link-hover-border-bottom-color: $link;
+$tabs-link-hover-color: $link;
+$tabs-link-color: $theme-dark-yellow;
+$tabs-link-active-color: $link;
+
+.font-dark-blue {
+    color: $theme-dark-blue !important;
+}
+
+.skills-list{
+    column-count: 2;
+    list-style-type: square;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+// Import only what you need from Bulma
+@import "~bulma/bulma.sass";
+
