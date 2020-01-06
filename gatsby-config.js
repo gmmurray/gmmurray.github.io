@@ -5,6 +5,7 @@ module.exports = {
     author: `Greg Murray`,
   },
   plugins: [
+    'gatsby-plugin-root-import',
     `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
     {

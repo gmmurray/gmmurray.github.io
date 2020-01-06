@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import logo from 'src/images/icons/personal_logo_resize.png';
 
 class ActiveProject extends Component {
     constructor(props) {
@@ -7,10 +8,16 @@ class ActiveProject extends Component {
 
     render() {
         return (
-            <div>
-                <h1>{this.props.title}</h1>
-                <p>{this.props.description}</p>
-            </div>
+            <Fragment>
+                {this.props.image}
+                <h3 className="title is-3">{this.props.title}</h3>
+                <p className="is-size-4-desktop">{this.props.description}</p>
+                <div className="tags">
+                    {this.props.tags.map((value, index) => {
+                        return <span className="tag is-link font-dark-blue" key={index}>{value}</span>
+                    })}
+                </div>
+            </Fragment>
         );
     }
 }
