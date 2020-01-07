@@ -2,7 +2,7 @@ import React from 'react';
 import logo from '../images/icons/personal_logo_resize.png';
 
 export default () => (
-    <section className="hero is-fullheight is-bold" id="intro">
+    <section className="hero is-fullheight section" id="intro">
         <div className="hero-body">
             <div className="container has-text-centered">
                 <div className="columns">

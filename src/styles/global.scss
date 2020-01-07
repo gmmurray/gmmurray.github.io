@@ -22,6 +22,14 @@ $tabs-link-hover-border-bottom-color: $link;
 $tabs-link-hover-color: $link;
 $tabs-link-color: $theme-dark-yellow;
 $tabs-link-active-color: $link;
+$card-background-color: transparent;
+$card-shadow: 0;
+$card-header-color: $link;
+$card-footer-border-top: 1px solid $theme-dark-yellow;
+
+.card {
+    border: 1px solid $theme-dark-yellow !important;
+}
 
 .font-dark-blue {
     color: $theme-dark-blue !important;
@@ -30,6 +38,10 @@ $tabs-link-active-color: $link;
 .skills-list{
     column-count: 2;
     list-style-type: square;
+}
+
+.projects-button {
+    margin: 0 0.5rem;
 }
 
 html {

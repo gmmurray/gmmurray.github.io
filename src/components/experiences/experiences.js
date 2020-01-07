@@ -26,22 +26,18 @@ class Experiences extends Component {
 
     render() {
         return (
-            <section className="hero" id="experiences">
-                <div className="hero-body">
-                    <div className="container">
-                        <h2 className="title is-2 has-text-centered">Experiences</h2>
-                        <Tabs
-                            tabContent={TabContent}
-                            activeTab={this.state.activeTab}
-                            changeActiveTab={this.changeActiveTab.bind(this)}
-                        />
+            <section className="container section" id="experiences">
+                <h2 className="title is-2 has-text-centered">Experiences</h2>
+                <Tabs
+                    tabContent={TabContent}
+                    activeTab={this.state.activeTab}
+                    changeActiveTab={this.changeActiveTab.bind(this)}
+                />
 
-                        <ActiveTabContent
-                            key={this.state.activeTab}
-                            content={this.activeTabContent()}
-                        />
-                    </div>
-                </div>
+                <ActiveTabContent
+                    key={this.state.activeTab}
+                    content={this.activeTabContent()}
+                />
             </section>
         );
     }

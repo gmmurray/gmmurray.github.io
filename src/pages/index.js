@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Intro from '../components/intro';
 import About from '../components/about';
 import Experiences from '../components/experiences/experiences';
-import FeaturedProjects from '../components/projects/featured_projects';
+import Projects from '../components/projects/projects';
 import Navigation from '../components/navigation';
 
 class IndexPage extends Component {
@@ -11,7 +11,7 @@ class IndexPage extends Component {
     }
 
     spyScrolling = () => {
-        const sections = document.querySelectorAll('.hero');
+        const sections = document.querySelectorAll('.section');
 
         window.onscroll = () => {
             const scrollPos = document.documentElement.scrollTop || document.body.scrollTop;
@@ -38,7 +38,7 @@ class IndexPage extends Component {
                 <Navigation />
                 <About />
                 <Experiences />
-                <FeaturedProjects />
+                <Projects />
             </Fragment>
         )
     }
