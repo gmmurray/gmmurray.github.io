@@ -60,20 +60,50 @@ class IndexPage extends Component {
                         </header>
                         <section className="modal-card-body">
                             <form>
-                            <div className="field">
-                                <label className="label">To</label>
-                                <div className="control">
-                                    <input className="input" type="text" />
+                                <div className="field is-horizontal">
+                                    <div className="field-label is-normal">
+                                        <label className="label" for="nameInput">Your name</label>
+                                    </div>
+                                    <div className="field-body">
+                                        <div className="field">
+                                            <p className="control">
+                                                <input className="input" type="text" id="nameInput" name="nameInput"></input>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="field is-grouped">
-                                <div className="control">
-                                    <button className="button is-link font-dark-blue">Submit</button>
+                                <div className="field is-horizontal">
+                                    <div className="field-label is-normal">
+                                        <label className="label" for="emailInput">Your email</label>
+                                    </div>
+                                    <div className="field-body">
+                                        <div className="field">
+                                            <p className="control">
+                                                <input className="input" type="text" id="emailInput" name="emailInput"></input>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="control">
-                                    <button className="button is-link is-outlined">Cancel</button>
+                                <div className="field is-horizontal">
+                                    <div className="field-label is-normal">
+                                        <label className="label" for="messageInput">Your message</label>
+                                    </div>
+                                    <div className="field-body">
+                                        <div className="field">
+                                            <p className="control">
+                                                <textarea className="textarea" type="text" id="messageInput" name="messageInput"></textarea>
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                <div className="field is-grouped">
+                                    <div className="control">
+                                        <button className="button is-link font-dark-blue">Submit</button>
+                                    </div>
+                                    <div className="control">
+                                        <button className="button is-link is-outlined" onClick={toggleModal}>Cancel</button>
+                                    </div>
+                                </div>
                             </form>
                         </section>
                     </div>
