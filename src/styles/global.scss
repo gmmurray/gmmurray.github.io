@@ -26,13 +26,23 @@ $card-background-color: transparent;
 $card-shadow: 0;
 $card-header-color: $link;
 $card-footer-border-top: 1px solid $theme-dark-yellow;
+$footer-background-color: $theme-yellow;
+$footer-color: $theme-dark-blue;
+$footer-padding: 1rem 1.5rem 1rem;
 
 .card {
     border: 1px solid $theme-dark-yellow !important;
+    transition: 0.5s;
 }
 
 .font-dark-blue {
     color: $theme-dark-blue !important;
+}
+
+a:hover {
+    color: white !important;
+    transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s;
 }
 
 .skills-list{
@@ -40,7 +50,7 @@ $card-footer-border-top: 1px solid $theme-dark-yellow;
     list-style-type: square;
 }
 
-.projects-button {
+.grouped-button-margin {
     margin: 0 0.5rem;
 }
 

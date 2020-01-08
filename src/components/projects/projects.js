@@ -18,7 +18,7 @@ class FeaturedProjects extends Component {
     render() {
         return (
             <section className="container section" id="projects">
-                <h4 className="title is-2">Projects</h4>
+                <h2 className="title is-2">Featured Projects</h2>
                 <ActiveProject
                     key={this.state.activeProject.title}
                     title={this.state.activeProject.title}
@@ -30,6 +30,7 @@ class FeaturedProjects extends Component {
                     prevDisabled={this.state.index === this.state.firstItem}
                     nextDisabled={this.state.index === this.state.lastItem}
                 />
+                <h3 className="title is-3">Other Projects</h3>
                 <OtherProjects />
             </section>
         );

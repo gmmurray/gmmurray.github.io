@@ -9,7 +9,7 @@
     position: fixed !important;
     top: 0;
     width: 100%;
-    border-bottom: 1px solid darken($theme-dark-blue, 80%);
+    border-bottom: 1px solid $theme-dark-yellow;//darken($theme-dark-blue, 80%);
     //display: block !important;
 }
 

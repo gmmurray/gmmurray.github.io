@@ -4,6 +4,7 @@ import About from '../components/about';
 import Experiences from '../components/experiences/experiences';
 import Projects from '../components/projects/projects';
 import Navigation from '../components/navigation';
+import Footer from '../components/footer';
 
 class IndexPage extends Component {
     componentDidMount() {
@@ -39,6 +40,7 @@ class IndexPage extends Component {
                 <About />
                 <Experiences />
                 <Projects />
+                <Footer />
             </Fragment>
         )
     }
