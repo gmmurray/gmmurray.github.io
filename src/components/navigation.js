@@ -7,7 +7,8 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          scrollLock: false  
+          scrollLock: false,
+          navbarOpened: false
         };
         this.handleScroll = this.handleScroll.bind(this);
     }
@@ -35,6 +36,19 @@ class Navigation extends Component {
     }
 
     render() {
+        const toggleMenu = () => {
+            if (this.state.navbarOpened) {
+                this.setState({
+                    navbarOpened: false
+                });
+            } else {
+                this.setState({
+                    navbarOpened: true
+                });
+            }
+            console.log('toggling menu');
+        };
+
         return (
             <Fragment>
                 <nav className={`navbar is-transparent ${this.state.scrollLock ? "sticky" : ""}`} role="navigation" aria-label="mainNavigation" id="navigation">
@@ -44,14 +58,14 @@ class Navigation extends Component {
                                 <img src={logo} alt="Logo" />
                             </a>
 
-                            <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                            <a role="button" className={`navbar-burger ${this.state.navbarOpened ? 'is-active' : ''}`} aria-label="menu" aria-expanded="false" onClick={toggleMenu} id="navbarToggler">
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
                                 <span aria-hidden="true"></span>
                             </a>
                         </div>
 
-                        <div id="navbarMenu" className="navbar-menu">
+                        <div id="navbarMenu" className={`navbar-menu ${this.state.navbarOpened ? 'is-active' : ''}`}>
                             <div className="navbar-end">
                                 <a className="navbar-item" href="#about">
                                     About
