@@ -5,6 +5,7 @@
 @import "config";
 @import "navigation";
 @import "tabs";
+@import "animate";
 
 // Update Bulma's global variables
 $family-sans-serif: "Titillium Web", sans-serif;
@@ -31,6 +32,9 @@ $footer-color: $theme-dark-blue;
 $footer-padding: 1rem 1.5rem 1rem;
 $navbar-background-color: $theme-dark-blue;
 $navbar-item-hover-background-color: $theme-dark-blue;
+$modal-card-head-background-color: $theme-yellow;
+$modal-card-head-border-bottom: 0;
+$modal-card-body-background-color: $theme-dark-blue;
 
 .card {
     border: 1px solid $theme-dark-yellow !important;
@@ -54,6 +58,14 @@ a:hover {
 
 .grouped-button-margin {
     margin: 0 0.5rem;
+}
+
+.font-yellow {
+    color: $theme-yellow !important;
+}
+
+.fadeIn {
+    animation-duration: 1s !important;
 }
 
 html {

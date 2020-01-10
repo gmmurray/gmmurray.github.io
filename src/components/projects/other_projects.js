@@ -34,7 +34,7 @@ class OtherProjects extends Component {
                 <div className="columns is-multiline">
                     {this.state.projects.map((value, index) => {
                         return (
-                            <div className="column is-one-third">
+                            <div className="column is-one-third animated fadeIn">
                                 <MinorProject
                                     key={index}
                                     title={value.title}
