@@ -20,12 +20,13 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `Greg Murray Personal Website`,
+        short_name: `Greg Murray`,
         start_url: `/`,
-        background_color: `#663399`,
-        theme_color: `#663399`,
-        display: `minimal-ui`, // This path is relative to the root of the site.
+        background_color: `#131D68`,
+        theme_color: `#EBAA02`,
+        display: `standalone`, 
+        icon: 'src/images/icons/personal_logo_resize.png'
       },
     },
   ],

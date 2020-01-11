@@ -3,7 +3,7 @@ import ActiveProject from './active_project';
 import FeaturedProjectsList from './featured_projects_list';
 import OtherProjects from './other_projects';
 
-class FeaturedProjects extends Component {
+export default class FeaturedProjects extends Component {
     constructor(props) {
         super(props);
         const intitialIndex = 0;
@@ -36,5 +36,3 @@ class FeaturedProjects extends Component {
         );
     }
 }
-
-export default FeaturedProjects

@@ -44,3 +44,11 @@ const OtherProjectsList = [
 ];
 
 export default OtherProjectsList
+
+/*
+https://github.com/gmmurray/tania-react-tutorial
+https://github.com/gmmurray/SassTutorial
+https://github.com/gmmurray/ReactTicTacToeDemo
+https://github.com/gmmurray/angular-tour-of-heroes
+https://github.com/gmmurray/SimpleHTMLGame-Goblins
+*/

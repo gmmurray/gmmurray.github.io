@@ -22,10 +22,11 @@ export default class ContactModal extends Component {
             isSubmitting: false,
             isError: false,
         };
+        this.baseState = this.state;
     }
 
     componentDidUpdate() {
-        if (this.state.open != this.props.open) {
+        if (this.state.open !== this.props.open) {
             this.setState({ open: this.props.open });
         }
     }
@@ -80,15 +81,22 @@ export default class ContactModal extends Component {
         }
     };
 
+    cancelForm = () => {
+        this.setState(this.baseState);
+        this.props.toggleModal();
+    };
+
     render() {
         return (
             <Fragment>
                 <div className={`modal ${this.state.open ? 'is-active animated fadeIn' : ''}`}>
+                
                     <div className="modal-background"></div>
                     <div className="modal-card">
+                    <button className="modal-close is-large" onClick={this.props.toggleModal} aria-label="close"></button>
                         <header className="modal-card-head">
                             <p className="modal-card-title font-dark-blue">Send me an email</p>
-                            <button className="modal-close is-large" onClick={this.props.toggleModal} aria-label="close"></button>
+                            <button className="delete" onClick={this.props.toggleModal} aria-label="close"></button>
                         </header>
                         <section className="modal-card-body">
                             <form onSubmit={this.submitForm}>
@@ -157,7 +165,7 @@ export default class ContactModal extends Component {
                                         <button className={`button is-link font-dark-blue ${this.state.isSubmitting ? 'is-loading' : ''}`} type="submit">Send message</button>
                                     </div>
                                     <div className="control">
-                                        <a className="button is-link is-outlined" onClick={this.props.toggleModal}>Cancel</a>
+                                        <button type="button" className="button is-link is-outlined" onClick={() => this.cancelForm()}>Cancel</button>
                                     </div>
                                 </div>
                             </form>

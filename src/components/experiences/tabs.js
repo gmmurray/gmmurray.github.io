@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Tab from './tab';
 
-class Tabs extends Component {
-    static propTypes = { 
-        tabContent: PropTypes.array.isRequired, 
-        activeTab: PropTypes.string, 
+export default class Tabs extends Component {
+    static propTypes = {
+        tabContent: PropTypes.array.isRequired,
+        activeTab: PropTypes.string,
         changeActiveTab: PropTypes.func
     };
 
@@ -15,12 +15,12 @@ class Tabs extends Component {
                 <ul>
                     {
                         this.props.tabContent.map(
-                            tab => 
-                                <Tab 
-                                    tab={tab} 
+                            tab =>
+                                <Tab
+                                    tab={tab}
                                     key={tab.name}
                                     activeTab={this.props.activeTab}
-                                    changeActiveTab={this.props.changeActiveTab} 
+                                    changeActiveTab={this.props.changeActiveTab}
                                 />
                         )
                     }
@@ -29,5 +29,3 @@ class Tabs extends Component {
         );
     }
 }
-
-export default Tabs

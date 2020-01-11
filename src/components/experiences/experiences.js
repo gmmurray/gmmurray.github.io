@@ -3,7 +3,7 @@ import Tabs from './tabs';
 import TabContent from './tab_content';
 import ActiveTabContent from './active_tab_content';
 
-class Experiences extends Component {
+export default class Experiences extends Component {
     constructor(props) {
         super(props);
 
@@ -42,5 +42,3 @@ class Experiences extends Component {
         );
     }
 }
-
-export default Experiences;

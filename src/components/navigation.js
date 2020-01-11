@@ -1,18 +1,18 @@
 import React, { Component, Fragment } from 'react';
 import logo from '../images/icons/personal_logo_resize.png';
 
-class Navigation extends Component {
-    
-    
+export default class Navigation extends Component {
+
+
     constructor(props) {
         super(props);
         this.state = {
-          scrollLock: false,
-          navbarOpened: false
+            scrollLock: false,
+            navbarOpened: false
         };
         this.handleScroll = this.handleScroll.bind(this);
     }
-    
+
     componentDidMount() {
         this.navbar = document.getElementById("navigation");
         this.offset = this.navbar.offsetTop;
@@ -51,7 +51,7 @@ class Navigation extends Component {
 
         return (
             <Fragment>
-                <nav className={`navbar is-transparent ${this.state.scrollLock ? "sticky" : ""}`} role="navigation" aria-label="mainNavigation" id="navigation">
+                <nav className={`navbar ${this.state.scrollLock ? "sticky" : ""}`} role="navigation" aria-label="mainNavigation" id="navigation">
                     <div className="container">
                         <div className="navbar-brand">
                             <a className="navbar-item" href="#intro">
@@ -84,8 +84,4 @@ class Navigation extends Component {
             </Fragment>
         )
     }
-
-
 }
-
-export default Navigation

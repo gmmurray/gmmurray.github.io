@@ -38,7 +38,10 @@ $modal-card-body-background-color: $theme-dark-blue;
 
 .card {
     border: 1px solid $theme-dark-yellow !important;
-    transition: 0.5s;
+}
+
+.grouped-button-margin {
+    margin: 0 0.5rem;
 }
 
 .font-dark-blue {
@@ -51,27 +54,21 @@ a:hover {
     -webkit-transition: 0.2s;
 }
 
-.skills-list{
-    column-count: 2;
-    list-style-type: square;
-}
-
-.grouped-button-margin {
-    margin: 0 0.5rem;
-}
-
 .font-yellow {
     color: $theme-yellow !important;
 }
 
-.fadeIn {
-    animation-duration: 1s !important;
+.padded-header {
+    padding-top: 1rem;
 }
 
 html {
     scroll-behavior: smooth;
 }
 
-// Import only what you need from Bulma
+.fadeIn {
+    animation-duration: 1s !important;
+}
+
 @import "~bulma/bulma.sass";
 

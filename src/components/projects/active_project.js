@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 
-class ActiveProject extends Component {
+export default class ActiveProject extends Component {
     render() {
         return (
             <Fragment>
@@ -9,13 +9,13 @@ class ActiveProject extends Component {
                         {this.props.image}
                     </div>
                     <div className="column">
-                        <h3 className="title is-3">{this.props.title}</h3>
+                        {this.props.title}
                         <div className="tags">
                             {this.props.tags.map((value, index) => {
                                 return <span className="tag is-link font-dark-blue" key={index}>{value}</span>
                             })}
                         </div>
-                        <p className="is-size-4-desktop">{this.props.description}</p>
+                        {this.props.description}
                     </div>
                 </div>
                 <div className="columns">
@@ -31,5 +31,3 @@ class ActiveProject extends Component {
         );
     }
 }
-
-export default ActiveProject;

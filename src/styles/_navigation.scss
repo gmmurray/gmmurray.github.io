@@ -1,16 +1,8 @@
-.navbar {
-    &.is-transparent { // Transparent background for navbar
-    //background-color: $theme-dark-blue !important;
-    background-image: none;
-    }
-}
-
 .sticky {
     position: fixed !important;
     top: 0;
     width: 100%;
-    border-bottom: 1px solid $theme-dark-yellow;//darken($theme-dark-blue, 80%);
-    //display: block !important;
+    border-bottom: 1px solid $theme-dark-yellow;
 }
 
 .active-nav-item {

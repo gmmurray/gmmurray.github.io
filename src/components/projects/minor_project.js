@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class MinorProject extends Component {
+export default class MinorProject extends Component {
     render() {
         const repo = this.props.repo === '';
         const link = this.props.link === '';
@@ -29,5 +29,3 @@ class MinorProject extends Component {
         );
     }
 }
-
-export default MinorProject
