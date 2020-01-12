@@ -11,7 +11,7 @@ export default class ContactModal extends Component {
                 email: '',
                 message: '',
                 _subject: 'Personal Website Message',
-                _after: 'localhost:8000',
+                _after: 'https://gregmurray.org',
                 _honeypot: ''
             },
             errors: {
