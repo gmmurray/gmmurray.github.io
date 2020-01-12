@@ -21,14 +21,6 @@ class OtherProjects extends Component {
             });
         };
 
-        const listEmpty = () => {
-            console.log(this.state.page);
-            console.log(OtherProjectsList.length);
-            if (this.state.page > OtherProjectsList.length) {
-                return true;
-            }
-        }
-
         return (
             <Fragment>
                 <div className="columns is-multiline">

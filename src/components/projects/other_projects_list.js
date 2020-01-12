@@ -1,54 +1,39 @@
 const OtherProjectsList = [
     {
-        title: 'Project 1',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: 'github.com',
-        link: 'gregmurray.com'
+        title: 'Simple Browser Game',
+        description: 'Simple vanilla JavaScript browser game built following the tutorial found on the Lost Decade Games website (link is on the repo page). There are only two levels and I plan to add a few more.',
+        tags: ['Vanilla JavaScript'],
+        repo: 'https://github.com/gmmurray/SimpleHTMLGame-Goblins',
+        link: 'https://gregmurray.org/SimpleHTMLGame-Goblins'
     },
     {
-        title: 'Project 2',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: '',
-        link: 'gregmurray.com'
+        title: 'React TicTacToe Demo',
+        description: 'React Tic Tac Toe game from the official React Tutorial found on the React website. My future goal is to apply some additional styling to improve the appearance of the game.',
+        tags: ['React'],
+        repo: 'https://github.com/gmmurray/ReactTicTacToeDemo',
+        link: 'https://gregmurray.org/ReactTicTacToeDemo'
     },
     {
-        title: 'Project 3',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: 'github.com',
+        title: 'React Tutorial',
+        description: 'Helpful tutorial I found to help learn some React concepts which I ended up using to build this site. Link to the guide I followed is on the repo.',
+        tags: ['React'],
+        repo: 'https://github.com/gmmurray/tania-react-tutorial',
         link: ''
     },
     {
-        title: 'Project 4',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: 'github.com',
-        link: 'gregmurray.com'
+        title: 'Sass Tutorial',
+        description: 'I find traditional CSS to be time consuming and a bit frustrating, so I was happy to find a great guide that explains a couple Sass (specifically SCSS) techniques then shows them off in a full tutorial resulting in a pretty nice looking resume website. I followed a YouTube video to build this, the link to which can be found in the repository.',
+        tags: ['Sass'],
+        repo: 'https://github.com/gmmurray/SassTutorial',
+        link: 'https://gregmurray.org/SassTutorial/dist'
     },
     {
-        title: 'Project 5',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: 'github.com',
-        link: 'gregmurray.com'
+        title: 'Angular Tour of Heroes',
+        description: 'Before learning React, my first exposure to a full front end JS framework was Angular. I found the documentation on Angular\'s website very helpful, beginning with the Angular Tour of Heroes which is what I followed for this project.',
+        tags: ['Angular'],
+        repo: 'https://github.com/gmmurray/angular-tour-of-heroes',
+        link: 'https://gregmurray.org/angular-tour-of-heroes'
     },
-    {
-        title: 'Project 6',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        tags: ['HTML', 'CSS', 'JS'],
-        repo: 'github.com',
-        link: 'gregmurray.com'
-    }
 ];
 
 export default OtherProjectsList
-
-/*
-https://github.com/gmmurray/tania-react-tutorial
-https://github.com/gmmurray/SassTutorial
-https://github.com/gmmurray/ReactTicTacToeDemo
-https://github.com/gmmurray/angular-tour-of-heroes
-https://github.com/gmmurray/SimpleHTMLGame-Goblins
-*/

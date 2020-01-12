@@ -40,6 +40,15 @@ $modal-card-body-background-color: $theme-dark-blue;
     border: 1px solid $theme-dark-yellow !important;
 }
 
+.card-equal-height {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+ }
+ .card-equal-height .card-footer {
+   margin-top: auto;
+ }
+
 .grouped-button-margin {
     margin: 0 0.5rem;
 }
