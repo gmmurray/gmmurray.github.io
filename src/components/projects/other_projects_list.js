@@ -1,5 +1,12 @@
 const OtherProjectsList = [
     {
+        title: 'Entry Level Interview Study Guide',
+        description: 'Web based study guide for entry level software developer interviews. I made it for myself and my friends as a way to consolidate a lot of information and be a good starting point for preparing for an interview.',
+        tags: ['React'],
+        repo: 'https://github.com/gmmurray/interview-study-guide',
+        link: 'https://gregmurray.org/interview-study-guide'
+    },
+    {
         title: 'Simple Browser Game',
         description: 'Simple vanilla JavaScript browser game built following the tutorial found on the Lost Decade Games website (link is on the repo page). There are only two levels and I plan to add a few more.',
         tags: ['Vanilla JavaScript'],
