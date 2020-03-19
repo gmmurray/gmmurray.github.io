@@ -29,5 +29,12 @@ module.exports = {
         icon: 'src/images/icons/personal_logo_resize.png'
       },
     },
+    {
+      resolve: `gatsby-plugin-google-analytics`,
+      options: {
+        trackingId: "G-7X6LKRLGJL",
+        head: true,
+      }
+    },
   ],
 }
