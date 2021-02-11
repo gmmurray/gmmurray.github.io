@@ -8,6 +8,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-18.04
+    env:
+      GRAPHCMS_ENDPOINT: ${{ secrets.GRAPHCMS_ENDPOINT }}
+      GRAPHCMS_TOKEN: ${{ secrets.GRAPHCMS_TOKEN }}
+      EMAILJS_USER_ID: ${{ secrets.EMAILJS_USER_ID }}
+      EMAILJS_SERVICE_ID: ${{ secrets.EMAILJS_SERVICE_ID }}
+      EMAILJS_TEMPLATE_ID: ${{ secrets.EMAILJS_TEMPLATE_ID }}
+      EMAILJS_API_URL: ${{ secrets.EMAILJS_API_URL }}
+      GOOGLE_ANALYTICS_TRACKING_ID: ${{ secrets.GOOGLE_ANALYTICS_TRACKING_ID }}
     steps:
       - uses: actions/checkout@v2
 
