@@ -4,6 +4,7 @@ const Tab = ({ name, active, changeActiveName }) => {
   const item_CN = active ? 'is-active has-font-weight-bold' : '';
   return (
     <li className={item_CN}>
+      {/* eslint-disable-next-line */}
       <a onClick={() => changeActiveName(name)}>
         <span>{name}</span>
       </a>

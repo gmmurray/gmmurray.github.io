@@ -12,13 +12,13 @@ const Navigation = () => {
     };
 
     watchScroll();
-  }, []);
+  }, []); // eslint-disable-line
 
   const handleScroll = useCallback(
     offset => {
       setScrollLock(window.pageYOffset >= offset);
     },
-    [setScrollLock, window.pageYOffset],
+    [setScrollLock],
   );
 
   const toggleMenu = useCallback(() => {
@@ -42,6 +42,7 @@ const Navigation = () => {
             <img src={logo} alt="Logo" />
           </a>
 
+          {/* eslint-disable-next-line */}
           <a
             role="button"
             className={navbarToggle_cn}
