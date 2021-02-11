@@ -1,16 +1,25 @@
 import React from 'react';
-
-const Tab = (props) => {
-    const { name } = props.tab;
-    const { activeTab, changeActiveTab } = props;
-
-    return (
-        <li className={`${(activeTab === name) ? "is-active has-font-weight-bold" : ""}`}>
-            <a onClick={() => changeActiveTab(name)}>
-                <span>{name}</span>
-            </a>
-        </li>
-    );
+import PropTypes from 'prop-types';
+const Tab = ({ name, active, changeActiveName }) => {
+  const item_CN = active ? 'is-active has-font-weight-bold' : '';
+  return (
+    <li className={item_CN}>
+      <a onClick={() => changeActiveName(name)}>
+        <span>{name}</span>
+      </a>
+    </li>
+  );
 };
 
-export default Tab
+Tab.propTypes = {
+  name: PropTypes.string,
+  active: PropTypes.bool,
+  changeActiveName: PropTypes.func.isRequired,
+};
+
+Tab.defaultProps = {
+  name: '',
+  active: false,
+};
+
+export default Tab;

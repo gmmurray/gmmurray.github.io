@@ -1,3 +1,7 @@
+require('dotenv').config({
+  path: `.env.${process.env.NODE_ENV}`,
+});
+
 module.exports = {
   siteMetadata: {
     title: `Greg Murray Personal Website`,
@@ -25,16 +29,24 @@ module.exports = {
         start_url: `/`,
         background_color: `#131D68`,
         theme_color: `#EBAA02`,
-        display: `standalone`, 
-        icon: 'src/images/icons/personal_logo_resize.png'
+        display: `standalone`,
+        icon: 'src/images/icons/personal_logo_resize.png',
       },
     },
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: "G-7X6LKRLGJL",
+        trackingId: 'G-7X6LKRLGJL',
         head: true,
-      }
+      },
+    },
+    {
+      resolve: 'gatsby-source-graphcms',
+      options: {
+        endpoint: process.env.GRAPHCMS_ENDPOINT,
+        token: process.env.GRAPHCMS_TOKEN,
+        downloadLocalImages: true,
+      },
     },
   ],
-}
+};

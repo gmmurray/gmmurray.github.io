@@ -1,0 +1,27 @@
+fragment Asset on Asset {
+  stage
+  locale
+  remoteId: id
+  createdAt(variation: COMBINED)
+  updatedAt(variation: COMBINED)
+  publishedAt(variation: COMBINED)
+  handle
+  fileName
+  height
+  width
+  size
+  mimeType
+  aboutImageGregmurrayHome {
+    ... on GregmurrayHome {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  imageGregmurrayFeatured {
+    ... on GregmurrayFeatured {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  url
+}

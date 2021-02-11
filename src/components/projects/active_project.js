@@ -1,33 +1,88 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
+import ReactMarkdown from 'react-markdown';
+import Img from 'gatsby-image';
 
-export default class ActiveProject extends Component {
-    render() {
-        return (
-            <Fragment>
-                <div className="columns">
-                    <div className="column is-half">
-                        {this.props.image}
-                    </div>
-                    <div className="column">
-                        {this.props.title}
-                        <div className="tags">
-                            {this.props.tags.map((value, index) => {
-                                return <span className="tag is-link font-dark-blue" key={index}>{value}</span>
-                            })}
-                        </div>
-                        {this.props.description}
-                    </div>
-                </div>
-                <div className="columns">
-                    <div className="column"></div>
-                    <div className="column has-text-centered">
-                        <button disabled={this.props.prevDisabled} className="button is-link font-dark-blue grouped-button-margin" onClick={this.props.prevClick}>Prev</button>
-                        <button disabled={this.props.nextDisabled} className="button is-link font-dark-blue grouped-button-margin" onClick={this.props.nextClick}>Next</button>
-                    </div>
-                    <div className="column"></div>
-                </div>
+const ActiveProject = ({
+  title,
+  titleUrl,
+  description,
+  image,
+  tags,
+  prevClick,
+  nextClick,
+  prevDisabled,
+  nextDisabled,
+}) => {
+  return (
+    <Fragment>
+      <div className="columns">
+        <div className="column is-half">
+          <figure className="image with-primary-border">
+            <Img fluid={image} alt={title} />
+          </figure>
+        </div>
+        <div className="column">
+          <a
+            className="title is-3 is-link"
+            href={titleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <h3>{title}</h3>
+          </a>
+          <div className="tags">
+            {tags.map((value, index) => {
+              return (
+                <span className="tag is-link font-dark-blue" key={index}>
+                  {value}
+                </span>
+              );
+            })}
+          </div>
+          <p className="is-size-4-desktop">
+            <ReactMarkdown>{description}</ReactMarkdown>
+          </p>
+        </div>
+      </div>
+      <div className="columns">
+        <div className="column"></div>
+        <div className="column has-text-centered">
+          <button
+            disabled={prevDisabled}
+            className="button is-link font-dark-blue grouped-button-margin"
+            onClick={prevClick}
+          >
+            Prev
+          </button>
+          <button
+            disabled={nextDisabled}
+            className="button is-link font-dark-blue grouped-button-margin"
+            onClick={nextClick}
+          >
+            Next
+          </button>
+        </div>
+        <div className="column"></div>
+      </div>
+    </Fragment>
+  );
+};
 
-            </Fragment>
-        );
-    }
-}
+ActiveProject.propTypes = {
+  title: PropTypes.string.isRequired,
+  titleUrl: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  image: PropTypes.object,
+  tags: PropTypes.array.isRequired,
+  prevClick: PropTypes.func.isRequired,
+  nextClick: PropTypes.func.isRequired,
+  prevDisabled: PropTypes.bool.isRequired,
+  nextDisabled: PropTypes.bool.isRequired,
+};
+
+ActiveProject.defaultProps = {
+  image: null,
+};
+
+export default ActiveProject;

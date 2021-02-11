@@ -1,31 +1,32 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Tab from './tab';
 
-export default class Tabs extends Component {
-    static propTypes = {
-        tabContent: PropTypes.array.isRequired,
-        activeTab: PropTypes.string,
-        changeActiveTab: PropTypes.func
-    };
+const Tabs = ({ names, activeName, changeActiveName }) => {
+  return (
+    <div className="tabs is-centered is-large">
+      <ul>
+        {names.map(name => (
+          <Tab
+            name={name}
+            key={name}
+            active={name === activeName}
+            changeActiveName={changeActiveName}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-    render() {
-        return (
-            <div className="tabs is-centered is-large">
-                <ul>
-                    {
-                        this.props.tabContent.map(
-                            tab =>
-                                <Tab
-                                    tab={tab}
-                                    key={tab.name}
-                                    activeTab={this.props.activeTab}
-                                    changeActiveTab={this.props.changeActiveTab}
-                                />
-                        )
-                    }
-                </ul>
-            </div>
-        );
-    }
-}
+Tabs.propTypes = {
+  names: PropTypes.arrayOf(PropTypes.string),
+  activeName: PropTypes.string,
+  changeActiveName: PropTypes.func.isRequired,
+};
+
+Tabs.defaultProps = {
+  content: [''],
+  activeName: '',
+};
+export default Tabs;

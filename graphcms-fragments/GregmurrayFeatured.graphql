@@ -1,0 +1,24 @@
+fragment GregmurrayFeatured on GregmurrayFeatured {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  title
+  titleUrl
+  content
+  image {
+    ... on Asset {
+      remoteTypeName: __typename
+      remoteId: id
+      locale
+    }
+  }
+  gregmurrayHome {
+    ... on GregmurrayHome {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  techTags
+}

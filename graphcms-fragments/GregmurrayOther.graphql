@@ -1,0 +1,18 @@
+fragment GregmurrayOther on GregmurrayOther {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  title
+  content
+  repositoryUrl
+  websiteUrl
+  gregmurrayHome {
+    ... on GregmurrayHome {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  techTags
+}

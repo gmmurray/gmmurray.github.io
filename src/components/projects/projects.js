@@ -1,38 +1,114 @@
-import React, { Component } from 'react';
+import React, { useCallback, useState } from 'react';
+import PropTypes from 'prop-types';
 import ActiveProject from './active_project';
-import FeaturedProjectsList from './featured_projects_list';
 import OtherProjects from './other_projects';
 
-export default class FeaturedProjects extends Component {
-    constructor(props) {
-        super(props);
-        const intitialIndex = 0;
-        this.state = {
-            index: intitialIndex,
-            activeProject: FeaturedProjectsList[intitialIndex],
-            firstItem: 0,
-            lastItem: FeaturedProjectsList.length - 1
-        };
-    }
+const FeaturedProjects = ({
+  featuredTitle,
+  featuredContent,
+  otherTitle,
+  otherContent,
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    render() {
-        return (
-            <section className="container section" id="projects">
-                <h2 className="title is-2">Featured Projects</h2>
-                <ActiveProject
-                    key={this.state.activeProject.title}
-                    title={this.state.activeProject.title}
-                    description={this.state.activeProject.description}
-                    image={this.state.activeProject.image}
-                    tags={this.state.activeProject.tags}
-                    prevClick={() => this.setState({ activeProject: FeaturedProjectsList[this.state.index - 1], index: this.state.index - 1 })}
-                    nextClick={() => this.setState({ activeProject: FeaturedProjectsList[this.state.index + 1], index: this.state.index + 1 })}
-                    prevDisabled={this.state.index === this.state.firstItem}
-                    nextDisabled={this.state.index === this.state.lastItem}
-                />
-                <h3 className="title is-3">Other Projects</h3>
-                <OtherProjects />
-            </section>
-        );
-    }
-}
+  const handleActiveProjectChange = useCallback(
+    pageChange => {
+      const newIndex = currentIndex + pageChange;
+      setCurrentIndex(newIndex);
+    },
+    [currentIndex, setCurrentIndex],
+  );
+
+  const {
+    title,
+    titleUrl,
+    content,
+    image: {
+      localFile: {
+        childImageSharp: { fluid },
+      },
+    },
+    techTags: { items },
+  } = featuredContent[currentIndex];
+  const prevDisabled = currentIndex === 0;
+  const nextDisabled = currentIndex === featuredContent?.length - 1 ?? false;
+  return (
+    <section className="container section" id="projects">
+      <h2 className="title is-2">{featuredTitle}</h2>
+      <ActiveProject
+        key={title}
+        title={title}
+        titleUrl={titleUrl}
+        description={content}
+        image={fluid}
+        tags={items}
+        prevClick={() => handleActiveProjectChange(-1)}
+        nextClick={() => handleActiveProjectChange(1)}
+        prevDisabled={prevDisabled}
+        nextDisabled={nextDisabled}
+      />
+      <h3 className="title is-3">{otherTitle}</h3>
+      <OtherProjects projects={otherContent} />
+    </section>
+  );
+};
+
+FeaturedProjects.propTypes = {
+  featuredTitle: PropTypes.string,
+  featuredContent: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      titleUrl: PropTypes.string,
+      content: PropTypes.string,
+      image: PropTypes.shape({
+        localFile: PropTypes.shape({
+          childImageSharp: PropTypes.shape({
+            fluid: PropTypes.object,
+          }),
+        }),
+      }),
+      techTags: PropTypes.shape({ items: PropTypes.arrayOf(PropTypes.string) }),
+    }),
+  ),
+  otherTitle: '',
+  otherContent: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      content: PropTypes.string,
+      repositoryUrl: PropTypes.string,
+      websiteUrl: PropTypes.string,
+      techTags: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.string),
+      }),
+    }),
+  ),
+};
+
+FeaturedProjects.defaultProps = {
+  featuredTitle: '',
+  featuredContent: [
+    {
+      title: '',
+      titleUrl: null,
+      content: '',
+      image: { url: null },
+      techTags: {
+        items: [],
+      },
+    },
+  ],
+  otherTitle: '',
+  otherContent: [
+    {
+      title: '',
+      content: '',
+      repositoryUrl: null,
+      websiteUrl: null,
+      techTags: {
+        items: [],
+      },
+    },
+  ],
+};
+
+export default FeaturedProjects;

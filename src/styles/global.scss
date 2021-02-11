@@ -2,13 +2,13 @@
 
 // Import a Google Font
 @import url('https://fonts.googleapis.com/css?family=Titillium+Web&display=swap');
-@import "config";
-@import "navigation";
-@import "tabs";
-@import "animate";
+@import 'config';
+@import 'navigation';
+@import 'tabs';
+@import 'animate';
 
 // Update Bulma's global variables
-$family-sans-serif: "Titillium Web", sans-serif;
+$family-sans-serif: 'Titillium Web', sans-serif;
 $primary: $theme-blue;
 $link: $theme-yellow;
 $text: $theme-dark-yellow;
@@ -37,47 +37,50 @@ $modal-card-head-border-bottom: 0;
 $modal-card-body-background-color: $theme-dark-blue;
 
 .card {
-    border: 1px solid $theme-dark-yellow !important;
+  border: 1px solid $theme-dark-yellow !important;
 }
 
 .card-equal-height {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
- }
- .card-equal-height .card-footer {
-   margin-top: auto;
- }
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.card-equal-height .card-footer {
+  margin-top: auto;
+}
 
 .grouped-button-margin {
-    margin: 0 0.5rem;
+  margin: 0 0.5rem;
 }
 
 .font-dark-blue {
-    color: $theme-dark-blue !important;
+  color: $theme-dark-blue !important;
 }
 
 a:hover {
-    color: white !important;
-    transition: 0.2s ease-in-out;
-    -webkit-transition: 0.2s;
+  color: white !important;
+  transition: 0.2s ease-in-out;
+  -webkit-transition: 0.2s;
 }
 
 .font-yellow {
-    color: $theme-yellow !important;
+  color: $theme-yellow !important;
 }
 
 .padded-header {
-    padding-top: 1rem;
+  padding-top: 1rem;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 .fadeIn {
-    animation-duration: 1s !important;
+  animation-duration: 1s !important;
 }
 
-@import "~bulma/bulma.sass";
+.with-primary-border {
+  border: 1px solid $theme-dark-yellow;
+}
 
+@import '~bulma/bulma.sass';

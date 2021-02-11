@@ -1,0 +1,46 @@
+fragment GregmurrayHome on GregmurrayHome {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  introLead
+  introSubtitle
+  introCta
+  aboutTitle
+  aboutContent
+  aboutImage {
+    ... on Asset {
+      remoteTypeName: __typename
+      remoteId: id
+      locale
+    }
+  }
+  technologyTitle
+  technologyContent
+  experiencesTitle
+  experiencesContent {
+    ... on GregmurrayExperience {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  featuredTitle
+  featuredContent {
+    ... on GregmurrayFeatured {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  otherTitle
+  otherContent {
+    ... on GregmurrayOther {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  githubUrl
+  linkedInUrl
+  emailAddress
+  copyrightYear
+}

@@ -1,87 +1,77 @@
-import React, { Component, Fragment } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import logo from '../images/icons/personal_logo_resize.png';
 
-export default class Navigation extends Component {
+const Navigation = () => {
+  const [scrollLock, setScrollLock] = useState(false);
+  const [navbarOpened, setNavBarOpened] = useState(false);
 
+  useEffect(() => {
+    const watchScroll = () => {
+      const offset = document.getElementById('navigation').offsetTop;
+      window.addEventListener('scroll', () => handleScroll(offset), true);
+    };
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            scrollLock: false,
-            navbarOpened: false
-        };
-        this.handleScroll = this.handleScroll.bind(this);
-    }
+    watchScroll();
+  }, []);
 
-    componentDidMount() {
-        this.navbar = document.getElementById("navigation");
-        this.offset = this.navbar.offsetTop;
-        window.addEventListener('scroll', this.handleScroll, true);
-    }
+  const handleScroll = useCallback(
+    offset => {
+      setScrollLock(window.pageYOffset >= offset);
+    },
+    [setScrollLock, window.pageYOffset],
+  );
 
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
+  const toggleMenu = useCallback(() => {
+    const newNavbarOpenedState = !navbarOpened;
+    setNavBarOpened(newNavbarOpenedState);
+  }, [navbarOpened, setNavBarOpened]);
 
-    handleScroll = () => {
-        if (window.pageYOffset >= this.offset) {
-            this.setState({
-                scrollLock: true
-            });
-        } else {
-            this.setState({
-                scrollLock: false
-            });
-        }
-    }
+  const navbar_cn = `navbar ${scrollLock ? 'sticky' : ''}`;
+  const navbarToggle_cn = `navbar-burger ${navbarOpened ? 'is-active' : ''}`;
+  const navbarMenu_cn = `navbar-menu ${navbarOpened ? 'is-active' : ''}`;
+  return (
+    <nav
+      className={navbar_cn}
+      role="navigation"
+      aria-label="mainNavigation"
+      id="navigation"
+    >
+      <div className="container">
+        <div className="navbar-brand">
+          <a className="navbar-item" href="#intro">
+            <img src={logo} alt="Logo" />
+          </a>
 
-    render() {
-        const toggleMenu = () => {
-            if (this.state.navbarOpened) {
-                this.setState({
-                    navbarOpened: false
-                });
-            } else {
-                this.setState({
-                    navbarOpened: true
-                });
-            }
-            console.log('toggling menu');
-        };
+          <a
+            role="button"
+            className={navbarToggle_cn}
+            aria-label="menu"
+            aria-expanded="false"
+            onClick={toggleMenu}
+            id="navbarToggler"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
 
-        return (
-            <Fragment>
-                <nav className={`navbar ${this.state.scrollLock ? "sticky" : ""}`} role="navigation" aria-label="mainNavigation" id="navigation">
-                    <div className="container">
-                        <div className="navbar-brand">
-                            <a className="navbar-item" href="#intro">
-                                <img src={logo} alt="Logo" />
-                            </a>
+        <div id="navbarMenu" className={navbarMenu_cn}>
+          <div className="navbar-end">
+            <a className="navbar-item" href="#about">
+              About
+            </a>
+            <a className="navbar-item" href="#experiences">
+              Experiences
+            </a>
+            <a className="navbar-item" href="#projects">
+              Projects
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-                            <a role="button" className={`navbar-burger ${this.state.navbarOpened ? 'is-active' : ''}`} aria-label="menu" aria-expanded="false" onClick={toggleMenu} id="navbarToggler">
-                                <span aria-hidden="true"></span>
-                                <span aria-hidden="true"></span>
-                                <span aria-hidden="true"></span>
-                            </a>
-                        </div>
-
-                        <div id="navbarMenu" className={`navbar-menu ${this.state.navbarOpened ? 'is-active' : ''}`}>
-                            <div className="navbar-end">
-                                <a className="navbar-item" href="#about">
-                                    About
-                                </a>
-                                <a className="navbar-item" href="#experiences">
-                                    Experiences
-                                </a>
-                                <a className="navbar-item" href="#projects">
-                                    Projects
-                                </a>
-                            </div>
-
-                        </div>
-                    </div>
-                </nav>
-            </Fragment>
-        )
-    }
-}
+export default Navigation;

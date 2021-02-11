@@ -1,0 +1,17 @@
+fragment GregmurrayExperience on GregmurrayExperience {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  employer
+  title
+  subtitle
+  content
+  gregmurrayHome {
+    ... on GregmurrayHome {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+}
