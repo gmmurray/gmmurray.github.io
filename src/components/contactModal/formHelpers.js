@@ -1,7 +1,7 @@
-export const api_url = process.env.EMAILJS_API_URL;
-const user_id = process.env.EMAILJS_USER_ID;
-const service_id = process.env.EMAILJS_SERVICE_ID;
-const template_id = process.env.EMAILJS_TEMPLATE_ID;
+export const api_url = process.env.GATSBY_EMAILJS_API_URL;
+const user_id = process.env.GATSBY_EMAILJS_USER_ID;
+const service_id = process.env.GATSBY_EMAILJS_SERVICE_ID;
+const template_id = process.env.GATSBY_EMAILJS_TEMPLATE_ID;
 
 export const DEFAULT_FORM_STATE = {
   values: { name: '', email: '', message: '' },
