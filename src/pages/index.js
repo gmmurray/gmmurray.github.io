@@ -8,6 +8,7 @@ import Navigation from '../components/navigation';
 import Footer from '../components/footer';
 import { spyScrolling } from '../helpers/spyScrolling';
 import { graphql } from 'gatsby';
+import SEO from '../components/seo';
 
 const IndexPage = ({ data }) => {
   const {
@@ -47,6 +48,7 @@ const IndexPage = ({ data }) => {
 
   return (
     <Fragment>
+      <SEO />
       <Helmet>
         <meta charSet="utf-8" />
         <title>Jacksonville, FL Computing Student</title>

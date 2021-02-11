@@ -12,6 +12,7 @@ module.exports = {
     'gatsby-plugin-root-import',
     `gatsby-plugin-sass`,
     `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-offline`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
@@ -36,7 +37,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: 'G-7X6LKRLGJL',
+        trackingId: process.env.GOOGLE_ANALYTICS_TRACKING_ID,
         head: true,
       },
     },
