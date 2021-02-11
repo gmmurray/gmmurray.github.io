@@ -29,7 +29,7 @@ const ActiveProject = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <h3>{title}</h3>
+            <h3 className="featured-project-title">{title}</h3>
           </a>
           <div className="tags">
             {tags.map((value, index) => {

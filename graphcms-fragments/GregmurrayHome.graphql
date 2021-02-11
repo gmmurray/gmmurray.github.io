@@ -43,4 +43,13 @@ fragment GregmurrayHome on GregmurrayHome {
   linkedInUrl
   emailAddress
   copyrightYear
+  contactModalTitle
+  contactModalNameLabel
+  contactModalEmailLabel
+  contactModalMessageLabel
+  contactModalSubmitText
+  contactModalSuccessTitle
+  contactModalFailureTitle
+  contactModalSuccessText
+  contactModalFailureText
 }

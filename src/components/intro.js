@@ -2,9 +2,22 @@ import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import logo from '../images/icons/personal_logo_resize.png';
-import ContactModal from './contactModal';
+import ContactModal from './contactModal/';
 
-const Intro = ({ lead, subtitle, cta }) => {
+const Intro = ({
+  lead,
+  subtitle,
+  cta,
+  contactModalTitle,
+  contactModalNameLabel,
+  contactModalEmailLabel,
+  contactModalMessageLabel,
+  contactModalSubmitText,
+  contactModalSuccessTitle,
+  contactModalFailureTitle,
+  contactModalSuccessText,
+  contactModalFailureText,
+}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const toggleModal = useCallback(() => {
@@ -36,7 +49,19 @@ const Intro = ({ lead, subtitle, cta }) => {
           </div>
         </div>
       </div>
-      <ContactModal open={modalIsOpen} toggleModal={toggleModal} />
+      <ContactModal
+        open={modalIsOpen}
+        toggleModal={toggleModal}
+        title={contactModalTitle}
+        nameLabel={contactModalNameLabel}
+        emailLabel={contactModalEmailLabel}
+        messageLabel={contactModalMessageLabel}
+        submitText={contactModalSubmitText}
+        successTitle={contactModalSuccessTitle}
+        failureTitle={contactModalFailureTitle}
+        successText={contactModalSuccessText}
+        failureText={contactModalFailureText}
+      />
     </section>
   );
 };
@@ -45,12 +70,30 @@ Intro.propTypes = {
   lead: PropTypes.string,
   subtitle: PropTypes.string,
   cta: PropTypes.string,
+  contactModalTitle: PropTypes.string,
+  contactModalNameLabel: PropTypes.string,
+  contactModalEmailLabel: PropTypes.string,
+  contactModalMessageLabel: PropTypes.string,
+  contactModalSubmitText: PropTypes.string,
+  contactModalSuccessTitle: PropTypes.string,
+  contactModalFailureTitle: PropTypes.string,
+  contactModalSuccessText: PropTypes.string,
+  contactModalFailureText: PropTypes.string,
 };
 
 Intro.defaultProps = {
   lead: '',
   subtitle: '',
   cta: '',
+  contactModalTitle: '',
+  contactModalNameLabel: '',
+  contactModalEmailLabel: '',
+  contactModalMessageLabel: '',
+  contactModalSubmitText: '',
+  contactModalSuccessTitle: '',
+  contactModalFailureTitle: '',
+  contactModalSuccessText: '',
+  contactModalFailureText: '',
 };
 
 export default Intro;

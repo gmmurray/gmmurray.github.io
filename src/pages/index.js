@@ -6,7 +6,7 @@ import Experiences from '../components/experiences/experiences';
 import Projects from '../components/projects/projects';
 import Navigation from '../components/navigation';
 import Footer from '../components/footer';
-import { spyScrolling } from '../helperFunctions';
+import { spyScrolling } from '../helpers/spyScrolling';
 import { graphql } from 'gatsby';
 
 const IndexPage = ({ data }) => {
@@ -30,6 +30,15 @@ const IndexPage = ({ data }) => {
       linkedInUrl,
       emailAddress,
       copyrightYear,
+      contactModalTitle,
+      contactModalNameLabel,
+      contactModalEmailLabel,
+      contactModalMessageLabel,
+      contactModalSubmitText,
+      contactModalSuccessTitle,
+      contactModalFailureTitle,
+      contactModalSuccessText,
+      contactModalFailureText,
     },
   } = data;
   useEffect(() => {
@@ -42,7 +51,20 @@ const IndexPage = ({ data }) => {
         <meta charSet="utf-8" />
         <title>Jacksonville, FL Computing Student</title>
       </Helmet>
-      <Intro lead={introLead} subtitle={introSubtitle} cta={introCta} />
+      <Intro
+        lead={introLead}
+        subtitle={introSubtitle}
+        cta={introCta}
+        contactModalTitle={contactModalTitle}
+        contactModalNameLabel={contactModalNameLabel}
+        contactModalEmailLabel={contactModalEmailLabel}
+        contactModalMessageLabel={contactModalMessageLabel}
+        contactModalSubmitText={contactModalSubmitText}
+        contactModalSuccessTitle={contactModalSuccessTitle}
+        contactModalFailureTitle={contactModalFailureTitle}
+        contactModalSuccessText={contactModalSuccessText}
+        contactModalFailureText={contactModalFailureText}
+      />
       <Navigation />
       <About
         aboutTitle={aboutTitle}
@@ -122,6 +144,15 @@ export const pageQuery = graphql`
       linkedInUrl
       emailAddress
       copyrightYear
+      contactModalTitle
+      contactModalNameLabel
+      contactModalEmailLabel
+      contactModalMessageLabel
+      contactModalSubmitText
+      contactModalSuccessTitle
+      contactModalFailureTitle
+      contactModalSuccessText
+      contactModalFailureText
     }
   }
 `;
