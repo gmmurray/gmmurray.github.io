@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types: [publish-event]
 
 jobs:
   deploy:
@@ -36,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-website-
 
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
       - run: yarn build
 
       - name: Deploy
