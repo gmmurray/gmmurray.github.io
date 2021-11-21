@@ -1,0 +1,58 @@
+fragment ScheduledOperation on ScheduledOperation {
+  stage
+  remoteId: id
+  createdAt
+  updatedAt
+  publishedAt
+  description
+  errorMessage
+  rawPayload
+  createdBy {
+    ... on User {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  updatedBy {
+    ... on User {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  publishedBy {
+    ... on User {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  release {
+    ... on ScheduledRelease {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+  status
+  affectedDocuments {
+    ... on Asset {
+      remoteTypeName: __typename
+      remoteId: id
+      locale
+    }
+    ... on GregmurrayExperience {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+    ... on GregmurrayFeatured {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+    ... on GregmurrayHome {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+    ... on GregmurrayOther {
+      remoteTypeName: __typename
+      remoteId: id
+    }
+  }
+}
