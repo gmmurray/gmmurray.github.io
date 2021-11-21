@@ -40,7 +40,7 @@ const IndexPage = ({ data }) => {
     <Fragment>
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Jacksonville, FL Computing Student</title>
+        <title>Jacksonville, FL Software Engineer</title>
       </Helmet>
       <Intro lead={introLead} subtitle={introSubtitle} cta={introCta} />
       <Navigation />
@@ -99,6 +99,7 @@ export const pageQuery = graphql`
         title
         titleUrl
         content
+        createdAt
         image {
           localFile {
             childImageSharp {
@@ -117,6 +118,7 @@ export const pageQuery = graphql`
         repositoryUrl
         websiteUrl
         techTags
+        createdAt
       }
       githubUrl
       linkedInUrl

@@ -10,6 +10,9 @@ const FeaturedProjects = ({
   otherContent,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const sortedFeaturedContent = (featuredContent ?? []).sort((a, b) =>
+    a.createdAt > b.createdAt ? -1 : 1,
+  );
 
   const handleActiveProjectChange = useCallback(
     pageChange => {
@@ -29,9 +32,10 @@ const FeaturedProjects = ({
       },
     },
     techTags: { items },
-  } = featuredContent[currentIndex];
+  } = sortedFeaturedContent[currentIndex];
   const prevDisabled = currentIndex === 0;
-  const nextDisabled = currentIndex === featuredContent?.length - 1 ?? false;
+  const nextDisabled =
+    currentIndex === sortedFeaturedContent?.length - 1 ?? false;
   return (
     <section className="container section" id="projects">
       <h2 className="title is-2">{featuredTitle}</h2>
