@@ -17,7 +17,7 @@ const OtherProjects = ({ projects }) => {
   const sortedProjects = (projects ?? []).sort((a, b) =>
     a.createdAt > b.createdAt ? -1 : 1,
   );
-  console.log(sortedProjects);
+
   const visibleProjects = (sortedProjects || []).filter(
     (oc, index) => index < currentProjectCount,
   );
