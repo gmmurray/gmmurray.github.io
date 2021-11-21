@@ -51,7 +51,7 @@ const IndexPage = ({ data }) => {
       <SEO />
       <Helmet>
         <meta charSet="utf-8" />
-        <title>Jacksonville, FL Computing Student</title>
+        <title>Jacksonville, FL Software Engineer</title>
       </Helmet>
       <Intro
         lead={introLead}
@@ -123,6 +123,7 @@ export const pageQuery = graphql`
         title
         titleUrl
         content
+        createdAt
         image {
           localFile {
             childImageSharp {
@@ -141,6 +142,7 @@ export const pageQuery = graphql`
         repositoryUrl
         websiteUrl
         techTags
+        createdAt
       }
       githubUrl
       linkedInUrl
