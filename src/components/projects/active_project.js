@@ -1,7 +1,10 @@
+import 'react-image-lightbox/style.css';
+
 import React, { Fragment } from 'react';
+
+import Img from 'gatsby-image';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
-import Img from 'gatsby-image';
 
 const ActiveProject = ({
   title,
@@ -13,12 +16,13 @@ const ActiveProject = ({
   nextClick,
   prevDisabled,
   nextDisabled,
+  onImageClick,
 }) => {
   return (
     <Fragment>
       <div className="columns">
         <div className="column is-half">
-          <figure className="image with-primary-border">
+          <figure className="image with-primary-border" onClick={onImageClick}>
             <Img fluid={image} alt={title} />
           </figure>
         </div>

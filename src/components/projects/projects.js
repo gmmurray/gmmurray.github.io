@@ -1,7 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
+
 import ActiveProject from './active_project';
+import Lightbox from 'react-image-lightbox';
 import OtherProjects from './other_projects';
+import PropTypes from 'prop-types';
+
+const getImageSrc = content =>
+  content?.image?.localFile?.childImageSharp?.fluid?.src ?? undefined;
 
 const FeaturedProjects = ({
   featuredTitle,
@@ -10,6 +15,7 @@ const FeaturedProjects = ({
   otherContent,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const sortedFeaturedContent = (featuredContent ?? []).sort((a, b) =>
     a.createdAt > b.createdAt ? -1 : 1,
   );
@@ -21,6 +27,13 @@ const FeaturedProjects = ({
     },
     [currentIndex, setCurrentIndex],
   );
+
+  const handlePrevClick = useCallback(() => handleActiveProjectChange(-1), [
+    handleActiveProjectChange,
+  ]);
+  const handleNextClick = useCallback(() => handleActiveProjectChange(1), [
+    handleActiveProjectChange,
+  ]);
 
   const {
     title,
@@ -36,6 +49,14 @@ const FeaturedProjects = ({
   const prevDisabled = currentIndex === 0;
   const nextDisabled =
     currentIndex === sortedFeaturedContent?.length - 1 ?? false;
+
+  const prevImage = prevDisabled
+    ? undefined
+    : getImageSrc(sortedFeaturedContent[currentIndex - 1]);
+  const nextImage = nextDisabled
+    ? undefined
+    : getImageSrc(sortedFeaturedContent[currentIndex + 1]);
+
   return (
     <section className="container section" id="projects">
       <h2 className="title is-2">{featuredTitle}</h2>
@@ -46,11 +67,23 @@ const FeaturedProjects = ({
         description={content}
         image={fluid}
         tags={items}
-        prevClick={() => handleActiveProjectChange(-1)}
-        nextClick={() => handleActiveProjectChange(1)}
+        prevClick={handlePrevClick}
+        nextClick={handleNextClick}
         prevDisabled={prevDisabled}
         nextDisabled={nextDisabled}
+        onImageClick={() => setIsLightboxOpen(true)}
       />
+      {isLightboxOpen && (
+        <Lightbox
+          mainSrc={fluid.src}
+          onCloseRequest={() => setIsLightboxOpen(false)}
+          onMoveNextRequest={handleNextClick}
+          nextSrc={nextImage}
+          onMovePrevRequest={handlePrevClick}
+          prevSrc={prevImage}
+          imageTitle={title}
+        />
+      )}
       <h3 className="title is-3">{otherTitle}</h3>
       <OtherProjects projects={otherContent} />
     </section>
@@ -74,7 +107,7 @@ FeaturedProjects.propTypes = {
       techTags: PropTypes.shape({ items: PropTypes.arrayOf(PropTypes.string) }),
     }),
   ),
-  otherTitle: '',
+  otherTitle: PropTypes.string,
   otherContent: PropTypes.arrayOf(
     PropTypes.shape({
       title: PropTypes.string,
