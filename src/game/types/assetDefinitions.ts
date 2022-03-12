@@ -4,6 +4,7 @@ export interface SpriteDefinition {
   frameWidth: number;
   frameHeight: number;
   walkingAnimationMapping: number;
+  scale: number;
 }
 
 export interface TileSetDefinition {
@@ -16,5 +17,13 @@ export interface TileMapDefinition {
   key: string;
   source: string;
   objectLayer: string;
+  animatedLayer: string;
   tilesets: TileSetDefinition[];
+}
+
+export interface CreateSpriteParams {
+  definition: SpriteDefinition;
+  x: number;
+  y: number;
+  speed: number;
 }

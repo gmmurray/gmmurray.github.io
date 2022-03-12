@@ -1,14 +1,13 @@
 import { InteractionLookup, InteractionOperation } from '../types/interactions';
 
 const interactionLookup: InteractionLookup = {
-  // ex
-  100: () => console.log('something'),
+  ['11927']: () => alert('opened door'),
 };
 
-export const performChestInteraction: InteractionOperation = (id: string) => {
+export const performDoorInteraction: InteractionOperation = (id, params) => {
   const interaction = interactionLookup[id];
 
   if (!interaction) return;
 
-  interaction();
+  interaction(params);
 };

@@ -10338,6 +10338,16 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
+phaser-animated-tiles-phaser3.5@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/phaser-animated-tiles-phaser3.5/-/phaser-animated-tiles-phaser3.5-2.0.4.tgz#7d658b9ac1a904a9dd54609664b98abf5681540e"
+  integrity sha512-GA2JaNrz9pzQPt2sXuaWVFK/jtJK3yp8xSOUb/Q8aKpUnM2QfSGJcAiOw75jqMa5GWXOjnxkvf5hX8Lcc0KKyA==
+
+phaser-animated-tiles@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/phaser-animated-tiles/-/phaser-animated-tiles-2.0.2.tgz#541f9ec3790de92ba11c662049a7234d6dde2f53"
+  integrity sha512-tIlaBoG/zOTctsAJuqoJyMSRt4SDmGHPvyjp4OKhtk+f+mNDThoV46N+qkauGDSddsZ2w8le7Sv9M01hNI8mug==
+
 phaser@^3.55.2:
   version "3.55.2"
   resolved "https://registry.yarnpkg.com/phaser/-/phaser-3.55.2.tgz#c1e2e9e70de7085502885e06f46b7eb4bd95e29a"

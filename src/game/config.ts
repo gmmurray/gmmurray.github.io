@@ -1,3 +1,4 @@
+import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
 import { LevelOne } from './scenes/LevelOne';
@@ -36,6 +37,11 @@ export const gameConfig = {
         key: 'dialog',
         plugin: DialogPlugin,
         mapping: 'dialog',
+      },
+      {
+        key: 'animatedTiles',
+        plugin: AnimatedTilesPlugin,
+        mapping: 'animatedTiles',
       },
     ],
   },

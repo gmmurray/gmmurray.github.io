@@ -1,18 +1,33 @@
+import { LevelScene } from '../scenes/LevelScene';
+
+export type PerformInteraction = (
+  params: GetAndPerformInteractionParams,
+) => any;
+
 export interface InteractionLookup {
-  [key: string]: () => any;
+  [key: string]: PerformInteraction;
 }
 
-export type InteractionOperation = (id: string) => void;
+export type InteractionOperation = (
+  id: string,
+  params: GetAndPerformInteractionParams,
+) => void;
 
 export interface InteractionTypeLookup {
-  [key: string]: InteractionOperation;
+  [key: number]: InteractionOperation;
 }
 
-export enum InteractionType {}
+export enum InteractionType {
+  DOOR,
+  PORTAL,
+  CHAR,
+}
 
 export interface GetAndPerformInteractionParams {
   type: InteractionType;
   level: number;
   tileX: number;
   tileY: number;
+  charId?: string;
+  scene: LevelScene;
 }

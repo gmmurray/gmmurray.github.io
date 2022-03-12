@@ -27,6 +27,7 @@
     "gatsby-transformer-sharp": "^2.3.7",
     "grid-engine": "^2.13.0",
     "phaser": "^3.55.2",
+    "phaser-animated-tiles-phaser3.5": "^2.0.4",
     "prop-types": "^15.7.2",
     "react": "^17.0.1",
     "react-dom": "^16.12.0",

@@ -1,13 +1,20 @@
 import {
   gregSpriteDefinition,
+  greyCatSpriteDefinition,
   playerSpriteDefinition,
+  whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
 import { ASSETS_BASE_URL } from '../constants';
 import { Scene } from 'phaser';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
-const spriteDefinitions = [playerSpriteDefinition, gregSpriteDefinition];
+const spriteDefinitions = [
+  playerSpriteDefinition,
+  gregSpriteDefinition,
+  greyCatSpriteDefinition,
+  whiteCatSpriteDefinition,
+];
 const tileDefinitions = [levelOneMapDefinition];
 
 export class LoadingScene extends Scene {

@@ -1,12 +1,19 @@
 import {
   GetAndPerformInteractionParams,
+  InteractionType,
   InteractionTypeLookup,
 } from '../types/interactions';
 
-import { performChestInteraction } from './chestInteractions';
+import { performCharacterInteraction } from './characterInteractions';
+import { performDoorInteraction } from './doorInteractions';
+import { performPortalInteraction } from './portalInteractions';
 
 const interactionTypeLookup: InteractionTypeLookup = {
-  chest: id => performChestInteraction(id),
+  [InteractionType.DOOR]: (id, params) => performDoorInteraction(id, params),
+  [InteractionType.PORTAL]: (id, params) =>
+    performPortalInteraction(id, params),
+  [InteractionType.CHAR]: (id, params) =>
+    performCharacterInteraction(id, params),
 };
 
 export const getAndPerformInteraction = (
@@ -15,7 +22,11 @@ export const getAndPerformInteraction = (
   const interaction = interactionTypeLookup[params.type];
   if (!interaction) return;
 
-  interaction(createInteractionId(params.level, params.tileX, params.tileY));
+  const id =
+    params.charId ??
+    createInteractionId(params.level, params.tileX, params.tileY);
+
+  interaction(id, params);
 };
 
 const createInteractionId = (
