@@ -28,5 +28,20 @@ export const levelOneMapDefinition: TileMapDefinition = {
       key: 'portal-tiles',
       source: getTileSetSource('portal_spritesheet'),
     },
+    {
+      name: 'interiors_tileset',
+      key: 'interiors-tiles',
+      source: getTileSetSource('interiors_tileset'),
+    },
+    {
+      name: 'rooms_tileset',
+      key: 'room-builder-tiles',
+      source: getTileSetSource('room_builder_tileset'),
+    },
+    {
+      name: 'coffee_tileset',
+      key: 'coffee-tiles',
+      source: getTileSetSource('coffee_spritesheet'),
+    },
   ],
 };

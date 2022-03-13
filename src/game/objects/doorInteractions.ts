@@ -1,7 +1,13 @@
-import { InteractionLookup, InteractionOperation } from '../types/interactions';
+import {
+  InteractionLookup,
+  InteractionOperation,
+  PerformInteraction,
+} from '../types/interactions';
+
+import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 const interactionLookup: InteractionLookup = {
-  ['11927']: () => alert('opened door'),
+  ['11927']: params => door11927(params),
 };
 
 export const performDoorInteraction: InteractionOperation = (id, params) => {
@@ -10,4 +16,11 @@ export const performDoorInteraction: InteractionOperation = (id, params) => {
   if (!interaction) return;
 
   interaction(params);
+};
+
+const door11927: PerformInteraction = params => {
+  params.scene.gridEngine.setPosition(playerSpriteDefinition.key, {
+    x: 15,
+    y: 98,
+  });
 };

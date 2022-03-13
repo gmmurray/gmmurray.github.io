@@ -7,7 +7,7 @@ import Phaser from 'phaser';
 
 export const gameConfig = {
   title: 'gmmurray-game',
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   parent: 'game',
   backgroundColor: '#000',
   physics: {
@@ -20,7 +20,9 @@ export const gameConfig = {
     antialiasGL: false,
     pixelArt: true,
   },
-  canvasStyle: `width: 600px; height: 600px;`,
+  canvasStyle: `width: 608px; height: 608px;`,
+  width: 608,
+  height: 608,
   autoFocus: true,
   audio: {
     disableWebAudio: false,
