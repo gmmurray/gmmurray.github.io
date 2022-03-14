@@ -238,6 +238,9 @@ export class LevelScene extends Scene {
   };
 
   useGridPlayerControls = () => {
+    if (this.dialog.visible) {
+      return;
+    }
     const cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.LEFT);
