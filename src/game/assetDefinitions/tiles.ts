@@ -19,11 +19,6 @@ export const levelOneMapDefinition: TileMapDefinition = {
       source: getTileSetSource('serene_village_tileset'),
     },
     {
-      name: 'serene_village_objects_tileset',
-      key: 'serene-village-object-tiles',
-      source: getTileSetSource('serene_village_objects_tileset'),
-    },
-    {
       name: 'portal_tileset',
       key: 'portal-tiles',
       source: getTileSetSource('portal_spritesheet'),

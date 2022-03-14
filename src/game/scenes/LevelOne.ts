@@ -12,8 +12,8 @@ export class LevelOne extends LevelScene {
   constructor() {
     super('level-one');
     this.levelNumber = 1;
-    this.startingGridCoordinates.x = 24;
-    this.startingGridCoordinates.y = 51;
+    this.startingGridCoordinates.x = 20;
+    this.startingGridCoordinates.y = 30;
     this.mapDefinition = levelOneMapDefinition;
   }
 
@@ -31,6 +31,8 @@ export class LevelOne extends LevelScene {
     this.setCamera();
 
     this.setObjects();
+
+    this.setDoors();
 
     this.attachKeyboardListener();
     this.dialog.init();
@@ -89,5 +91,21 @@ export class LevelOne extends LevelScene {
       100,
       this.characterMovements[whiteCatSpriteDefinition.key],
     );
+  };
+
+  setDoors = () => {
+    this.doors = [
+      {
+        from: [
+          { x: 19, y: 29 },
+          { x: 20, y: 29 },
+        ],
+        to: { x: 15, y: 97 },
+      },
+      {
+        from: [{ x: 15, y: 98 }],
+        to: { x: 20, y: 31 },
+      },
+    ];
   };
 }

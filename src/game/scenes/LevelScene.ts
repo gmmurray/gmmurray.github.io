@@ -1,14 +1,9 @@
-import {
-  CharacterData,
-  Direction,
-  GridEngine,
-  GridEngineConfig,
-} from 'grid-engine';
+import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   CreateSpriteParams,
-  SpriteDefinition,
   TileMapDefinition,
 } from '../types/assetDefinitions';
+import { DoorDefinition, TileObject } from '../types/tileObject';
 import {
   ENTER_EVENT_KEY,
   SCALE,
@@ -18,9 +13,9 @@ import {
 import { GameObjects, Geom, Scene, Tilemaps } from 'phaser';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
 import { InteractionType } from '../types/interactions';
-import { TileObject } from '../types/tileObject';
 import { getAndPerformInteraction } from '../objects/interactions';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
@@ -32,7 +27,7 @@ export class LevelScene extends Scene {
   public gridEngine: GridEngine;
   public animatedTiles: AnimatedTilesPlugin;
   public levelNumber: number = 0;
-  public startingGridCoordinates: { x: number; y: number } = { x: 0, y: 0 };
+  public startingGridCoordinates: Coordinates = { x: 0, y: 0 };
   public mapDefinition: TileMapDefinition | null = null;
   public dialog: DialogPlugin | null;
   public characters: CharacterData[] = [];
@@ -40,6 +35,7 @@ export class LevelScene extends Scene {
   public additionalCharacters: CreateSpriteParams[] = [];
   public facingCharacter: CharacterData | null = null;
   public closeDialogCallback: Function | null = null;
+  public doors: DoorDefinition[] = [];
 
   setMap = () => {
     if (!this.mapDefinition) return;
@@ -251,6 +247,12 @@ export class LevelScene extends Scene {
     } else if (cursors.down.isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.DOWN);
     }
+    if (
+      !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
+      this.doors.length > 0
+    ) {
+      this.checkDoorPosition();
+    }
   };
 
   createNewDialog = (text: string) => {
@@ -318,5 +320,18 @@ export class LevelScene extends Scene {
     console.log('turning character towards' + newDir);
 
     this.gridEngine.turnTowards(key, newDir);
+  };
+
+  checkDoorPosition = () => {
+    const pos = this.gridEngine.getPosition(playerSpriteDefinition.key);
+    const match = this.doors.find(door =>
+      door.from.some(
+        coordinate => coordinate.x === pos.x && coordinate.y === pos.y,
+      ),
+    );
+
+    if (match) {
+      this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
+    }
   };
 }
