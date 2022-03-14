@@ -382,8 +382,14 @@ export class LevelScene extends Scene {
       }
 
       if (match.type === PortalType.SCENE && typeof match.to === 'string') {
-        this.cameras.main.fade(750, 0, 0, 0);
-        this.scene.start(match.to);
+        this.cameras.main.flash(1500, 0, 0, 0); // temp
+        const currPos = this.gridEngine.getPosition(playerSpriteDefinition.key);
+        this.gridEngine.setPosition(playerSpriteDefinition.key, {
+          x: currPos.x,
+          y: currPos.y + 1,
+        });
+        // this.cameras.main.fade(750, 0, 0, 0); TODO: switch to this once the new scenes are set up
+        // this.scene.start(match.to); TODO: use this once scene is set up
       } else if (
         match.type === PortalType.COORDINATE &&
         typeof match.to === 'object'

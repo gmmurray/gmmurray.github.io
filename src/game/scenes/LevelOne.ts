@@ -16,8 +16,8 @@ export class LevelOne extends LevelScene {
   constructor() {
     super('level-one');
     this.levelNumber = 1;
-    this.startingGridCoordinates.x = 15;
-    this.startingGridCoordinates.y = 96;
+    this.startingGridCoordinates.x = 28;
+    this.startingGridCoordinates.y = 15;
     this.mapDefinition = levelOneMapDefinition;
   }
 
@@ -37,6 +37,8 @@ export class LevelOne extends LevelScene {
     this.setObjects();
 
     this.setDoors();
+
+    this.setPortals();
 
     this.attachKeyboardListener();
     this.dialog.init();
@@ -117,8 +119,8 @@ export class LevelOne extends LevelScene {
     this.portals = [
       {
         from: {
-          x: 0,
-          y: 0,
+          x: 16,
+          y: 9,
         },
         type: PortalType.SCENE,
         to: '', // TODO: scene 2,
@@ -126,8 +128,8 @@ export class LevelOne extends LevelScene {
       },
       {
         from: {
-          x: 0,
-          y: 0,
+          x: 28,
+          y: 9,
         },
         type: PortalType.SCENE,
         to: '', // TODO: scene 3,
@@ -135,8 +137,8 @@ export class LevelOne extends LevelScene {
       },
       {
         from: {
-          x: 0,
-          y: 0,
+          x: 40,
+          y: 9,
         },
         type: PortalType.SCENE,
         to: '', // TODO: scene 4,
