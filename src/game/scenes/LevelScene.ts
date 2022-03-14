@@ -43,6 +43,7 @@ export class LevelScene extends Scene {
   public closeDialogCallback: Function | null = null;
   public doors: DoorDefinition[] = [];
   public portals: PortalDefinition[] = [];
+  public facingPortal: PortalDefinition | null = null;
 
   setMap = () => {
     if (!this.mapDefinition) return;
@@ -188,6 +189,18 @@ export class LevelScene extends Scene {
         o.id !== playerSpriteDefinition.key &&
         Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
     )[0];
+    this.facingPortal =
+      this.portals.find(p =>
+        Geom.Intersects.RectangleToRectangle(
+          new Geom.Rectangle(
+            p.from.x * SCALED_TILE_SIZE,
+            p.from.y * SCALED_TILE_SIZE,
+            SCALED_TILE_SIZE,
+            SCALED_TILE_SIZE,
+          ),
+          tileRect,
+        ),
+      ) ?? null;
   };
 
   attachKeyboardListener = () =>
