@@ -8,6 +8,9 @@ import { CreateSpriteParams } from '../types/assetDefinitions';
 import { LevelScene } from './LevelScene';
 import { RANDOM_MOVEMENT_DELAY } from '../constants';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
+import { PortalType } from '../types/tileObject';
+
+export const LEVEL_ONE_SCENE_KEY = 'level-one';
 
 export class LevelOne extends LevelScene {
   constructor() {
@@ -106,6 +109,38 @@ export class LevelOne extends LevelScene {
       {
         from: [{ x: 15, y: 99 }],
         to: { x: 20, y: 31 },
+      },
+    ];
+  };
+
+  setPortals = () => {
+    this.portals = [
+      {
+        from: {
+          x: 0,
+          y: 0,
+        },
+        type: PortalType.SCENE,
+        to: '', // TODO: scene 2,
+        dialog: 'the portal hums with energy as you approach it...',
+      },
+      {
+        from: {
+          x: 0,
+          y: 0,
+        },
+        type: PortalType.SCENE,
+        to: '', // TODO: scene 3,
+        dialog: 'the portal hums with energy as you approach it...',
+      },
+      {
+        from: {
+          x: 0,
+          y: 0,
+        },
+        type: PortalType.SCENE,
+        to: '', // TODO: scene 4,
+        dialog: 'the portal hums with energy as you approach it...',
       },
     ];
   };

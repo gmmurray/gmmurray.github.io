@@ -8,6 +8,7 @@ import {
 import { ASSETS_BASE_URL } from '../constants';
 import { Scene } from 'phaser';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
+import { LEVEL_ONE_SCENE_KEY } from './LevelOne';
 
 const spriteDefinitions = [
   playerSpriteDefinition,
@@ -17,9 +18,11 @@ const spriteDefinitions = [
 ];
 const tileDefinitions = [levelOneMapDefinition];
 
+export const LOADING_SCENE_KEY = 'loading-scene';
+
 export class LoadingScene extends Scene {
   constructor() {
-    super('loading-scene');
+    super(LOADING_SCENE_KEY);
   }
 
   preload = () => {
@@ -31,7 +34,7 @@ export class LoadingScene extends Scene {
   };
 
   create = () => {
-    this.scene.start('level-one');
+    this.scene.start(LEVEL_ONE_SCENE_KEY);
   };
 
   loadSprites = () => {

@@ -9,8 +9,6 @@ import {
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import { Direction } from 'grid-engine';
-
 const interactionLookup: InteractionLookup = {
   [gregSpriteDefinition.key]: params => gregInteraction(params),
   [greyCatSpriteDefinition.key]: params => catInteraction(params),

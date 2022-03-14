@@ -14,3 +14,15 @@ export interface DoorDefinition {
   from: Coordinates[];
   to: Coordinates;
 }
+
+export enum PortalType {
+  SCENE,
+  COORDINATE,
+}
+
+export interface PortalDefinition {
+  from: Coordinates;
+  type: PortalType;
+  to: string | Coordinates;
+  dialog?: string;
+}

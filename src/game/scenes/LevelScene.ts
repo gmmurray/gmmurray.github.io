@@ -3,7 +3,12 @@ import {
   CreateSpriteParams,
   TileMapDefinition,
 } from '../types/assetDefinitions';
-import { DoorDefinition, TileObject } from '../types/tileObject';
+import {
+  DoorDefinition,
+  PortalDefinition,
+  PortalType,
+  TileObject,
+} from '../types/tileObject';
 import {
   ENTER_EVENT_KEY,
   RANDOM_MOVEMENT_DELAY,
@@ -17,7 +22,7 @@ import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
 import { InteractionType } from '../types/interactions';
-import { getAndPerformInteraction } from '../objects/interactions';
+import { getAndPerformInteraction } from '../interactions/interactions';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export class LevelScene extends Scene {
@@ -37,6 +42,7 @@ export class LevelScene extends Scene {
   public facingCharacter: CharacterData | null = null;
   public closeDialogCallback: Function | null = null;
   public doors: DoorDefinition[] = [];
+  public portals: PortalDefinition[] = [];
 
   setMap = () => {
     if (!this.mapDefinition) return;
@@ -250,11 +256,19 @@ export class LevelScene extends Scene {
     } else if (cursors.down.isDown || wasd['S'].isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.DOWN);
     }
+
     if (
       !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
       this.doors.length > 0
     ) {
       this.handleDoorCollision();
+    }
+
+    if (
+      !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
+      this.portals.length > 0
+    ) {
+      this.handlePortalCollision();
     }
   };
 
@@ -339,6 +353,30 @@ export class LevelScene extends Scene {
     if (match) {
       this.cameras.main.flash(750, 0, 0, 0);
       this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
+    }
+  };
+
+  // portals are similar to doors except they might trigger a dialog or start a scene
+  handlePortalCollision = () => {
+    const pos = this.gridEngine.getPosition(playerSpriteDefinition.key);
+    const match = this.portals.find(
+      portal => portal.from.x === pos.x && portal.from.y === pos.y,
+    );
+
+    if (match) {
+      if (match.dialog) {
+        this.createNewDialog(match.dialog);
+      }
+
+      if (match.type === PortalType.SCENE && typeof match.to === 'string') {
+        this.cameras.main.fade(750, 0, 0, 0);
+        this.scene.start(match.to);
+      } else if (
+        match.type === PortalType.COORDINATE &&
+        typeof match.to === 'object'
+      ) {
+        this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
+      }
     }
   };
 }

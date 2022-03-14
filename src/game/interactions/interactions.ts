@@ -6,11 +6,8 @@ import {
 
 import { performCharacterInteraction } from './characterInteractions';
 import { performItemInteraction } from './itemInteractions';
-import { performPortalInteraction } from './portalInteractions';
 
 const interactionTypeLookup: InteractionTypeLookup = {
-  [InteractionType.PORTAL]: (id, params) =>
-    performPortalInteraction(id, params),
   [InteractionType.CHAR]: (id, params) =>
     performCharacterInteraction(id, params),
   [InteractionType.ITEM]: (id, params) => performItemInteraction(id, params),
