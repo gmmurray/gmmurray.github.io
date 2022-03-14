@@ -6,6 +6,7 @@ import {
 import { DoorDefinition, TileObject } from '../types/tileObject';
 import {
   ENTER_EVENT_KEY,
+  RANDOM_MOVEMENT_DELAY,
   SCALE,
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
@@ -31,7 +32,7 @@ export class LevelScene extends Scene {
   public mapDefinition: TileMapDefinition | null = null;
   public dialog: DialogPlugin | null;
   public characters: CharacterData[] = [];
-  public characterMovements: Record<string, number>;
+  public characterMovements: Record<string, number>; // key: character key. value: character radius
   public additionalCharacters: CreateSpriteParams[] = [];
   public facingCharacter: CharacterData | null = null;
   public closeDialogCallback: Function | null = null;
@@ -276,7 +277,11 @@ export class LevelScene extends Scene {
     if (!this.gridEngine.isMoving(key)) {
       setTimeout(() => {
         if (!this.dialog.visible) {
-          this.gridEngine.moveRandomly(key, 0, this.characterMovements[key]);
+          this.gridEngine.moveRandomly(
+            key,
+            RANDOM_MOVEMENT_DELAY,
+            this.characterMovements[key],
+          );
         }
       }, 30 * 1000);
     }
@@ -317,7 +322,6 @@ export class LevelScene extends Scene {
         newDir = Direction.LEFT;
         break;
     }
-    console.log('turning character towards' + newDir);
 
     this.gridEngine.turnTowards(key, newDir);
   };

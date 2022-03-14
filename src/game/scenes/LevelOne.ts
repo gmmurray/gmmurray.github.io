@@ -6,6 +6,7 @@ import {
 
 import { CreateSpriteParams } from '../types/assetDefinitions';
 import { LevelScene } from './LevelScene';
+import { RANDOM_MOVEMENT_DELAY } from '../constants';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
 export class LevelOne extends LevelScene {
@@ -56,14 +57,14 @@ export class LevelOne extends LevelScene {
       },
       {
         definition: greyCatSpriteDefinition,
-        x: 23,
-        y: 45,
+        x: 7,
+        y: 93,
         speed: 2,
       },
       {
         definition: whiteCatSpriteDefinition,
-        x: 20,
-        y: 45,
+        x: 23,
+        y: 95,
         speed: 2,
       },
     ];
@@ -83,12 +84,12 @@ export class LevelOne extends LevelScene {
 
     this.gridEngine.moveRandomly(
       greyCatSpriteDefinition.key,
-      0,
+      RANDOM_MOVEMENT_DELAY,
       this.characterMovements[greyCatSpriteDefinition.key],
     );
     this.gridEngine.moveRandomly(
       whiteCatSpriteDefinition.key,
-      100,
+      RANDOM_MOVEMENT_DELAY + 200,
       this.characterMovements[whiteCatSpriteDefinition.key],
     );
   };

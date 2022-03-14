@@ -13,7 +13,6 @@ const interactionLookup: InteractionLookup = {
 
 export const performItemInteraction: InteractionOperation = (id, params) => {
   const interaction = interactionLookup[id];
-  console.log(params);
 
   if (!interaction) return;
 
