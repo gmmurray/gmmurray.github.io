@@ -21,6 +21,7 @@ export enum InteractionType {
   DOOR,
   PORTAL,
   CHAR,
+  ITEM,
 }
 
 export interface GetAndPerformInteractionParams {

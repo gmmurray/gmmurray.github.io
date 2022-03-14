@@ -12,8 +12,8 @@ export class LevelOne extends LevelScene {
   constructor() {
     super('level-one');
     this.levelNumber = 1;
-    this.startingGridCoordinates.x = 20;
-    this.startingGridCoordinates.y = 30;
+    this.startingGridCoordinates.x = 15;
+    this.startingGridCoordinates.y = 96;
     this.mapDefinition = levelOneMapDefinition;
   }
 
