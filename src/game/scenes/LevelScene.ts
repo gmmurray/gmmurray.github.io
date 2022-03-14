@@ -239,13 +239,15 @@ export class LevelScene extends Scene {
       return;
     }
     const cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
+    const wasd = this.input.keyboard.addKeys('W,A,S,D');
+
+    if (cursors.left.isDown || wasd['A'].isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.LEFT);
-    } else if (cursors.right.isDown) {
+    } else if (cursors.right.isDown || wasd['D'].isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.RIGHT);
-    } else if (cursors.up.isDown) {
+    } else if (cursors.up.isDown || wasd['W'].isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.UP);
-    } else if (cursors.down.isDown) {
+    } else if (cursors.down.isDown || wasd['S'].isDown) {
       this.gridEngine.move(playerSpriteDefinition.key, Direction.DOWN);
     }
     if (
