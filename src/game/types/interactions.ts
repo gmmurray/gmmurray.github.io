@@ -1,4 +1,5 @@
 import { LevelScene } from '../scenes/LevelScene';
+import { PositionMarker } from './position';
 
 export type PerformInteraction = (
   params: GetAndPerformInteractionParams,
@@ -31,4 +32,8 @@ export interface GetAndPerformInteractionParams {
   tileY: number;
   charId?: string;
   scene: LevelScene;
+}
+
+export interface ItemDefinition extends PositionMarker {
+  handler: PerformInteraction;
 }

@@ -1,8 +1,8 @@
-import { Coordinates } from './position';
+import { Coordinates, PositionMarker } from './position';
 import { GameObjects } from 'phaser';
 import { InteractionType } from './interactions';
 
-export interface TileObject {
+export interface TileObject extends PositionMarker {
   x: number;
   y: number;
   sprite: GameObjects.Sprite;
@@ -10,7 +10,7 @@ export interface TileObject {
   name: string;
 }
 
-export interface DoorDefinition {
+export interface DoorDefinition extends PositionMarker {
   from: Coordinates[];
   to: Coordinates;
 }
@@ -20,7 +20,7 @@ export enum PortalType {
   COORDINATE,
 }
 
-export interface PortalDefinition {
+export interface PortalDefinition extends PositionMarker {
   from: Coordinates;
   type: PortalType;
   to: string | Coordinates;

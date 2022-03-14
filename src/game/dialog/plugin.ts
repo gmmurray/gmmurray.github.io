@@ -1,5 +1,6 @@
 import { DialogConfig } from '../types/dialog';
 import Phaser from 'phaser';
+import { DIALOG_PLUGIN_KEY } from '../constants';
 
 // credit https://github.com/nkholski/phaser-plugin-starter and https://gamedevacademy.org/create-a-dialog-modal-plugin-in-phaser-3-part-1/
 export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
@@ -25,8 +26,11 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   public closeBtn: Phaser.GameObjects.Text;
   public timedEvent: Phaser.Time.TimerEvent;
 
-  constructor(scene, pluginManager) {
-    super(scene, pluginManager, 'dialog');
+  constructor(
+    scene: Phaser.Plugins.ScenePlugin['scene'],
+    pluginManager: Phaser.Plugins.PluginManager,
+  ) {
+    super(scene, pluginManager, DIALOG_PLUGIN_KEY);
     this.scene = scene;
   }
 
@@ -115,9 +119,6 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
       .fillStyle(this.config.windowColor!, this.config.windowAlpha!)
       .fillRect(x + 1, y + 1, width - 1, height - 1);
 
-    // this.graphics
-    //   .fillStyle(0x000, 1)
-    //   .fillRect(width / 2, y + 50, width / 2, height / 4);
     return this;
   };
 

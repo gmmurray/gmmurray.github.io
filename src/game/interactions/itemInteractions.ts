@@ -1,8 +1,16 @@
 import {
   InteractionLookup,
   InteractionOperation,
+  ItemDefinition,
   PerformInteraction,
 } from '../types/interactions';
+
+export const ItemDefinitions: Record<string, ItemDefinition> = {
+  ['1791']: {
+    handler: params => item1791(params),
+    friendlyName: 'item',
+  },
+};
 
 const interactionLookup: InteractionLookup = {
   ['1791']: params => item1791(params),

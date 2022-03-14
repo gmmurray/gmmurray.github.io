@@ -6,15 +6,13 @@ import {
 
 import { CreateSpriteParams } from '../types/assetDefinitions';
 import { LevelScene } from './LevelScene';
-import { RANDOM_MOVEMENT_DELAY } from '../constants';
+import { LEVEL_ONE_SCENE_KEY, RANDOM_MOVEMENT_DELAY } from '../constants';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 import { PortalType } from '../types/tileObject';
 
-export const LEVEL_ONE_SCENE_KEY = 'level-one';
-
 export class LevelOne extends LevelScene {
   constructor() {
-    super('level-one');
+    super(LEVEL_ONE_SCENE_KEY);
     this.levelNumber = 1;
     this.startingGridCoordinates.x = 28;
     this.startingGridCoordinates.y = 15;
@@ -41,10 +39,13 @@ export class LevelOne extends LevelScene {
     this.setPortals();
 
     this.attachKeyboardListener();
+
     this.dialog.init();
     this.createNewDialog(
       'hint: talk to Greg using space or enter to get started',
     );
+
+    this.hud.init();
   };
 
   update = () => {
@@ -59,18 +60,21 @@ export class LevelOne extends LevelScene {
         x: 25,
         y: 42,
         speed: 4,
+        friendlyName: 'Greg',
       },
       {
         definition: greyCatSpriteDefinition,
         x: 7,
         y: 93,
         speed: 2,
+        friendlyName: 'Khufu',
       },
       {
         definition: whiteCatSpriteDefinition,
         x: 23,
         y: 95,
         speed: 2,
+        friendlyName: 'Dre',
       },
     ];
 
@@ -107,10 +111,12 @@ export class LevelOne extends LevelScene {
           { x: 20, y: 29 },
         ],
         to: { x: 15, y: 98 },
+        friendlyName: 'go inside',
       },
       {
         from: [{ x: 15, y: 99 }],
         to: { x: 20, y: 31 },
+        friendlyName: 'go outside',
       },
     ];
   };
@@ -125,6 +131,7 @@ export class LevelOne extends LevelScene {
         type: PortalType.SCENE,
         to: '', // TODO: scene 2,
         dialog: 'the portal hums with energy as you approach it...',
+        friendlyName: 'leftmost portal',
       },
       {
         from: {
@@ -134,6 +141,7 @@ export class LevelOne extends LevelScene {
         type: PortalType.SCENE,
         to: '', // TODO: scene 3,
         dialog: 'the portal hums with energy as you approach it...',
+        friendlyName: 'middle',
       },
       {
         from: {
@@ -143,6 +151,7 @@ export class LevelOne extends LevelScene {
         type: PortalType.SCENE,
         to: '', // TODO: scene 4,
         dialog: 'the portal hums with energy as you approach it...',
+        friendlyName: 'rightmost portal',
       },
     ];
   };

@@ -5,10 +5,13 @@ import {
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import { ASSETS_BASE_URL } from '../constants';
+import {
+  ASSETS_BASE_URL,
+  LEVEL_ONE_SCENE_KEY,
+  LOADING_SCENE_KEY,
+} from '../constants';
 import { Scene } from 'phaser';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
-import { LEVEL_ONE_SCENE_KEY } from './LevelOne';
 
 const spriteDefinitions = [
   playerSpriteDefinition,
@@ -17,8 +20,6 @@ const spriteDefinitions = [
   whiteCatSpriteDefinition,
 ];
 const tileDefinitions = [levelOneMapDefinition];
-
-export const LOADING_SCENE_KEY = 'loading-scene';
 
 export class LoadingScene extends Scene {
   constructor() {

@@ -1,5 +1,6 @@
 import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
+  CharacterDataExtended,
   CreateSpriteParams,
   TileMapDefinition,
 } from '../types/assetDefinitions';
@@ -24,6 +25,7 @@ import DialogPlugin from '../dialog/plugin';
 import { InteractionType } from '../types/interactions';
 import { getAndPerformInteraction } from '../interactions/interactions';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
+import HudPlugin from '../hud/plugin';
 
 export class LevelScene extends Scene {
   public playerSprite: GameObjects.Sprite | null = null;
@@ -36,14 +38,16 @@ export class LevelScene extends Scene {
   public startingGridCoordinates: Coordinates = { x: 0, y: 0 };
   public mapDefinition: TileMapDefinition | null = null;
   public dialog: DialogPlugin | null;
-  public characters: CharacterData[] = [];
+  public characters: CharacterDataExtended[] = [];
   public characterMovements: Record<string, number>; // key: character key. value: character radius
   public additionalCharacters: CreateSpriteParams[] = [];
-  public facingCharacter: CharacterData | null = null;
+  public facingCharacter?: CharacterDataExtended = undefined;
   public closeDialogCallback: Function | null = null;
+  public facingDoor?: DoorDefinition = undefined;
   public doors: DoorDefinition[] = [];
   public portals: PortalDefinition[] = [];
-  public facingPortal: PortalDefinition | null = null;
+  public facingPortal?: PortalDefinition = undefined;
+  public hud: HudPlugin;
 
   setMap = () => {
     if (!this.mapDefinition) return;
@@ -109,7 +113,7 @@ export class LevelScene extends Scene {
       d.filter(t => t.index !== -1).forEach(t => {
         const { x, y, properties } = t;
 
-        // add "object" tile for each tile defined to have object properties in this layer
+        // add "object" tile for each tile defined to have object properties in this layer TODO: AND if they are in this.itemdefinitions
         if (properties && properties.type !== undefined) {
           const newSprite = this.addObjectSprite();
 
@@ -128,7 +132,7 @@ export class LevelScene extends Scene {
   };
 
   setAdditionalSprites = () => {
-    const charDefinitions: CharacterData[] = this.additionalCharacters.map(
+    const charDefinitions: CharacterDataExtended[] = this.additionalCharacters.map(
       ac => ({
         id: ac.definition.key,
         sprite: this.add
@@ -140,6 +144,7 @@ export class LevelScene extends Scene {
         },
         walkingAnimationMapping: ac.definition.walkingAnimationMapping,
         speed: ac.speed,
+        friendlyName: ac.friendlyName,
       }),
     );
     this.characters = this.characters.concat(charDefinitions);
@@ -181,26 +186,48 @@ export class LevelScene extends Scene {
       SCALED_TILE_SIZE,
     );
 
-    this.facingObject = this.objects.filter(o =>
+    this.facingObject = this.objects.find(o =>
       Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
-    )[0];
-    this.facingCharacter = this.characters.filter(
+    );
+    this.facingCharacter = this.characters.find(
       o =>
         o.id !== playerSpriteDefinition.key &&
         Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
-    )[0];
-    this.facingPortal =
-      this.portals.find(p =>
-        Geom.Intersects.RectangleToRectangle(
-          new Geom.Rectangle(
-            p.from.x * SCALED_TILE_SIZE,
-            p.from.y * SCALED_TILE_SIZE,
-            SCALED_TILE_SIZE,
-            SCALED_TILE_SIZE,
-          ),
-          tileRect,
+    );
+    this.facingPortal = this.portals.find(p =>
+      Geom.Intersects.RectangleToRectangle(
+        new Geom.Rectangle(
+          p.from.x * SCALED_TILE_SIZE,
+          p.from.y * SCALED_TILE_SIZE,
+          SCALED_TILE_SIZE,
+          SCALED_TILE_SIZE,
         ),
-      ) ?? null;
+        tileRect,
+      ),
+    );
+    this.facingDoor = this.doors.find(d =>
+      Geom.Intersects.RectangleToRectangle(
+        new Geom.Rectangle(
+          d.from[0].x * SCALED_TILE_SIZE,
+          d.from[0].y * SCALED_TILE_SIZE,
+          SCALED_TILE_SIZE,
+          SCALED_TILE_SIZE,
+        ),
+        tileRect,
+      ),
+    );
+
+    const bottomTextValue =
+      this.facingObject?.friendlyName ??
+      this.facingCharacter?.friendlyName ??
+      this.facingPortal?.friendlyName ??
+      this.facingDoor?.friendlyName;
+
+    if (bottomTextValue && !this.dialog.visible) {
+      this.addHudBottomText(bottomTextValue);
+    } else if (this.hud.bottomTextIsDisplayed()) {
+      this.removeHudBottomText();
+    }
   };
 
   attachKeyboardListener = () =>
@@ -212,7 +239,7 @@ export class LevelScene extends Scene {
 
     if (event.key === ENTER_EVENT_KEY || event.key === SPACE_EVENT_KEY) {
       const isCharacterInteraction = !!this.facingCharacter;
-      // if the dialog is open: cloes it
+      // if the dialog is open: close it
       if (this.dialog.visible) {
         // also resume movement if it was a character that was being interacted with
         if (isCharacterInteraction) {
@@ -288,6 +315,7 @@ export class LevelScene extends Scene {
   createNewDialog = (text: string) => {
     this.dialog.setText(text);
     this.dialog.toggleWindow(true);
+    this.removeHudBottomText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
   };
 
   handleCloseDialog = () => {
@@ -398,4 +426,7 @@ export class LevelScene extends Scene {
       }
     }
   };
+
+  public addHudBottomText = (text: string) => this.hud.updateBottomText(text);
+  public removeHudBottomText = () => this.hud.updateBottomText();
 }
