@@ -251,7 +251,7 @@ export class LevelScene extends Scene {
       !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
       this.doors.length > 0
     ) {
-      this.checkDoorPosition();
+      this.handleDoorCollision();
     }
   };
 
@@ -322,7 +322,7 @@ export class LevelScene extends Scene {
     this.gridEngine.turnTowards(key, newDir);
   };
 
-  checkDoorPosition = () => {
+  handleDoorCollision = () => {
     const pos = this.gridEngine.getPosition(playerSpriteDefinition.key);
     const match = this.doors.find(door =>
       door.from.some(
@@ -331,6 +331,7 @@ export class LevelScene extends Scene {
     );
 
     if (match) {
+      this.cameras.main.flash(750, 0, 0, 0);
       this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
     }
   };

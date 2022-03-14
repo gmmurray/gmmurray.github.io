@@ -100,10 +100,10 @@ export class LevelOne extends LevelScene {
           { x: 19, y: 29 },
           { x: 20, y: 29 },
         ],
-        to: { x: 15, y: 97 },
+        to: { x: 15, y: 98 },
       },
       {
-        from: [{ x: 15, y: 98 }],
+        from: [{ x: 15, y: 99 }],
         to: { x: 20, y: 31 },
       },
     ];
