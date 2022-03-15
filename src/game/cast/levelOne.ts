@@ -84,8 +84,14 @@ const items: ItemDefinition[] = [
   {
     x: 20,
     y: 92,
-    handler: params => alert('bio used'),
+    handler: params => params.createNewDialog('bio  used'),
     friendlyName: 'musings',
+  },
+  {
+    x: 23,
+    y: 92,
+    handler: params => params.createNewDialog('sweet nectar of the gods!'),
+    friendlyName: 'black gold',
   },
 ];
 const portals: PortalDefinition[] = [
@@ -133,6 +139,19 @@ const doors: DoorDefinition[] = [
     from: [{ x: 15, y: 99 }],
     to: { x: 20, y: 31 },
     friendlyName: 'go outside',
+  },
+  {
+    from: [{ x: 18, y: 91 }],
+    to: { x: 46, y: 78 },
+    friendlyName: 'go upstairs',
+  },
+  {
+    from: [
+      { x: 46, y: 77 },
+      { x: 46, y: 76 },
+    ],
+    to: { x: 17, y: 91 },
+    friendlyName: 'go downstairs',
   },
 ];
 

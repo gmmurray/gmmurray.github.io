@@ -204,6 +204,10 @@ export class LevelScene extends Scene {
    */
   public setFacing = () => {
     if (!this.playerCharacter) return;
+    this.facingCharacter = undefined;
+    this.facingDoor = undefined;
+    this.facingItem = undefined;
+    this.facingPortal = undefined;
 
     const { x, y } = this.gridEngine.getFacingPosition(
       this.playerCharacter.definition.key,
@@ -475,8 +479,6 @@ export class LevelScene extends Scene {
         ...this._createGridEngineItems(),
       ];
 
-      console.log(characters);
-
       this.gridEngine.create(this.map, { characters });
     }
 
@@ -559,6 +561,13 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   private _handleItemInteraction = () => {
+    if (!this.facingItem) return this;
+
+    if (this.dialog.visible) {
+      this.handleCloseDialog();
+      return this;
+    }
+
     if (this.facingItem && this.facingItem.handler) {
       this.facingItem.handler(this);
     }

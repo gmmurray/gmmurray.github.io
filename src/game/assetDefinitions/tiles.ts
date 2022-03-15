@@ -37,5 +37,10 @@ export const levelOneMapDefinition: TileMapDefinition = {
       key: 'coffee-tiles',
       source: getTileSetSource('coffee_spritesheet'),
     },
+    {
+      name: 'fishtank_spritesheet',
+      key: 'fishtank-tiles',
+      source: getTileSetSource('fishtank_spritesheet'),
+    },
   ],
 };
