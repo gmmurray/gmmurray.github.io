@@ -4,7 +4,7 @@ import { HudConfig } from '../types/hud';
 const DEFAULT_CONFIG: HudConfig = {
   bottomText: {
     margin: 25,
-    fontSize: 24,
+    fontSize: 18,
     fontFamily: 'Arial',
     fontColor: '#fff',
     depth: 49,

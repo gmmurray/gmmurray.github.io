@@ -1,39 +1,55 @@
+import { Coordinates } from './position';
 import { LevelScene } from '../scenes/LevelScene';
-import { PositionMarker } from './position';
+import { SpriteDefinition } from './assetDefinitions';
 
-export type PerformInteraction = (
-  params: GetAndPerformInteractionParams,
-) => any;
-
-export interface InteractionLookup {
-  [key: string]: PerformInteraction;
+export interface LevelCast {
+  player: PlayerCharacter;
+  npcs: NpcCharacter[];
+  items: ItemDefinition[];
+  doors: DoorDefinition[];
+  portals: PortalDefinition[];
 }
 
-export type InteractionOperation = (
-  id: string,
-  params: GetAndPerformInteractionParams,
-) => void;
+export type PerformInteraction = (scene: LevelScene) => any;
 
-export interface InteractionTypeLookup {
-  [key: number]: InteractionOperation;
+export interface Interaction {
+  friendlyName?: string;
 }
 
-export enum InteractionType {
-  DOOR,
-  PORTAL,
-  CHAR,
-  ITEM,
+export enum PortalType {
+  SCENE,
+  COORDINATE,
 }
 
-export interface GetAndPerformInteractionParams {
-  type: InteractionType;
-  level: number;
-  tileX: number;
-  tileY: number;
-  charId?: string;
-  scene: LevelScene;
-}
-
-export interface ItemDefinition extends PositionMarker {
+export interface ItemDefinition extends Interaction {
   handler: PerformInteraction;
+  x: number;
+  y: number;
+  sprite?: Phaser.GameObjects.Sprite;
+}
+export interface DoorDefinition extends Interaction {
+  from: Coordinates[];
+  to: Coordinates;
+}
+
+export interface PortalDefinition extends Interaction {
+  from: Coordinates;
+  type: PortalType;
+  to: string | Coordinates;
+  dialog?: string;
+}
+
+export interface Character {
+  sprite?: Phaser.GameObjects.Sprite;
+  definition: SpriteDefinition;
+  startingX: number;
+  startingY: number;
+  startingSpeed: number;
+}
+
+export interface PlayerCharacter extends Character {}
+
+export interface NpcCharacter extends Character, Interaction {
+  radius?: number;
+  handler?: PerformInteraction;
 }

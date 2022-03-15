@@ -1,15 +1,13 @@
-import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
-  CharacterDataExtended,
-  CreateSpriteParams,
-  TileMapDefinition,
-} from '../types/assetDefinitions';
-import {
+  Character,
   DoorDefinition,
+  ItemDefinition,
+  NpcCharacter,
+  PlayerCharacter,
   PortalDefinition,
   PortalType,
-  TileObject,
-} from '../types/tileObject';
+} from '../types/interactions';
+import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   ENTER_EVENT_KEY,
   RANDOM_MOVEMENT_DELAY,
@@ -17,40 +15,120 @@ import {
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
 } from '../constants';
-import { GameObjects, Geom, Scene, Tilemaps } from 'phaser';
+import { Geom, Scene, Tilemaps } from 'phaser';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
-import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
-import { InteractionType } from '../types/interactions';
-import { getAndPerformInteraction } from '../interactions/interactions';
-import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 import HudPlugin from '../hud/plugin';
+import { TileMapDefinition } from '../types/assetDefinitions';
+import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export class LevelScene extends Scene {
-  public playerSprite: GameObjects.Sprite | null = null;
-  public objects: TileObject[] = [];
-  public facingObject?: TileObject = undefined;
-  public map: Tilemaps.Tilemap | null = null;
+  // plugins
   public gridEngine: GridEngine;
-  public animatedTiles: AnimatedTilesPlugin;
-  public levelNumber: number = 0;
-  public startingGridCoordinates: Coordinates = { x: 0, y: 0 };
-  public mapDefinition: TileMapDefinition | null = null;
-  public dialog: DialogPlugin | null;
-  public characters: CharacterDataExtended[] = [];
-  public characterMovements: Record<string, number>; // key: character key. value: character radius
-  public additionalCharacters: CreateSpriteParams[] = [];
-  public facingCharacter?: CharacterDataExtended = undefined;
-  public closeDialogCallback: Function | null = null;
-  public facingDoor?: DoorDefinition = undefined;
-  public doors: DoorDefinition[] = [];
-  public portals: PortalDefinition[] = [];
-  public facingPortal?: PortalDefinition = undefined;
+  public dialog: DialogPlugin;
   public hud: HudPlugin;
 
-  setMap = () => {
-    if (!this.mapDefinition) return;
+  // characters
+  public playerCharacter?: PlayerCharacter = null;
+  public characters: Character[] = [];
+  public facingCharacter?: NpcCharacter = undefined;
+
+  // tiles
+  public map: Tilemaps.Tilemap | null = null;
+  public animatedTiles: AnimatedTilesPlugin;
+  public mapDefinition: TileMapDefinition | null = null;
+  public levelNumber: number = 0;
+
+  // interactables
+  public doors: DoorDefinition[] = [];
+  public facingDoor?: DoorDefinition = undefined;
+  public portals: PortalDefinition[] = [];
+  public facingPortal?: PortalDefinition = undefined;
+  public items: ItemDefinition[] = [];
+  public facingItem?: ItemDefinition = undefined;
+
+  /**
+   * sets player character and combines with npc characters to set characters
+   *
+   * @returns this scene (chainable)
+   */
+  public setCharacters = (
+    playerCharacter: Character,
+    npcCharacters: Character[],
+  ) => {
+    const player = this._createPlayerCharacter(playerCharacter);
+    const npcs = this._createNpcCharacters(npcCharacters);
+
+    this.playerCharacter = player;
+    this.characters = [player, ...npcs];
+
+    return this;
+  };
+
+  /**
+   * sets up main camera to follow player character
+   *
+   * @returns this scene (chainable)
+   */
+  public setCamera = () => {
+    const { playerCharacter: { sprite = undefined } = {} } = this;
+
+    if (!sprite) return;
+
+    this.cameras.main
+      .startFollow(sprite, true)
+      .setFollowOffset(-sprite.width, -sprite.height)
+      .setZoom(1)
+      .setRoundPixels(true);
+
+    return this;
+  };
+
+  /**
+   * sets items
+   *
+   * @returns this scene (chainable)
+   */
+  public setItems = (items: ItemDefinition[]) => {
+    const createdItems = this._createItems(items);
+
+    this.items = [...createdItems];
+
+    return this;
+  };
+
+  /**
+   * sets portals
+   *
+   * @param portals
+   * @returns this scene (chainable)
+   */
+  public setPortals = (portals: PortalDefinition[]) => {
+    this.portals = portals;
+
+    return this;
+  };
+
+  /**
+   * sets doors
+   *
+   * @param doors
+   * @returns this scene (chainable)
+   */
+  public setDoors = (doors: DoorDefinition[]) => {
+    this.doors = doors;
+
+    return this;
+  };
+
+  /**
+   * sets tilemap, tilesets, layers, and animated layer if applicable. also creates the grid engine map + characters
+   *
+   * @returns this scene (chainable)
+   */
+  public setMap = () => {
+    if (!this.mapDefinition) throw new Error('no tilemap defined');
     const addedMap = this.make.tilemap({
       key: this.mapDefinition.key,
     });
@@ -73,297 +151,231 @@ export class LevelScene extends Scene {
     }
 
     this.map = addedMap;
+    this._setGridEngineMap();
+
+    return this;
   };
 
-  setPlayerSprite = () => {
-    this.playerSprite = this.add
-      .sprite(0, 0, playerSpriteDefinition.key)
-      .setScale(playerSpriteDefinition.scale);
+  /**
+   * sets up collision handlers and controls for supporting arrow keys and WASD. add to update method
+   *
+   * @returns this scene (chainable)
+   */
+  public useGridPlayerControls = () => {
+    if (!this.playerCharacter) {
+      return this;
+    }
+    if (this.dialog.visible) {
+      return this;
+    }
+    const cursors = this.input.keyboard.createCursorKeys();
+    const wasd = this.input.keyboard.addKeys('W,A,S,D');
+    const {
+      definition: { key },
+    } = this.playerCharacter;
 
-    this.characters.push({
-      id: playerSpriteDefinition.key,
-      sprite: this.playerSprite,
-      startPosition: {
-        x: this.startingGridCoordinates.x,
-        y: this.startingGridCoordinates.y,
-      },
-      walkingAnimationMapping: playerSpriteDefinition.walkingAnimationMapping,
-      speed: 5,
-    });
+    if (cursors.left.isDown || wasd['A'].isDown) {
+      this.gridEngine.move(key, Direction.LEFT);
+    } else if (cursors.right.isDown || wasd['D'].isDown) {
+      this.gridEngine.move(key, Direction.RIGHT);
+    } else if (cursors.up.isDown || wasd['W'].isDown) {
+      this.gridEngine.move(key, Direction.UP);
+    } else if (cursors.down.isDown || wasd['S'].isDown) {
+      this.gridEngine.move(key, Direction.DOWN);
+    }
+
+    if (!this.gridEngine.isMoving(key) && this.doors.length > 0) {
+      this._handleDoorCollision();
+    }
+
+    if (!this.gridEngine.isMoving(key) && this.portals.length > 0) {
+      this._handlePortalCollision();
+    }
+
+    return this;
   };
 
-  setCamera = () => {
-    if (!this.playerSprite) return;
-    this.cameras.main
-      .startFollow(this.playerSprite, true)
-      .setFollowOffset(-this.playerSprite.width, -this.playerSprite.height)
-      .setZoom(1)
-      .setRoundPixels(true);
-  };
+  /**
+   * determines if the player is facing an item, character, door, or portal based on player position
+   *
+   * credit to https://github.com/Annoraaq/grid-engine/issues/235#issuecomment-1061049631 for the idea
+   *
+   * @returns this scene (chainable)
+   */
+  public setFacing = () => {
+    if (!this.playerCharacter) return;
 
-  setObjects = () => {
-    if (!this.map || !this.mapDefinition) return;
-    const data = (
-      this.map.getLayer(this.mapDefinition.objectLayer)?.data ?? []
-    ).filter(d => d.some(t => t.index !== -1));
-
-    if (!data || data.length === 0) return;
-
-    data.forEach(d => {
-      d.filter(t => t.index !== -1).forEach(t => {
-        const { x, y, properties } = t;
-
-        // add "object" tile for each tile defined to have object properties in this layer TODO: AND if they are in this.itemdefinitions
-        if (properties && properties.type !== undefined) {
-          const newSprite = this.addObjectSprite();
-
-          const newObject = {
-            ...properties,
-            sprite: newSprite,
-            x,
-            y,
-          };
-          this.addObjectCharacter(newObject);
-
-          this.objects.push(newObject);
-        }
-      });
-    });
-  };
-
-  setAdditionalSprites = () => {
-    const charDefinitions: CharacterDataExtended[] = this.additionalCharacters.map(
-      ac => ({
-        id: ac.definition.key,
-        sprite: this.add
-          .sprite(0, 0, ac.definition.key)
-          .setScale(ac.definition.scale),
-        startPosition: {
-          x: ac.x,
-          y: ac.y,
-        },
-        walkingAnimationMapping: ac.definition.walkingAnimationMapping,
-        speed: ac.speed,
-        friendlyName: ac.friendlyName,
-      }),
-    );
-    this.characters = this.characters.concat(charDefinitions);
-  };
-
-  addCharacters = () => {
-    if (!this.map) return;
-
-    this.setAdditionalSprites();
-
-    this.gridEngine.create(this.map, { characters: this.characters });
-  };
-
-  addObjectSprite = () =>
-    this.add
-      .sprite(0, 0, '')
-      .setScale(SCALE)
-      .setVisible(false);
-
-  addObjectCharacter = (object: TileObject) =>
-    this.gridEngine.addCharacter({
-      id: `object_${object.name}_${object.x}_${object.y}`,
-      sprite: object.sprite,
-      collides: true,
-      startPosition: { x: object.x, y: object.y },
-    });
-
-  // credit to https://github.com/Annoraaq/grid-engine/issues/235#issuecomment-1061049631
-  setFacing = () => {
-    // @ts-ignore
     const { x, y } = this.gridEngine.getFacingPosition(
-      playerSpriteDefinition.key,
+      this.playerCharacter.definition.key,
     );
 
-    const tileRect = new Geom.Rectangle(
-      x * SCALED_TILE_SIZE,
-      y * SCALED_TILE_SIZE,
-      SCALED_TILE_SIZE,
-      SCALED_TILE_SIZE,
+    const tileRect = this._createTileRectangle(x, y);
+    let bottomTextValue: string | undefined = undefined;
+    this.facingItem = this.items.find(item =>
+      Geom.Intersects.RectangleToRectangle(item.sprite.getBounds(), tileRect),
     );
 
-    this.facingObject = this.objects.find(o =>
-      Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
-    );
-    this.facingCharacter = this.characters.find(
-      o =>
-        o.id !== playerSpriteDefinition.key &&
-        Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
-    );
-    this.facingPortal = this.portals.find(p =>
-      Geom.Intersects.RectangleToRectangle(
-        new Geom.Rectangle(
-          p.from.x * SCALED_TILE_SIZE,
-          p.from.y * SCALED_TILE_SIZE,
-          SCALED_TILE_SIZE,
-          SCALED_TILE_SIZE,
+    if (this.facingItem) {
+      bottomTextValue = this.facingItem.friendlyName;
+    } else {
+      this.facingCharacter = this.characters
+        .filter(c => c.definition.key !== this.playerCharacter.definition.key)
+        .find(o =>
+          Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
+        );
+    }
+
+    if (this.facingCharacter) {
+      bottomTextValue = this.facingCharacter.friendlyName;
+    } else {
+      this.facingPortal = this.portals.find(p =>
+        Geom.Intersects.RectangleToRectangle(
+          this._createTileRectangle(p.from.x, p.from.y),
+          tileRect,
         ),
-        tileRect,
-      ),
-    );
-    this.facingDoor = this.doors.find(d =>
-      Geom.Intersects.RectangleToRectangle(
-        new Geom.Rectangle(
-          d.from[0].x * SCALED_TILE_SIZE,
-          d.from[0].y * SCALED_TILE_SIZE,
-          SCALED_TILE_SIZE,
-          SCALED_TILE_SIZE,
-        ),
-        tileRect,
-      ),
-    );
+      );
+    }
 
-    const bottomTextValue =
-      this.facingObject?.friendlyName ??
-      this.facingCharacter?.friendlyName ??
-      this.facingPortal?.friendlyName ??
-      this.facingDoor?.friendlyName;
+    if (this.facingPortal) {
+      bottomTextValue = this.facingPortal.friendlyName;
+    } else {
+      this.facingDoor = this.doors.find(d =>
+        Geom.Intersects.RectangleToRectangle(
+          this._createTileRectangle(d.from[0].x, d.from[0].y),
+          tileRect,
+        ),
+      );
+    }
+
+    if (this.facingDoor) {
+      bottomTextValue = this.facingDoor.friendlyName;
+    }
 
     if (bottomTextValue && !this.dialog.visible) {
       this.addHudBottomText(bottomTextValue);
     } else if (this.hud.bottomTextIsDisplayed()) {
       this.removeHudBottomText();
     }
+
+    return this;
   };
 
-  attachKeyboardListener = () =>
+  /**
+   * attaches keyboard listener for handling interactions
+   *
+   * @returns this scene (chainable)
+   */
+  public attachKeyboardListener = () => {
     this.input.keyboard.on('keydown', this.handleInteraction, this);
 
-  handleInteraction = event => {
-    if (!this.facingObject && !this.facingCharacter && !this.dialog.visible)
-      return;
-
-    if (event.key === ENTER_EVENT_KEY || event.key === SPACE_EVENT_KEY) {
-      const isCharacterInteraction = !!this.facingCharacter;
-      // if the dialog is open: close it
-      if (this.dialog.visible) {
-        // also resume movement if it was a character that was being interacted with
-        if (isCharacterInteraction) {
-          this.resumeMovement(this.facingCharacter.id);
-        }
-        return this.handleCloseDialog();
-      }
-
-      let type: InteractionType;
-      let tileX: number;
-      let tileY: number;
-      let charId: string | undefined;
-
-      if (isCharacterInteraction) {
-        // at this point, if it is a dialog interaction, the dialog is not open yet.
-        // pause movement and dialog will be handled by the interaction handler
-        this.pauseMovement(this.facingCharacter.id).turnCharacterTowardsPlayer(
-          this.facingCharacter.id,
-        );
-        type = InteractionType.CHAR;
-        tileX = 0;
-        tileY = 0;
-        charId = this.facingCharacter.id;
-      } else {
-        type = this.facingObject.type;
-        tileX = this.facingObject.x;
-        tileY = this.facingObject.y;
-        charId = undefined;
-      }
-      getAndPerformInteraction({
-        type,
-        level: this.levelNumber,
-        tileX,
-        tileY,
-        charId,
-        scene: this,
-      });
-    }
+    return this;
   };
 
-  useGridPlayerControls = () => {
-    if (this.dialog.visible) {
-      return;
-    }
-    const cursors = this.input.keyboard.createCursorKeys();
-    const wasd = this.input.keyboard.addKeys('W,A,S,D');
-
-    if (cursors.left.isDown || wasd['A'].isDown) {
-      this.gridEngine.move(playerSpriteDefinition.key, Direction.LEFT);
-    } else if (cursors.right.isDown || wasd['D'].isDown) {
-      this.gridEngine.move(playerSpriteDefinition.key, Direction.RIGHT);
-    } else if (cursors.up.isDown || wasd['W'].isDown) {
-      this.gridEngine.move(playerSpriteDefinition.key, Direction.UP);
-    } else if (cursors.down.isDown || wasd['S'].isDown) {
-      this.gridEngine.move(playerSpriteDefinition.key, Direction.DOWN);
-    }
-
+  /**
+   * handler for keydown events
+   *
+   * @param event keyboard down event
+   * @returns this scene (chainable)
+   */
+  public handleInteraction = event => {
+    // if a non-interact key is pressed or there is nothing to interact with: nothing to see here
     if (
-      !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
-      this.doors.length > 0
+      !(event.key === ENTER_EVENT_KEY || event.key === SPACE_EVENT_KEY) ||
+      (!this.facingItem && !this.facingCharacter && !this.dialog.visible)
     ) {
-      this.handleDoorCollision();
+      return this;
     }
 
-    if (
-      !this.gridEngine.isMoving(playerSpriteDefinition.key) &&
-      this.portals.length > 0
-    ) {
-      this.handlePortalCollision();
+    if (this.facingCharacter) {
+      this._handleCharacterInteraction();
+    } else if (this.facingItem) {
+      this._handleItemInteraction();
+    } else {
+      // dialog interaction
+      this.handleCloseDialog();
     }
+
+    return this;
   };
 
-  createNewDialog = (text: string) => {
+  /**
+   * creates and opens the dialog window
+   *
+   * @param text
+   */
+  public createNewDialog = (text: string) => {
     this.dialog.setText(text);
     this.dialog.toggleWindow(true);
     this.removeHudBottomText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
   };
 
-  handleCloseDialog = () => {
-    if (this.closeDialogCallback !== null) {
-      this.closeDialogCallback();
-    }
+  /**
+   * closes the dialog window
+   */
+  public handleCloseDialog = () => {
     this.dialog.toggleWindow(false);
-    this.closeDialogCallback = null;
   };
 
-  resumeMovement = (key: string) => {
-    if (!Object.keys(this.characterMovements).some(k => k === key)) {
-      return;
-    }
-
-    if (!this.gridEngine.isMoving(key)) {
+  /**
+   * if the character is supposed to move, it will be scheduled to move again in x seconds (default 30)
+   *
+   * @param character
+   * @returns  this scene (chainable)
+   */
+  public resumeMovement = (character: NpcCharacter, seconds: number = 30) => {
+    const {
+      definition: { key },
+      radius,
+    } = character;
+    if (radius !== undefined && !this.gridEngine.isMoving(key)) {
       setTimeout(() => {
         if (!this.dialog.visible) {
-          this.gridEngine.moveRandomly(
-            key,
-            RANDOM_MOVEMENT_DELAY,
-            this.characterMovements[key],
-          );
+          this.gridEngine.moveRandomly(key, RANDOM_MOVEMENT_DELAY, radius);
         }
-      }, 30 * 1000);
+      }, seconds * 1000);
     }
+
+    return this;
   };
 
-  pauseMovement = (key: string) => {
-    if (!Object.keys(this.characterMovements).some(k => k === key)) {
-      return this;
-    }
+  /**
+   * stops the character's movement if they are moving
+   *
+   * @param character
+   * @returns this scene (chainable)
+   */
+  public pauseMovement = (character: NpcCharacter) => {
+    const {
+      definition: { key },
+    } = character;
 
     if (this.gridEngine.isMoving(key)) {
       this.gridEngine.stopMovement(key);
     }
+
     return this;
   };
 
-  turnCharacterTowardsPlayer = (key: string) => {
+  /**
+   * repeatedly tries to turn the character towards the player
+   *
+   * @param character
+   * @returns this scene (chainable)
+   */
+  public turnCharacterTowardsPlayer = (character: NpcCharacter) => {
+    if (!this.playerCharacter) return;
+
+    const {
+      definition: { key },
+    } = character;
     if (this.gridEngine.isMoving(key)) {
       // sometimes the movement doesn't stop fast enough and we can't turn the character
       // this helps with that so we keep trying to turn the character without blowing up the stack
-      return setTimeout(() => this.turnCharacterTowardsPlayer(key), 50);
+      return setTimeout(() => this.turnCharacterTowardsPlayer(character), 50);
     }
     let newDir: Direction;
     const playerDir = this.gridEngine.getFacingDirection(
-      playerSpriteDefinition.key,
+      this.playerCharacter.definition.key,
     );
     switch (playerDir) {
       case Direction.DOWN:
@@ -381,10 +393,188 @@ export class LevelScene extends Scene {
     }
 
     this.gridEngine.turnTowards(key, newDir);
+
+    return this;
   };
 
-  handleDoorCollision = () => {
-    const pos = this.gridEngine.getPosition(playerSpriteDefinition.key);
+  /**
+   * adds and shows hud bottom text
+   *
+   * @param text
+   * @returns this scene (chainable)
+   */
+  public addHudBottomText = (text: string) => {
+    this.hud.updateBottomText(text);
+    return this;
+  };
+
+  /**
+   * hides hud bottom text
+   *
+   * @returns this scene (chainable)
+   */
+  public removeHudBottomText = () => {
+    this.hud.updateBottomText();
+    return this;
+  };
+
+  /**
+   * @param character player without sprite
+   * @returns character with created sprite
+   */
+  private _createPlayerCharacter = (
+    character: PlayerCharacter,
+  ): PlayerCharacter => {
+    const {
+      definition: { key, scale },
+    } = character;
+    return {
+      ...character,
+      sprite: this.add.sprite(0, 0, key).setScale(scale),
+    };
+  };
+
+  /**
+   * @param characters npc characters without sprites
+   * @returns npc characters with created sprites
+   */
+  private _createNpcCharacters = (
+    characters: NpcCharacter[],
+  ): NpcCharacter[] => {
+    return characters.map(c => ({
+      ...c,
+      sprite: this.add
+        .sprite(0, 0, c.definition.key)
+        .setScale(c.definition.scale),
+    }));
+  };
+
+  /**
+   * @param items items without sprites
+   * @returns items with created sprites
+   */
+  private _createItems = (items: ItemDefinition[]): ItemDefinition[] => {
+    return items.map(item => ({
+      ...item,
+      sprite: this.add
+        .sprite(0, 0, '')
+        .setScale(SCALE)
+        .setVisible(false),
+    }));
+  };
+
+  /**
+   * uses the scene's characters and items to create a grid engine map
+   *
+   * @returns this scene (chainable)
+   */
+  private _setGridEngineMap = () => {
+    if (this.gridEngine && this.map) {
+      const characters = [
+        ...this._createGridEngineCharacters(),
+        ...this._createGridEngineItems(),
+      ];
+
+      console.log(characters);
+
+      this.gridEngine.create(this.map, { characters });
+    }
+
+    return this;
+  };
+
+  /**
+   * creates grid engine characters using the scene's characters
+   *
+   * @returns grid engine characters
+   */
+  private _createGridEngineCharacters = (): CharacterData[] => {
+    return this.characters
+      .filter(c => !!c.sprite)
+      .map(
+        ({
+          sprite,
+          definition: { key, walkingAnimationMapping },
+          startingX,
+          startingY,
+          startingSpeed,
+        }) => ({
+          id: key,
+          startPosition: {
+            x: startingX,
+            y: startingY,
+          },
+          speed: startingSpeed,
+          sprite,
+          walkingAnimationMapping,
+        }),
+      );
+  };
+
+  /**
+   * creates grid engine items (basically characters) using the scene's items
+   * @returns grid engine items
+   */
+  private _createGridEngineItems = (): CharacterData[] => {
+    return this.items
+      .filter(i => !!i.sprite)
+      .map(({ x, y, sprite }) => ({
+        id: `object_${this.levelNumber}_${x}_${y}`,
+        collides: true,
+        startPosition: { x, y },
+        sprite,
+      }));
+  };
+
+  /**
+   * handles the player interacting with a character
+   *
+   * @returns this scene (chainable)
+   */
+  private _handleCharacterInteraction = () => {
+    if (!this.facingCharacter) return this;
+
+    // if the dialog is open, just close it and have the character go back to wandering
+    if (this.dialog.visible) {
+      this.resumeMovement(this.facingCharacter);
+      this.handleCloseDialog();
+      return this;
+    }
+
+    // first we pause the character's movement
+    this.pauseMovement(this.facingCharacter).turnCharacterTowardsPlayer(
+      this.facingCharacter,
+    );
+
+    if (this.facingCharacter.handler) {
+      this.facingCharacter.handler(this);
+    }
+
+    return this;
+  };
+
+  /**
+   * handles the player interacting with an item
+   *
+   * @returns this scene (chainable)
+   */
+  private _handleItemInteraction = () => {
+    if (this.facingItem && this.facingItem.handler) {
+      this.facingItem.handler(this);
+    }
+
+    return this;
+  };
+
+  /**
+   * handles when the player uses a door. triggers movement
+   *
+   * @returns this scene (chainable)
+   */
+  private _handleDoorCollision = () => {
+    const pos = this.gridEngine.getPosition(
+      this.playerCharacter.definition.key,
+    );
     const match = this.doors.find(door =>
       door.from.some(
         coordinate => coordinate.x === pos.x && coordinate.y === pos.y,
@@ -395,11 +585,19 @@ export class LevelScene extends Scene {
       this.cameras.main.flash(750, 0, 0, 0);
       this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
     }
+
+    return this;
   };
 
-  // portals are similar to doors except they might trigger a dialog or start a scene
-  handlePortalCollision = () => {
-    const pos = this.gridEngine.getPosition(playerSpriteDefinition.key);
+  /**
+   * handles the player using a portal. similar to doors except the portal can trigger dialogs OR movement
+   *
+   * @returns this scene (chainable)
+   */
+  private _handlePortalCollision = () => {
+    const pos = this.gridEngine.getPosition(
+      this.playerCharacter.definition.key,
+    );
     const match = this.portals.find(
       portal => portal.from.x === pos.x && portal.from.y === pos.y,
     );
@@ -412,7 +610,7 @@ export class LevelScene extends Scene {
       if (match.type === PortalType.SCENE && typeof match.to === 'string') {
         this.cameras.main.flash(1500, 0, 0, 0); // temp
         const currPos = this.gridEngine.getPosition(playerSpriteDefinition.key);
-        this.gridEngine.setPosition(playerSpriteDefinition.key, {
+        this.gridEngine.setPosition(this.playerCharacter.definition.key, {
           x: currPos.x,
           y: currPos.y + 1,
         });
@@ -422,11 +620,29 @@ export class LevelScene extends Scene {
         match.type === PortalType.COORDINATE &&
         typeof match.to === 'object'
       ) {
-        this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
+        this.gridEngine.setPosition(
+          this.playerCharacter.definition.key,
+          match.to,
+        );
       }
     }
+
+    return this;
   };
 
-  public addHudBottomText = (text: string) => this.hud.updateBottomText(text);
-  public removeHudBottomText = () => this.hud.updateBottomText();
+  /**
+   * creates a rectangle geometry suitable for grid engine sizing
+   *
+   * @param x
+   * @param y
+   * @returns the rectangle
+   */
+  private _createTileRectangle = (x: number, y: number): Geom.Rectangle => {
+    return new Geom.Rectangle(
+      x * SCALED_TILE_SIZE,
+      y * SCALED_TILE_SIZE,
+      SCALED_TILE_SIZE,
+      SCALED_TILE_SIZE,
+    );
+  };
 }

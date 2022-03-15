@@ -1,158 +1,78 @@
+import { LEVEL_ONE_SCENE_KEY, RANDOM_MOVEMENT_DELAY } from '../constants';
 import {
   gregSpriteDefinition,
   greyCatSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import { CreateSpriteParams } from '../types/assetDefinitions';
 import { LevelScene } from './LevelScene';
-import { LEVEL_ONE_SCENE_KEY, RANDOM_MOVEMENT_DELAY } from '../constants';
+import { levelOneCast } from '../cast/levelOne';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
-import { PortalType } from '../types/tileObject';
 
 export class LevelOne extends LevelScene {
   constructor() {
     super(LEVEL_ONE_SCENE_KEY);
     this.levelNumber = 1;
-    this.startingGridCoordinates.x = 28;
-    this.startingGridCoordinates.y = 15;
     this.mapDefinition = levelOneMapDefinition;
   }
 
   create = () => {
-    this.setMap();
-
-    this.setPlayerSprite();
-
-    this.createAdditionalSprites();
-
-    this.addCharacters();
-
-    this.setupCharacterMovement();
-
-    this.setCamera();
-
-    this.setObjects();
-
-    this.setDoors();
-
-    this.setPortals();
-
-    this.attachKeyboardListener();
+    this.createCharacters()
+      .createItems()
+      .createPortals()
+      .createDoors()
+      .setCamera()
+      .setMap()
+      .attachKeyboardListener();
 
     this.dialog.init();
+    this.hud.init();
+
     this.createNewDialog(
       'hint: talk to Greg using space or enter to get started',
     );
 
-    this.hud.init();
+    this.initialCharacterMovement();
   };
 
   update = () => {
-    this.useGridPlayerControls();
-    this.setFacing();
+    this.useGridPlayerControls().setFacing();
   };
 
-  createAdditionalSprites = () => {
-    const sprites: CreateSpriteParams[] = [
-      {
-        definition: gregSpriteDefinition,
-        x: 25,
-        y: 42,
-        speed: 4,
-        friendlyName: 'Greg',
-      },
-      {
-        definition: greyCatSpriteDefinition,
-        x: 7,
-        y: 93,
-        speed: 2,
-        friendlyName: 'Khufu',
-      },
-      {
-        definition: whiteCatSpriteDefinition,
-        x: 23,
-        y: 95,
-        speed: 2,
-        friendlyName: 'Dre',
-      },
-    ];
+  public createCharacters = () =>
+    this.setCharacters(levelOneCast.player, levelOneCast.npcs);
 
-    this.additionalCharacters = this.additionalCharacters.concat(sprites);
-  };
+  public createItems = () => this.setItems(levelOneCast.items);
 
-  setupCharacterMovement = () => {
-    this.characterMovements = {
-      [gregSpriteDefinition.key]: 4,
-      [greyCatSpriteDefinition.key]: 2,
-      [whiteCatSpriteDefinition.key]: 2,
-    };
+  public createPortals = () => this.setPortals(levelOneCast.portals);
 
-    this.gridEngine.moveTo(gregSpriteDefinition.key, { x: 25, y: 50 });
-    this.gridEngine.setSpeed(gregSpriteDefinition.key, 2);
+  public createDoors = () => this.setDoors(levelOneCast.doors);
 
+  public initialCharacterMovement = () => {
+    const greg = this.characters.find(
+      c => c.definition.key === gregSpriteDefinition.key,
+    );
+    const khufu = this.characters.find(
+      c => c.definition.key === greyCatSpriteDefinition.key,
+    );
+    const dre = this.characters.find(
+      c => c.definition.key === whiteCatSpriteDefinition.key,
+    );
+
+    // start with greg off screen and running towards player. then go to walking speed
+    this.gridEngine.moveTo(greg.definition.key, { x: 25, y: 50 });
+    this.gridEngine.setSpeed(greg.definition.key, 2);
+
+    // start the cats mving around randomly with delay so they aren't synchronized
     this.gridEngine.moveRandomly(
-      greyCatSpriteDefinition.key,
+      khufu.definition.key,
       RANDOM_MOVEMENT_DELAY,
-      this.characterMovements[greyCatSpriteDefinition.key],
+      khufu.startingSpeed,
     );
     this.gridEngine.moveRandomly(
-      whiteCatSpriteDefinition.key,
+      dre.definition.key,
       RANDOM_MOVEMENT_DELAY + 200,
-      this.characterMovements[whiteCatSpriteDefinition.key],
+      dre.startingSpeed,
     );
-  };
-
-  setDoors = () => {
-    this.doors = [
-      {
-        from: [
-          { x: 19, y: 29 },
-          { x: 20, y: 29 },
-        ],
-        to: { x: 15, y: 98 },
-        friendlyName: 'go inside',
-      },
-      {
-        from: [{ x: 15, y: 99 }],
-        to: { x: 20, y: 31 },
-        friendlyName: 'go outside',
-      },
-    ];
-  };
-
-  setPortals = () => {
-    this.portals = [
-      {
-        from: {
-          x: 16,
-          y: 9,
-        },
-        type: PortalType.SCENE,
-        to: '', // TODO: scene 2,
-        dialog: 'the portal hums with energy as you approach it...',
-        friendlyName: 'leftmost portal',
-      },
-      {
-        from: {
-          x: 28,
-          y: 9,
-        },
-        type: PortalType.SCENE,
-        to: '', // TODO: scene 3,
-        dialog: 'the portal hums with energy as you approach it...',
-        friendlyName: 'middle',
-      },
-      {
-        from: {
-          x: 40,
-          y: 9,
-        },
-        type: PortalType.SCENE,
-        to: '', // TODO: scene 4,
-        dialog: 'the portal hums with energy as you approach it...',
-        friendlyName: 'rightmost portal',
-      },
-    ];
   };
 }

@@ -5,7 +5,6 @@ import { TileMapDefinition } from '../types/assetDefinitions';
 export const levelOneMapDefinition: TileMapDefinition = {
   key: 'level-one-map',
   source: getTileMapSource('level_one'),
-  objectLayer: 'object_tiles',
   animatedLayer: 'animated',
   tilesets: [
     {
