@@ -1,4 +1,5 @@
 import { Coordinates } from './position';
+import { Direction } from 'grid-engine';
 import { LevelScene } from '../scenes/LevelScene';
 import { SpriteDefinition } from './assetDefinitions';
 
@@ -30,6 +31,7 @@ export interface ItemDefinition extends Interaction {
 export interface DoorDefinition extends Interaction {
   from: Coordinates[];
   to: Coordinates;
+  face?: Direction;
 }
 
 export interface PortalDefinition extends Interaction {
@@ -37,6 +39,7 @@ export interface PortalDefinition extends Interaction {
   type: PortalType;
   to: string | Coordinates;
   dialog?: string;
+  face?: Direction;
 }
 
 export interface Character {

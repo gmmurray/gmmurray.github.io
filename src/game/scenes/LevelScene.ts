@@ -593,6 +593,12 @@ export class LevelScene extends Scene {
     if (match) {
       this.cameras.main.flash(750, 0, 0, 0);
       this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
+      if (match.face) {
+        this.gridEngine.turnTowards(
+          this.playerCharacter.definition.key,
+          match.face,
+        );
+      }
     }
 
     return this;
@@ -633,6 +639,12 @@ export class LevelScene extends Scene {
           this.playerCharacter.definition.key,
           match.to,
         );
+        if (match.face) {
+          this.gridEngine.turnTowards(
+            this.playerCharacter.definition.key,
+            match.face,
+          );
+        }
       }
     }
 

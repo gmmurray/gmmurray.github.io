@@ -15,10 +15,12 @@ import {
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
+import { Direction } from 'grid-engine';
+
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 15,
-  startingY: 95,
+  startingX: 24,
+  startingY: 52,
   startingSpeed: 4,
 };
 
@@ -31,8 +33,8 @@ const catInteraction: PerformInteraction = params => {
 const npcs: NpcCharacter[] = [
   {
     definition: gregSpriteDefinition,
-    startingX: 25,
-    startingY: 42,
+    startingX: 24,
+    startingY: 43,
     startingSpeed: 4,
     friendlyName: 'Greg',
     handler: params => {
@@ -93,6 +95,35 @@ const items: ItemDefinition[] = [
     handler: params => params.createNewDialog('sweet nectar of the gods!'),
     friendlyName: 'black gold',
   },
+  {
+    x: 38,
+    y: 76,
+    handler: params =>
+      params.createNewDialog(
+        'you power on the Game Cube. what will you play today, Super Smash Bros Melee or Mario Kart Double Dash?',
+      ),
+    friendlyName: 'game cube',
+  },
+  {
+    x: 40,
+    y: 75,
+    handler: params => params.createNewDialog('a wild Magikarp appears!'),
+    friendlyName: 'fish tank',
+  },
+  {
+    x: 44,
+    y: 78,
+    handler: params =>
+      params.createNewDialog(`I can't even remember what I bought...`),
+    friendlyName: 'packages',
+  },
+  {
+    x: 23,
+    y: 34,
+    handler: ({ createNewDialog }) =>
+      createNewDialog(`LEFT: Greg's house. STRAIGHT: Portal Pond`),
+    friendlyName: 'sign post',
+  },
 ];
 const portals: PortalDefinition[] = [
   {
@@ -144,6 +175,7 @@ const doors: DoorDefinition[] = [
     from: [{ x: 18, y: 91 }],
     to: { x: 46, y: 78 },
     friendlyName: 'go upstairs',
+    face: Direction.DOWN,
   },
   {
     from: [
@@ -152,6 +184,7 @@ const doors: DoorDefinition[] = [
     ],
     to: { x: 17, y: 91 },
     friendlyName: 'go downstairs',
+    face: Direction.LEFT,
   },
 ];
 

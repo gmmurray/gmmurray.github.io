@@ -29,7 +29,7 @@ export class LevelOne extends LevelScene {
     this.hud.init();
 
     this.createNewDialog(
-      'hint: talk to Greg using space or enter to get started',
+      'hint: move using the arrow or WASD keys. interact using space or enter',
     );
 
     this.initialCharacterMovement();
@@ -60,7 +60,7 @@ export class LevelOne extends LevelScene {
     );
 
     // start with greg off screen and running towards player. then go to walking speed
-    this.gridEngine.moveTo(greg.definition.key, { x: 25, y: 50 });
+    this.gridEngine.moveTo(greg.definition.key, { x: 24, y: 50 });
     this.gridEngine.setSpeed(greg.definition.key, 2);
 
     // start the cats mving around randomly with delay so they aren't synchronized
