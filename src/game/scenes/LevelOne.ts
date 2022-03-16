@@ -28,9 +28,12 @@ export class LevelOne extends LevelScene {
     this.dialog.init();
     this.hud.init();
 
-    this.createNewDialog(
-      'hint: move using the arrow or WASD keys. interact using space or enter',
-    );
+    if (!this.isDev) {
+      console.log(process.env.NODE_ENV);
+      this.createNewDialog(
+        'hint: move using the arrow or WASD keys. interact using space or enter',
+      );
+    }
 
     this.initialCharacterMovement();
   };

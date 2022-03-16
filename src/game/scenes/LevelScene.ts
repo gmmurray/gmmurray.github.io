@@ -48,6 +48,9 @@ export class LevelScene extends Scene {
   public items: ItemDefinition[] = [];
   public facingItem?: ItemDefinition = undefined;
 
+  // dev mode
+  public isDev = process.env.NODE_ENV === 'development';
+
   /**
    * sets player character and combines with npc characters to set characters
    *
