@@ -36,6 +36,7 @@ export class LevelOne extends LevelScene {
     }
 
     this.initialCharacterMovement();
+    this.scale.on('resize', this.hud.updateDimensions);
   };
 
   update = () => {

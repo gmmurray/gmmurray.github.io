@@ -1,6 +1,7 @@
 import { DialogConfig } from '../types/dialog';
 import Phaser from 'phaser';
 import { DIALOG_PLUGIN_KEY } from '../constants';
+import { getGameWidth, getGameHeight } from '../helpers/gameDimensions';
 
 // credit https://github.com/nkholski/phaser-plugin-starter and https://gamedevacademy.org/create-a-dialog-modal-plugin-in-phaser-3-part-1/
 export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
@@ -92,15 +93,9 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     return this;
   };
 
-  private _getGameWidth = () => {
-    const value = this.scene.sys.game.config.width;
-    return typeof value === 'number' ? value : parseInt(value);
-  };
+  private _getGameWidth = () => getGameWidth(this.scene);
 
-  private _getGameHeight = () => {
-    const value = this.scene.sys.game.config.height;
-    return typeof value === 'number' ? value : parseInt(value);
-  };
+  private _getGameHeight = () => getGameHeight(this.scene);
 
   private _calculateWindowDimensions = (width: number, height: number) => ({
     x: this.config.padding!,

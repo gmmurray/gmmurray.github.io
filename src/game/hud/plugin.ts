@@ -1,4 +1,5 @@
 import { HUD_PLUGIN_KEY } from '../constants';
+import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 import { HudConfig } from '../types/hud';
 
 const DEFAULT_CONFIG: HudConfig = {
@@ -59,6 +60,15 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     this.bottomText.text &&
     this.bottomText.text !== '';
 
+  public updateDimensions = (gameSize: Phaser.Structs.Size) => {
+    if (this.bottomText) {
+      const newX = gameSize.width / 2;
+      const newY = gameSize.height - this.config.bottomText.margin;
+      this.bottomText.setX(newX);
+      this.bottomText.setY(newY);
+    }
+  };
+
   private _setConfig = (config?: HudConfig) => {
     Object.keys(this.config).forEach(key => {
       this.config[key] = config[key] ?? this.config[key];
@@ -67,15 +77,9 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     return this;
   };
 
-  private _getGameWidth = () => {
-    const value = this.scene.sys.game.config.width;
-    return typeof value === 'number' ? value : parseInt(value);
-  };
+  private _getGameWidth = () => getGameWidth(this.scene);
 
-  private _getGameHeight = () => {
-    const value = this.scene.sys.game.config.height;
-    return typeof value === 'number' ? value : parseInt(value);
-  };
+  private _getGameHeight = () => getGameHeight(this.scene);
 
   private _setBottomTextDisplay = () => {
     if (this.bottomText) this.bottomText.destroy();

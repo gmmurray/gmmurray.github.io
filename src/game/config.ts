@@ -9,14 +9,22 @@ import {
   DIALOG_PLUGIN_KEY,
   GRID_ENGINE_PLUGIN_KEY,
   HUD_PLUGIN_KEY,
+  TILE_SIZE,
 } from './constants';
 import HudPlugin from './hud/plugin';
+import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
+
+const startingDimensions = getMaxSquareScreenDimension(
+  window.innerWidth,
+  window.innerHeight,
+  TILE_SIZE,
+);
 
 export const gameConfig = {
   title: 'gmmurray-game',
   type: Phaser.CANVAS,
   parent: 'game',
-  backgroundColor: '#000',
+  //backgroundColor: '#050A2B',
   physics: {
     default: 'arcade',
     arcade: {
@@ -27,9 +35,10 @@ export const gameConfig = {
     antialiasGL: false,
     pixelArt: true,
   },
-  canvasStyle: `width: 608px; height: 608px;`,
-  width: 608,
-  height: 608,
+  width: startingDimensions,
+  height: startingDimensions,
+  // canvas: document.getElementById('game-canvas'),
+  // canvasStyle: `width: ${startingDimensions}px; height: ${startingDimensions}px; border: 2px solid #976F08`,
   autoFocus: true,
   audio: {
     disableWebAudio: false,

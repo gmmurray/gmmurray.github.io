@@ -1,10 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Game } from 'phaser';
 import { gameConfig } from './config';
+import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
+import { TILE_SIZE } from './constants';
+import { useWindowSize } from '../helpers/useWindowSize';
 
 const GameComponent = () => {
   const [game, setGame] = useState<Game | null>(null);
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
+  const gameRef = useRef(null);
 
   useEffect(() => {
     if (game) return;
@@ -13,7 +18,25 @@ const GameComponent = () => {
     setGame(phaserGame);
   }, [game]);
 
-  return <div id="game"></div>;
+  const handleResizeEvent = useCallback(() => {
+    if (!game) return;
+    const dimension = getMaxSquareScreenDimension(
+      windowWidth,
+      windowHeight,
+      TILE_SIZE,
+    );
+    game.scale.resize(dimension, dimension);
+    const canvasEl = (gameRef.current as HTMLDivElement)
+      .children[0] as HTMLCanvasElement;
+    canvasEl.style.width = `${dimension}px`;
+    canvasEl.style.height = `${dimension}px`;
+  }, [windowWidth, windowHeight, gameRef]);
+
+  useEffect(() => {
+    handleResizeEvent();
+  }, [windowWidth, windowHeight]);
+
+  return <div id="game" ref={gameRef}></div>;
 };
 
 export default GameComponent;
