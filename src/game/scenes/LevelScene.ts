@@ -177,6 +177,18 @@ export class LevelScene extends Scene {
       definition: { key },
     } = this.playerCharacter;
 
+    if (cursors.shift.isDown) {
+      this.gridEngine.setSpeed(
+        this.playerCharacter.definition.key,
+        this.playerCharacter.startingSpeed * 2,
+      );
+    } else {
+      this.gridEngine.setSpeed(
+        this.playerCharacter.definition.key,
+        this.playerCharacter.startingSpeed,
+      );
+    }
+
     if (cursors.left.isDown || wasd['A'].isDown) {
       this.gridEngine.move(key, Direction.LEFT);
     } else if (cursors.right.isDown || wasd['D'].isDown) {
