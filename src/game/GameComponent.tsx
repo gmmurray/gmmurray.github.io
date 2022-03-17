@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Game } from 'phaser';
+import { TILE_SIZE } from './constants';
 import { gameConfig } from './config';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
-import { TILE_SIZE } from './constants';
 import { useWindowSize } from '../helpers/useWindowSize';
 
 const GameComponent = () => {
@@ -36,7 +36,7 @@ const GameComponent = () => {
     handleResizeEvent();
   }, [windowWidth, windowHeight]);
 
-  return <div id="game" ref={gameRef}></div>;
+  return <div id="game" className="game-container" ref={gameRef}></div>;
 };
 
 export default GameComponent;

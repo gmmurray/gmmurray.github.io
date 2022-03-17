@@ -94,3 +94,22 @@ html {
 }
 
 @import '~bulma/bulma.sass';
+
+html {
+  overflow-y: auto;
+}
+
+.game-page {
+  width: 100vw;
+  height: 100vh;
+
+  .game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    canvas {
+      margin: auto;
+    }
+  }
+}

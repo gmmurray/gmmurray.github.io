@@ -10,7 +10,6 @@ const GamePage = () => {
   const isSSR = typeof window === 'undefined';
   return (
     <div className="game-page">
-      <h1>game page</h1>
       {!isSSR && (
         <Suspense fallback={<div>loading...</div>}>
           <GameApp />
