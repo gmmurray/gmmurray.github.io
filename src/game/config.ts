@@ -1,9 +1,3 @@
-import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
-import DialogPlugin from './dialog/plugin';
-import { GridEngine } from 'grid-engine';
-import { LevelOne } from './scenes/LevelOne';
-import { LoadingScene } from './scenes/LoadingScene';
-import Phaser from 'phaser';
 import {
   ANIMATED_TILES_PLUGIN_KEY,
   DIALOG_PLUGIN_KEY,
@@ -11,7 +5,14 @@ import {
   HUD_PLUGIN_KEY,
   TILE_SIZE,
 } from './constants';
+
+import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import DialogPlugin from './dialog/plugin';
+import { GridEngine } from 'grid-engine';
 import HudPlugin from './hud/plugin';
+import { LevelOne } from './scenes/LevelOne';
+import { LoadingScene } from './scenes/LoadingScene';
+import Phaser from 'phaser';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
 
 const startingDimensions = getMaxSquareScreenDimension(
@@ -24,7 +25,6 @@ export const gameConfig = {
   title: 'gmmurray-game',
   type: Phaser.CANVAS,
   parent: 'game',
-  //backgroundColor: '#050A2B',
   physics: {
     default: 'arcade',
     arcade: {
@@ -37,8 +37,7 @@ export const gameConfig = {
   },
   width: startingDimensions,
   height: startingDimensions,
-  // canvas: document.getElementById('game-canvas'),
-  // canvasStyle: `width: ${startingDimensions}px; height: ${startingDimensions}px; border: 2px solid #976F08`,
+  backgroundColor: '#000',
   autoFocus: true,
   audio: {
     disableWebAudio: false,

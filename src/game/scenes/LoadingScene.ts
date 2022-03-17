@@ -1,18 +1,18 @@
 import {
+  ASSETS_BASE_URL,
+  LEVEL_ONE_SCENE_KEY,
+  LOADING_SCENE_KEY,
+} from '../constants';
+import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
+import {
   gregSpriteDefinition,
   greyCatSpriteDefinition,
   playerSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import {
-  ASSETS_BASE_URL,
-  LEVEL_ONE_SCENE_KEY,
-  LOADING_SCENE_KEY,
-} from '../constants';
 import { Scene } from 'phaser';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
-import { getGameWidth, getGameHeight } from '../helpers/gameDimensions';
 
 const spriteDefinitions = [
   playerSpriteDefinition,
@@ -22,13 +22,21 @@ const spriteDefinitions = [
 ];
 const tileDefinitions = [levelOneMapDefinition];
 
-// https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/ loading bar tutorial
 export class LoadingScene extends Scene {
+  public isDev = process.env.NODE_ENV === 'development';
+  public progressBox?: Phaser.GameObjects.Graphics;
+  public progressText?: Phaser.GameObjects.Text;
+  public progressBar?: Phaser.GameObjects.Graphics;
   constructor() {
     super(LOADING_SCENE_KEY);
   }
 
   public preload = () => {
+    // handle loading https://gamedevacademy.org/creating-a-preloading-screen-in-phaser-3/ loading bar tutorial
+    this._createProgress();
+    this.load.on('progress', this._updateProgress);
+    this.load.on('complete', this._removeProgress);
+
     this._setBaseLoadUrl()
       ._loadSprites()
       ._loadTiles()
@@ -36,9 +44,66 @@ export class LoadingScene extends Scene {
   };
 
   public create = () => {
-    this._initializeBackground()
-      ._showLogoIntro()
-      ._startFirstScene();
+    if (!this.isDev) {
+      this._showLogoIntro();
+    }
+    this._startFirstScene();
+  };
+
+  private _createProgress = () => {
+    const width = this._getGameWidth() / 2;
+    this.progressBox = this.add
+      .graphics()
+      .fillStyle(0x976f08, 1)
+      .fillRect(width - width / 2, width, width, 50)
+      .setScrollFactor(0)
+      .setDepth(1);
+
+    this.progressText = this.make.text({
+      x: width,
+      y: width + 25,
+      text: '0%',
+      style: {
+        font: '20px monospace',
+        color: '#fff',
+      },
+      scrollFactor: 0,
+      origin: 0.5,
+      depth: 3,
+    });
+
+    this.progressBar = this.add
+      .graphics()
+      .setScrollFactor(0)
+      .setDepth(2);
+
+    return this;
+  };
+
+  private _updateProgress = (value: number) => {
+    if (!this.progressBar) return;
+
+    const boxWidth = this._getGameWidth() / 2;
+
+    this.progressBar
+      .clear()
+      .fillStyle(0xebaa02, 1)
+      .fillRect(
+        boxWidth - boxWidth / 2 + 10,
+        boxWidth + 10,
+        (boxWidth - 15) * value,
+        30,
+      );
+
+    this.progressText.setText(`${parseInt((value * 100).toString())}%`);
+
+    return;
+  };
+
+  private _removeProgress = () => {
+    if (this.progressBox) this.progressBox.destroy();
+    if (this.progressText) this.progressText.destroy();
+    if (this.progressBar) this.progressBar.destroy();
   };
 
   private _setBaseLoadUrl = () => {
@@ -67,13 +132,8 @@ export class LoadingScene extends Scene {
   };
 
   private _loadImages = () => {
-    this.load.image('logo', 'images/logo.png');
+    this.load.image('logo', 'images/logo_transparent.png');
 
-    return this;
-  };
-
-  private _initializeBackground = () => {
-    this.cameras.main.setBackgroundColor('#050A2B');
     return this;
   };
 
@@ -85,10 +145,12 @@ export class LoadingScene extends Scene {
   };
 
   private _startFirstScene = () => {
-    setTimeout(() => {
-      this.cameras.main.setBackgroundColor('#000');
-      this.scene.start(LEVEL_ONE_SCENE_KEY);
-    }, 1000);
+    setTimeout(
+      () => {
+        this.scene.start(LEVEL_ONE_SCENE_KEY);
+      },
+      this.isDev ? 0 : 2000,
+    );
     return this;
   };
 

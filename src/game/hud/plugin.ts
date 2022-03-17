@@ -1,12 +1,13 @@
-import { HUD_PLUGIN_KEY } from '../constants';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
+
+import { HUD_PLUGIN_KEY } from '../constants';
 import { HudConfig } from '../types/hud';
 
 const DEFAULT_CONFIG: HudConfig = {
   bottomText: {
     margin: 25,
     fontSize: 18,
-    fontFamily: 'Arial',
+    fontFamily: 'Monospace',
     fontColor: '#fff',
     depth: 49,
   },

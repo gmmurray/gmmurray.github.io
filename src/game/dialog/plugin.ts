@@ -1,7 +1,8 @@
+import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
+
+import { DIALOG_PLUGIN_KEY } from '../constants';
 import { DialogConfig } from '../types/dialog';
 import Phaser from 'phaser';
-import { DIALOG_PLUGIN_KEY } from '../constants';
-import { getGameWidth, getGameHeight } from '../helpers/gameDimensions';
 
 // credit https://github.com/nkholski/phaser-plugin-starter and https://gamedevacademy.org/create-a-dialog-modal-plugin-in-phaser-3-part-1/
 export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
@@ -146,7 +147,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
         3,
       text: 'X',
       style: {
-        font: `bold ${this.config.closeBtnFontSize}px Arial`,
+        font: `bold ${this.config.closeBtnFontSize}px Monospace`,
         color: this.config.closeBtnColor,
       },
       depth: this.config.depth + 1,
@@ -196,7 +197,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
         },
         color: '#fff',
         fontSize: `${this.config.fontSize}px`,
-        fontFamily: 'Arial',
+        fontFamily: 'Monospace',
       },
       depth: this.config.depth,
       scrollFactor: 0,
