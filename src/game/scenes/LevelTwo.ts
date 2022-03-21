@@ -24,7 +24,10 @@ export class LevelTwo extends LevelScene {
     this.dialog.init();
     this.hud.init();
 
-    this.scale.on('resize', this.hud.updateDimensions);
+    this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+      this.hud.updateDimensions(gameSize);
+      this.dialog.updateDimensions(gameSize);
+    });
   };
 
   public update = () => {

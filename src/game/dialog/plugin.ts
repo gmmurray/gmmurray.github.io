@@ -110,7 +110,6 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
       factor = 1;
     }
     this.scaledTextSize = this.config.fontSize * factor;
-    console.log(this.scaledTextSize);
   };
 
   private _getGameWidth = () => getGameWidth(this.scene);
