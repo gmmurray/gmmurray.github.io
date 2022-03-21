@@ -28,6 +28,8 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   public closeBtn: Phaser.GameObjects.Text;
   public timedEvent: Phaser.Time.TimerEvent;
 
+  private scaledTextSize = this.config.fontSize;
+
   constructor(
     scene: Phaser.Plugins.ScenePlugin['scene'],
     pluginManager: Phaser.Plugins.PluginManager,
@@ -56,7 +58,9 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   init = (options?: DialogConfig) => {
     if (!options) options = {};
 
-    this.setOptions(options)._createWindow();
+    this.setOptions(options)
+      ._createWindow()
+      .updateDimensions();
   };
 
   setOptions = (options?: DialogConfig) => {
@@ -92,6 +96,21 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     }
 
     return this;
+  };
+
+  public updateDimensions = (gameSize?: Phaser.Structs.Size) => {
+    let width = gameSize ? gameSize.width : this._getGameWidth();
+
+    let factor: number;
+    if (width <= 400) {
+      factor = 0.6;
+    } else if (width <= 600) {
+      factor = 0.8;
+    } else {
+      factor = 1;
+    }
+    this.scaledTextSize = this.config.fontSize * factor;
+    console.log(this.scaledTextSize);
   };
 
   private _getGameWidth = () => getGameWidth(this.scene);
@@ -196,7 +215,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
           useAdvancedWrap: true,
         },
         color: '#fff',
-        fontSize: `${this.config.fontSize}px`,
+        fontSize: `${this.scaledTextSize}px`,
         fontFamily: 'Monospace',
       },
       depth: this.config.depth,
@@ -235,5 +254,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     if (this.graphics) this.graphics.setVisible(this.visible);
     if (this.text) this.text.setVisible(this.visible);
     if (this.closeBtn) this.closeBtn.setVisible(this.visible);
+
+    return this;
   };
 }

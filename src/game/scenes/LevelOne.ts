@@ -30,14 +30,16 @@ export class LevelOne extends LevelScene {
     this.hud.init();
 
     if (!this.isDev) {
-      console.log(process.env.NODE_ENV);
       this.createNewDialog(
         'hint: move using the arrow or WASD keys. interact using space or enter',
       );
     }
 
     this.initialCharacterMovement();
-    this.scale.on('resize', this.hud.updateDimensions);
+    this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
+      this.hud.updateDimensions(gameSize);
+      this.dialog.updateDimensions(gameSize);
+    });
   };
 
   public update = () => {
