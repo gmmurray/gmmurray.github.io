@@ -2,6 +2,7 @@ import {
   Character,
   DoorDefinition,
   ItemDefinition,
+  LevelCast,
   NpcCharacter,
   PlayerCharacter,
   PortalDefinition,
@@ -27,12 +28,14 @@ export class LevelScene extends Scene {
   // plugins
   public gridEngine: GridEngine;
   public dialog: DialogPlugin;
+  public dialogDisabled = false;
   public hud: HudPlugin;
 
   // characters
   public playerCharacter?: PlayerCharacter = null;
   public characters: Character[] = [];
   public facingCharacter?: NpcCharacter = undefined;
+  public cast?: LevelCast = undefined;
 
   // tiles
   public map: Tilemaps.Tilemap | null = null;
@@ -56,12 +59,11 @@ export class LevelScene extends Scene {
    *
    * @returns this scene (chainable)
    */
-  public setCharacters = (
-    playerCharacter: Character,
-    npcCharacters: Character[],
-  ) => {
-    const player = this._createPlayerCharacter(playerCharacter);
-    const npcs = this._createNpcCharacters(npcCharacters);
+  public setCharacters = () => {
+    if (!this.cast) return this;
+
+    const player = this._createPlayerCharacter(this.cast.player);
+    const npcs = this._createNpcCharacters(this.cast.npcs);
 
     this.playerCharacter = player;
     this.characters = [player, ...npcs];
@@ -93,8 +95,10 @@ export class LevelScene extends Scene {
    *
    * @returns this scene (chainable)
    */
-  public setItems = (items: ItemDefinition[]) => {
-    const createdItems = this._createItems(items);
+  public setItems = () => {
+    if (!this.cast) return this;
+
+    const createdItems = this._createItems(this.cast.items);
 
     this.items = [...createdItems];
 
@@ -107,8 +111,10 @@ export class LevelScene extends Scene {
    * @param portals
    * @returns this scene (chainable)
    */
-  public setPortals = (portals: PortalDefinition[]) => {
-    this.portals = portals;
+  public setPortals = () => {
+    if (!this.cast) return this;
+
+    this.portals = this.cast.portals;
 
     return this;
   };
@@ -119,8 +125,10 @@ export class LevelScene extends Scene {
    * @param doors
    * @returns this scene (chainable)
    */
-  public setDoors = (doors: DoorDefinition[]) => {
-    this.doors = doors;
+  public setDoors = () => {
+    if (!this.cast) return this;
+
+    this.doors = this.cast.doors;
 
     return this;
   };
@@ -155,6 +163,38 @@ export class LevelScene extends Scene {
 
     this.map = addedMap;
     this._setGridEngineMap();
+
+    return this;
+  };
+
+  /**
+   * sets up any character layer transitions
+   *
+   * @returns this scene (chainable)
+   */
+  public setCharacterLayerTransitions = () => {
+    if (!this.mapDefinition?.characterLayer || !this.gridEngine) {
+      return this;
+    }
+
+    const {
+      characterLayer: { lower, upper, transitions },
+    } = this.mapDefinition;
+
+    transitions.forEach(({ x, y, toUpper }) => {
+      let fromLayer: string;
+      let toLayer: string;
+
+      if (toUpper) {
+        fromLayer = lower;
+        toLayer = upper;
+      } else {
+        fromLayer = upper;
+        toLayer = lower;
+      }
+
+      this.gridEngine.setTransition({ x, y }, fromLayer, toLayer);
+    });
 
     return this;
   };
@@ -332,6 +372,7 @@ export class LevelScene extends Scene {
    * closes the dialog window
    */
   public handleCloseDialog = () => {
+    if (this.dialogDisabled) return;
     this.dialog.toggleWindow(false);
   };
 
@@ -638,14 +679,15 @@ export class LevelScene extends Scene {
       }
 
       if (match.type === PortalType.SCENE && typeof match.to === 'string') {
-        this.cameras.main.flash(1500, 0, 0, 0); // temp
-        const currPos = this.gridEngine.getPosition(playerSpriteDefinition.key);
-        this.gridEngine.setPosition(this.playerCharacter.definition.key, {
-          x: currPos.x,
-          y: currPos.y + 1,
-        });
-        // this.cameras.main.fade(750, 0, 0, 0); TODO: switch to this once the new scenes are set up
-        // this.scene.start(match.to); TODO: use this once scene is set up
+        this.dialogDisabled = true;
+        setTimeout(() => {
+          this.cameras.main.fade(2500, 0, 0, 0);
+        }, 1000);
+        setTimeout(() => {
+          // @ts-ignore
+          this.scene.start(match.to);
+          this.scene.sleep(this.scene.key);
+        }, 3500);
       } else if (
         match.type === PortalType.COORDINATE &&
         typeof match.to === 'object'

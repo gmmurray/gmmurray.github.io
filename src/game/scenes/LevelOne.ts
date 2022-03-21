@@ -14,13 +14,14 @@ export class LevelOne extends LevelScene {
     super(LEVEL_ONE_SCENE_KEY);
     this.levelNumber = 1;
     this.mapDefinition = levelOneMapDefinition;
+    this.cast = levelOneCast;
   }
 
-  create = () => {
-    this.createCharacters()
-      .createItems()
-      .createPortals()
-      .createDoors()
+  public create = () => {
+    this.setCharacters()
+      .setItems()
+      .setPortals()
+      .setDoors()
       .setCamera()
       .setMap()
       .attachKeyboardListener();
@@ -39,18 +40,9 @@ export class LevelOne extends LevelScene {
     this.scale.on('resize', this.hud.updateDimensions);
   };
 
-  update = () => {
+  public update = () => {
     this.useGridPlayerControls().setFacing();
   };
-
-  public createCharacters = () =>
-    this.setCharacters(levelOneCast.player, levelOneCast.npcs);
-
-  public createItems = () => this.setItems(levelOneCast.items);
-
-  public createPortals = () => this.setPortals(levelOneCast.portals);
-
-  public createDoors = () => this.setDoors(levelOneCast.doors);
 
   public initialCharacterMovement = () => {
     const greg = this.characters.find(

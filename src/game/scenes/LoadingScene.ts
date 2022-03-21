@@ -1,6 +1,7 @@
 import {
   ASSETS_BASE_URL,
   LEVEL_ONE_SCENE_KEY,
+  LEVEL_TWO_SCENE_KEY,
   LOADING_SCENE_KEY,
 } from '../constants';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
@@ -10,9 +11,12 @@ import {
   playerSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
+import {
+  levelOneMapDefinition,
+  levelTwoMapDefinition,
+} from '../assetDefinitions/tiles';
 
 import { Scene } from 'phaser';
-import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
 const spriteDefinitions = [
   playerSpriteDefinition,
@@ -20,7 +24,7 @@ const spriteDefinitions = [
   greyCatSpriteDefinition,
   whiteCatSpriteDefinition,
 ];
-const tileDefinitions = [levelOneMapDefinition];
+const tileDefinitions = [levelOneMapDefinition, levelTwoMapDefinition];
 
 export class LoadingScene extends Scene {
   public isDev = process.env.NODE_ENV === 'development';

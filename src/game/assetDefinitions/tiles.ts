@@ -44,3 +44,87 @@ export const levelOneMapDefinition: TileMapDefinition = {
     },
   ],
 };
+
+export const levelTwoMapDefinition: TileMapDefinition = {
+  key: 'level-two-map',
+  source: getTileMapSource('level_two'),
+  animatedLayer: 'animated',
+  tilesets: [
+    {
+      name: 'simple_pixel_grass_tileset',
+      key: 'simple-pixel-grass-tiles',
+      source: getTileSetSource('simple_pixel_grass_tileset'),
+    },
+    {
+      name: 'simple_pixel_plants_tileset',
+      key: 'simple-pixel-plants-tiles',
+      source: getTileSetSource('simple_pixel_plants_tileset'),
+    },
+    {
+      name: 'simple_pixel_props_tileset',
+      key: 'simple-pixel-props-tiles',
+      source: getTileSetSource('simple_pixel_props_tileset'),
+    },
+    {
+      name: 'simple_pixel_stone_tileset',
+      key: 'simple-pixel-stone-tiles',
+      source: getTileSetSource('simple_pixel_stone_tileset'),
+    },
+    {
+      name: 'simple_pixel_structures_tileset',
+      key: 'simple-pixel-structures-tiles',
+      source: getTileSetSource('simple_pixel_structures_tileset'),
+    },
+    {
+      name: 'simple_pixel_wall_tileset',
+      key: 'simple-pixel-wall-tiles',
+      source: getTileSetSource('simple_pixel_wall_tileset'),
+    },
+  ],
+  characterLayer: {
+    lower: 'ground',
+    upper: 'platform',
+    transitions: [
+      {
+        x: 33,
+        y: 42,
+        toUpper: true,
+      },
+      {
+        x: 34,
+        y: 42,
+        toUpper: true,
+      },
+      {
+        x: 33,
+        y: 43,
+        toUpper: false,
+      },
+      {
+        x: 34,
+        y: 43,
+        toUpper: false,
+      },
+      {
+        x: 9,
+        y: 15,
+        toUpper: true,
+      },
+      {
+        x: 10,
+        y: 15,
+        toUpper: true,
+      },
+      {
+        x: 9,
+        y: 16,
+        toUpper: false,
+      },
+      {
+        x: 10,
+        y: 16,
+        toUpper: false,
+      },
+    ],
+  },
+};

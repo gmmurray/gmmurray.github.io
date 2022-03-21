@@ -1,3 +1,4 @@
+import { BASE_PLAYER_SPEED, LEVEL_TWO_SCENE_KEY } from '../constants';
 import {
   DoorDefinition,
   ItemDefinition,
@@ -19,9 +20,11 @@ import { Direction } from 'grid-engine';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 24,
-  startingY: 52,
-  startingSpeed: 4,
+  // startingX: 24,
+  // startingY: 52,
+  startingX: 16,
+  startingY: 12,
+  startingSpeed: BASE_PLAYER_SPEED,
 };
 
 const catInteraction: PerformInteraction = params => {
@@ -132,7 +135,7 @@ const portals: PortalDefinition[] = [
       y: 9,
     },
     type: PortalType.SCENE,
-    to: '', // TODO: scene 2,
+    to: LEVEL_TWO_SCENE_KEY,
     dialog: 'the portal hums with magical energy as you approach...',
     friendlyName: 'leftmost portal',
   },

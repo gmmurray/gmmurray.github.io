@@ -1,3 +1,5 @@
+import { Coordinates } from './position';
+
 export interface SpriteDefinition {
   key: string;
   source: string;
@@ -18,4 +20,17 @@ export interface TileMapDefinition {
   source: string;
   animatedLayer: string;
   tilesets: TileSetDefinition[];
+  characterLayer?: CharacterLayerDefinition;
+}
+
+export interface CharacterLayerTransition {
+  x: number;
+  y: number;
+  toUpper: boolean;
+}
+
+export interface CharacterLayerDefinition {
+  lower: string;
+  upper: string;
+  transitions: CharacterLayerTransition[];
 }

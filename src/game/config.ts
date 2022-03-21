@@ -11,6 +11,7 @@ import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
 import HudPlugin from './hud/plugin';
 import { LevelOne } from './scenes/LevelOne';
+import { LevelTwo } from './scenes/LevelTwo';
 import { LoadingScene } from './scenes/LoadingScene';
 import Phaser from 'phaser';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
@@ -42,7 +43,7 @@ export const gameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, LevelOne],
+  scene: [LoadingScene, LevelOne, LevelTwo],
   plugins: {
     scene: [
       {
