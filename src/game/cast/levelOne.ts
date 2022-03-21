@@ -137,7 +137,7 @@ const portals: PortalDefinition[] = [
     type: PortalType.SCENE,
     to: LEVEL_TWO_SCENE_KEY,
     dialog: 'the portal hums with magical energy as you approach...',
-    friendlyName: 'leftmost portal',
+    friendlyName: 'Mysterious Forest',
   },
   {
     from: {
