@@ -1,5 +1,11 @@
+import {
+  FireSpriteDefinition,
+  SpriteDefinition,
+} from '../types/assetDefinitions';
+
+import { FireColor } from '../types/levelTwo';
 import { SCALE } from '../constants';
-import { SpriteDefinition } from '../types/assetDefinitions';
+import { getFireColorName } from '../helpers/fireColor';
 import { getSpriteSource } from '../helpers/getAssetSource';
 
 const createPlayerSpriteDefinition = (source: string): SpriteDefinition => ({
@@ -49,3 +55,19 @@ export const whiteCatSpriteDefinition: SpriteDefinition = {
   walkingAnimationMapping: 0,
   scale: 2,
 };
+
+const createFireSprite = (color: FireColor): FireSpriteDefinition => ({
+  key: `${getFireColorName(color)}-fire`,
+  source: getSpriteSource(`${getFireColorName(color)}_fire_spritesheet`),
+  frameWidth: 24,
+  frameHeight: 32,
+  scale: 4,
+  color,
+});
+
+export const fireSpriteDefinitions: FireSpriteDefinition[] = [
+  createFireSprite(FireColor.BLUE),
+  createFireSprite(FireColor.GREEN),
+  createFireSprite(FireColor.PURPLE),
+  createFireSprite(FireColor.WHITE),
+];

@@ -1,11 +1,12 @@
 import { Coordinates } from './position';
+import { FireColor } from './levelTwo';
 
 export interface SpriteDefinition {
   key: string;
   source: string;
   frameWidth: number;
   frameHeight: number;
-  walkingAnimationMapping: number;
+  walkingAnimationMapping?: number;
   scale: number;
 }
 
@@ -33,4 +34,8 @@ export interface CharacterLayerDefinition {
   lower: string;
   upper: string;
   transitions: CharacterLayerTransition[];
+}
+
+export interface FireSpriteDefinition extends SpriteDefinition {
+  color: FireColor;
 }

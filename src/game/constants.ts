@@ -18,3 +18,6 @@ export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';
 export const DIALOG_PLUGIN_KEY = 'dialog';
 export const ANIMATED_TILES_PLUGIN_KEY = 'animatedTiles';
 export const HUD_PLUGIN_KEY = 'hud';
+
+// MISC
+export const DEFAULT_FIRE_ANIMATION_FPS = 10;
