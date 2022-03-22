@@ -80,6 +80,11 @@ export const levelTwoMapDefinition: TileMapDefinition = {
       key: 'simple-pixel-wall-tiles',
       source: getTileSetSource('simple_pixel_wall_tileset'),
     },
+    {
+      name: 'interiors_tileset',
+      key: 'interiors-tiles',
+      source: getTileSetSource('interiors_tileset'),
+    },
   ],
   characterLayer: {
     lower: 'ground',

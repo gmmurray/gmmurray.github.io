@@ -61,7 +61,7 @@ const createFireSprite = (color: FireColor): FireSpriteDefinition => ({
   source: getSpriteSource(`${getFireColorName(color)}_fire_spritesheet`),
   frameWidth: 24,
   frameHeight: 32,
-  scale: 4,
+  scale: 3,
   color,
 });
 
