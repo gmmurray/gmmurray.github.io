@@ -11,7 +11,7 @@ import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 34,
+  startingX: 40,
   startingY: 14,
   startingSpeed: BASE_PLAYER_SPEED,
 };
@@ -40,6 +40,12 @@ const items: ItemDefinition[] = [
     y: 13,
     handler: params => (params as LevelTwo).showNextFire(FireNumber.FOUR),
     friendlyName: 'fourth fire',
+  },
+  {
+    x: 37, // pillar 3
+    y: 30,
+    handler: params => (params as LevelTwo).handlePillarThreeInteraction(),
+    friendlyName: 'pillar of matching',
   },
 ];
 

@@ -1,10 +1,8 @@
 import { Coordinates } from './position';
 import { LevelCast } from './interactions';
-import { LevelProgress } from './levelProgress';
 
 export interface PillarProgress {
   completed: boolean;
-  solutionId: string;
 }
 
 export interface PillarSolution {
@@ -25,14 +23,26 @@ export interface PillarThreeSolution extends PillarSolution {
   elements: FireColor[];
 }
 
-export interface LevelTwoProgress extends LevelProgress {
+export interface ILevelTwoProgress {
   pillarOne: PillarProgress;
   pillarTwo: PillarProgress;
   pillarThree: PillarProgress;
 }
 
-export interface LevelTwoCast extends LevelCast {
-  solutions: PillarSolution[];
+export class LevelTwoProgress implements ILevelTwoProgress {
+  public pillarOne: PillarProgress;
+  public pillarTwo: PillarProgress;
+  public pillarThree: PillarProgress;
+
+  constructor() {
+    this.pillarOne = this._createProgress();
+    this.pillarTwo = this._createProgress();
+    this.pillarThree = this._createProgress();
+  }
+
+  private _createProgress = (): PillarProgress => ({
+    completed: false,
+  });
 }
 
 export enum FireColor {
@@ -80,6 +90,7 @@ export interface IPuzzleFireState {
   [FireNumber.TWO]: PuzzleFires;
   [FireNumber.THREE]: PuzzleFires;
   [FireNumber.FOUR]: PuzzleFires;
+  solution: Record<FireNumber, FireColor>;
 }
 
 export class PuzzleFireState implements IPuzzleFireState {
@@ -87,6 +98,7 @@ export class PuzzleFireState implements IPuzzleFireState {
   public [FireNumber.TWO]: PuzzleFires;
   public [FireNumber.THREE]: PuzzleFires;
   public [FireNumber.FOUR]: PuzzleFires;
+  public solution: Record<FireNumber, FireColor>;
 
   constructor() {
     this[FireNumber.ONE] = this._createFireState();

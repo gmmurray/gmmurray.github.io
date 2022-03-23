@@ -19,5 +19,11 @@ export const DIALOG_PLUGIN_KEY = 'dialog';
 export const ANIMATED_TILES_PLUGIN_KEY = 'animatedTiles';
 export const HUD_PLUGIN_KEY = 'hud';
 
-// MISC
+// level two
 export const DEFAULT_FIRE_ANIMATION_FPS = 10;
+export const PILLAR_ONE_ACTIVE_NAME = 'active1';
+export const PILLAR_TWO_ACTIVE_NAME = 'active2';
+export const PILLAR_THREE_ACTIVE_NAME = 'active3';
+
+// misc
+export const TILEMAPLAYER_TYPE = 'TilemapLayer';
