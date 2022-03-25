@@ -1,3 +1,5 @@
+import './gameStyles.scss';
+
 import GameComponent from './GameComponent';
 import React from 'react';
 
