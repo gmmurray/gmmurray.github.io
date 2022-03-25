@@ -1,43 +1,41 @@
+import { ItemDefinition, LevelCast } from './interactions';
+
 import { Coordinates } from './position';
-import { LevelCast } from './interactions';
 
 export interface PillarProgress {
   completed: boolean;
 }
 
-export interface PillarSolution {
-  id: string;
-}
-
-export interface PillarOneSolution extends PillarSolution {
-  location: Coordinates;
+export interface PillarOneSolution {
+  itemName: string;
   hint: string;
 }
 
-export interface PillarTwoSolution extends PillarSolution {
+export interface IPillarOneState {
+  solution: PillarOneSolution;
+  isFound: boolean;
+}
+
+export interface PillarTwoSolution {
   options: { id: string; text: string }[];
   answer: string; // correct answer id
 }
 
-export interface PillarThreeSolution extends PillarSolution {
-  elements: FireColor[];
-}
-
 export interface ILevelTwoProgress {
-  pillarOne: PillarProgress;
-  pillarTwo: PillarProgress;
-  pillarThree: PillarProgress;
+  1: PillarProgress;
+  2: PillarProgress;
+  3: PillarProgress;
 }
 
 export class LevelTwoProgress implements ILevelTwoProgress {
-  public pillarOne: PillarProgress;
-  public pillarTwo: PillarProgress;
-  public pillarThree: PillarProgress;
+  public 1: PillarProgress;
+  public 2: PillarProgress;
+  public 3: PillarProgress;
 
   constructor() {
-    this.pillarOne = this._createProgress();
-    this.pillarTwo = this._createProgress();
-    this.pillarThree = this._createProgress();
+    this[1] = this._createProgress();
+    this[2] = this._createProgress();
+    this[3] = this._createProgress();
   }
 
   private _createProgress = (): PillarProgress => ({
@@ -85,7 +83,7 @@ export interface PuzzleFires {
   };
 }
 
-export interface IPuzzleFireState {
+export interface IPillarThreeState {
   [FireNumber.ONE]: PuzzleFires;
   [FireNumber.TWO]: PuzzleFires;
   [FireNumber.THREE]: PuzzleFires;
@@ -93,7 +91,7 @@ export interface IPuzzleFireState {
   solution: Record<FireNumber, FireColor>;
 }
 
-export class PuzzleFireState implements IPuzzleFireState {
+export class PillarThreeState implements IPillarThreeState {
   public [FireNumber.ONE]: PuzzleFires;
   public [FireNumber.TWO]: PuzzleFires;
   public [FireNumber.THREE]: PuzzleFires;
@@ -101,13 +99,13 @@ export class PuzzleFireState implements IPuzzleFireState {
   public solution: Record<FireNumber, FireColor>;
 
   constructor() {
-    this[FireNumber.ONE] = this._createFireState();
-    this[FireNumber.TWO] = this._createFireState();
-    this[FireNumber.THREE] = this._createFireState();
-    this[FireNumber.FOUR] = this._createFireState();
+    this[FireNumber.ONE] = this._createFire();
+    this[FireNumber.TWO] = this._createFire();
+    this[FireNumber.THREE] = this._createFire();
+    this[FireNumber.FOUR] = this._createFire();
   }
 
-  private _createFireState = () => ({
+  private _createFire = () => ({
     active: null,
     fires: {
       [FireColor.GREEN]: {
@@ -132,4 +130,9 @@ export class PuzzleFireState implements IPuzzleFireState {
       },
     },
   });
+}
+
+export interface LevelTwoItem extends ItemDefinition {
+  pillar?: 1 | 2 | 3;
+  hint?: string;
 }

@@ -10,9 +10,11 @@ import {
   FireColor,
   FireNumber,
   ILevelTwoProgress,
-  IPuzzleFireState,
+  IPillarOneState,
+  IPillarThreeState,
+  LevelTwoItem,
   LevelTwoProgress,
-  PuzzleFireState,
+  PillarThreeState,
   PuzzleFires,
 } from '../types/levelTwo';
 import { fireStartLocations, levelTwoCast } from '../cast/levelTwo';
@@ -24,15 +26,16 @@ import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
 import { randomEnum } from '../helpers/randomEnum';
 
 export class LevelTwo extends LevelScene {
-  public puzzleFireState: IPuzzleFireState;
+  public puzzleFireState: IPillarThreeState;
   private progress: ILevelTwoProgress;
+  private pillarOneState: IPillarOneState;
 
   constructor() {
     super(LEVEL_TWO_SCENE_KEY);
     this.levelNumber = 2;
     this.mapDefinition = levelTwoMapDefinition;
     this.cast = levelTwoCast;
-    this.puzzleFireState = new PuzzleFireState();
+    this.puzzleFireState = new PillarThreeState();
     this.progress = new LevelTwoProgress();
   }
 
@@ -46,17 +49,11 @@ export class LevelTwo extends LevelScene {
       .setCharacterLayerTransitions()
       .attachKeyboardListener()
       ._initializeFireState()
-      ._createPuzzleFireSolution();
+      ._createPillarOneSolution()
+      ._createPillarThreeSolution();
 
     this.dialog.init();
     this.hud.init();
-    // console.log(
-    //   (this.children.list.filter(
-    //     go => go.type === 'TilemapLayer',
-    //   ) as Phaser.Tilemaps.TilemapLayer[])
-    //     .find(go => go.layer.name === 'active3')
-    //     .setAlpha(1),
-    // );
 
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.hud.updateDimensions(gameSize);
@@ -153,7 +150,7 @@ export class LevelTwo extends LevelScene {
   };
 
   public showNextFire = (number: FireNumber) => {
-    if (this.progress.pillarThree.completed) {
+    if (this.progress[3].completed) {
       return this;
     }
 
@@ -181,15 +178,8 @@ export class LevelTwo extends LevelScene {
   public handlePillarThreeInteraction = () => {
     const isSolved = this._isPuzzleFireSolved();
     if (isSolved) {
-      this.createNewDialog('Well done, the power of this pillar is yours');
-      this.progress = {
-        ...this.progress,
-        pillarThree: {
-          ...this.progress.pillarThree,
-          completed: true,
-        },
-      };
-      this._activatePillar(3);
+      this.createNewDialog('Well done, the power of this obelisk is yours');
+      this._completePillar(3);
       return;
     }
 
@@ -204,7 +194,7 @@ export class LevelTwo extends LevelScene {
     );
   };
 
-  private _createPuzzleFireSolution = () => {
+  private _createPillarThreeSolution = () => {
     const solution = {} as Record<FireNumber, FireColor>;
     for (let i = 0; i < 4; i++) {
       const color = randomEnum(FireColor);
@@ -258,5 +248,98 @@ export class LevelTwo extends LevelScene {
     }
 
     return this;
+  };
+
+  private _createPillarOneSolution = () => {
+    const options = (this.cast.items as LevelTwoItem[]).filter(
+      i => i.hint && i.pillar && i.pillar === 1,
+    );
+    const answerIndex = Math.floor(Math.random() * (options.length - 1));
+    const { friendlyName: itemName, hint } = options[answerIndex];
+
+    this.pillarOneState = {
+      solution: {
+        itemName,
+        hint,
+      },
+      isFound: false,
+    };
+
+    return this;
+  };
+
+  public handlePillarOneItemInteraction = (itemName: string) => {
+    if (itemName === this.pillarOneState.solution.itemName) {
+      this.pillarOneState.isFound = true;
+      this.createNewDialog(`you find a key in the ${itemName}`);
+    } else {
+      this.createNewDialog(`it appears to be a regular old ${itemName}`);
+    }
+  };
+
+  public handlePillarOneInteraction = () => {
+    if (this.pillarOneState.isFound) {
+      this.createNewDialog('Well done, the power of this obelisk is yours');
+      this._completePillar(1);
+      return;
+    }
+
+    this.createNewDialog(
+      `Unlocking this pillar is truly random, but here's a hint: ${this.pillarOneState.solution.hint}`,
+    );
+  };
+
+  private _completePillar = (pillar: 1 | 2 | 3) => {
+    this.progress = {
+      ...this.progress,
+      [pillar]: {
+        ...this.progress[pillar],
+        completed: true,
+      },
+    };
+    this._activatePillar(pillar);
+
+    if (this._isLevelComplete()) {
+      this._completeLevel();
+    }
+  };
+
+  private _isLevelComplete = () => this._getNumCompletedPillars() === 3;
+
+  private _getNumCompletedPillars = () =>
+    [
+      this.progress[1].completed,
+      this.progress[2].completed,
+      this.progress[3].completed,
+    ].filter(p => !!p).length;
+
+  private _completeLevel = () => {
+    // TODO: open portal to treasure room which contains experiences and portal to L1
+  };
+
+  public handleAngelInteraction = () => {
+    let message: string;
+    const numComplete = this._getNumCompletedPillars();
+    if (numComplete === 0) {
+      // TODO: angel message
+    } else if (numComplete === 1) {
+      // TODO: angel message
+    } else if (numComplete === 2) {
+      // TODO: angel message
+    } else if (numComplete === 3) {
+      // TODO: angel message
+    }
+    this.createNewDialog(message);
+  };
+
+  public handlePillarTwoInteraction = () => {
+    if (1 === 1) {
+      // replace with completion parameter
+      this.createNewDialog('Well done, the power of this obelisk is yours');
+      this._completePillar(1);
+      return;
+    }
+    // TODO: handle interaction when the question is not answered
+    this.createNewDialog('');
   };
 }
