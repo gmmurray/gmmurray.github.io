@@ -252,9 +252,9 @@ export class LevelTwo extends LevelScene {
 
   private _createPillarOneSolution = () => {
     const options = (this.cast.items as LevelTwoItem[]).filter(
-      i => i.hint && i.pillar && i.pillar === 1,
+      i => i.pillar === 1 && i.hint !== undefined,
     );
-    const answerIndex = Math.floor(Math.random() * (options.length - 1));
+    const answerIndex = Math.floor(Math.random() * options.length);
     const { friendlyName: itemName, hint } = options[answerIndex];
 
     this.pillarOneState = {
@@ -271,9 +271,9 @@ export class LevelTwo extends LevelScene {
   public handlePillarOneItemInteraction = (itemName: string) => {
     if (itemName === this.pillarOneState.solution.itemName) {
       this.pillarOneState.isFound = true;
-      this.createNewDialog(`you find a key in the ${itemName}`);
+      this.createNewDialog(`You find a key in the ${itemName}!`);
     } else {
-      this.createNewDialog(`it appears to be a regular old ${itemName}`);
+      this.createNewDialog(`It appears to be a regular old ${itemName}`);
     }
   };
 

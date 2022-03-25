@@ -81,7 +81,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('barrel'),
     friendlyName: 'barrel',
     pillar: 1,
-    hint: '', // TODO:
+    hint: `don't confuse me for a keg`,
   },
   {
     // small urn
@@ -91,7 +91,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('small urn'),
     friendlyName: 'small urn',
     pillar: 1,
-    hint: '', // TODO:
+    hint: `I may remind you of a vase but just know that I am small`,
   },
   {
     // bowl
@@ -101,7 +101,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('bowl'),
     friendlyName: 'bowl',
     pillar: 1,
-    hint: '', // TODO:
+    hint: `do you put milk or cereal first?`,
   },
   {
     // crate
@@ -111,7 +111,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('crate'),
     friendlyName: 'crate',
     pillar: 1,
-    hint: '', // TODO:
+    hint: `you can use me to transport all of your stuff`,
   },
   {
     // chest
@@ -121,7 +121,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('chest'),
     friendlyName: 'chest',
     pillar: 1,
-    hint: '', // TODO:
+    hint: `pirates are currently looking for me`,
   },
   {
     // large urn
@@ -131,7 +131,7 @@ const items: LevelTwoItem[] = [
       (params as LevelTwo).handlePillarOneItemInteraction('large urn'),
     friendlyName: 'large urn',
     pillar: 1,
-    hint: '', // TODO:
+    hint: 'I may remind you of a vase but just know that I am large',
   },
 ];
 
