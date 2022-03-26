@@ -17,13 +17,17 @@ import {
 } from '../assetDefinitions/sprites';
 
 import { Direction } from 'grid-engine';
+import { OverlayContentKey } from '../types/overlayContent';
+import { createOverlay } from '../helpers/createOverlay';
+import { overlayActions } from '../redux/overlaySlice';
+import { store } from '../redux/store';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
   // startingX: 24,
   // startingY: 52,
-  startingX: 16,
-  startingY: 12,
+  startingX: 15,
+  startingY: 96,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -71,25 +75,25 @@ const items: ItemDefinition[] = [
   {
     x: 7,
     y: 91,
-    handler: params => alert('pc used'),
+    handler: params => createOverlay(OverlayContentKey.SKILLS, params.scene),
     friendlyName: `Greg's battlestation`,
   },
   {
     x: 10,
     y: 91,
-    handler: params => alert('diploma used'),
+    handler: params => createOverlay(OverlayContentKey.UNF, params.scene),
     friendlyName: 'college diploma',
   },
   {
     x: 12,
     y: 90,
-    handler: params => alert('diploma used'),
+    handler: params => createOverlay(OverlayContentKey.UF, params.scene),
     friendlyName: 'college diploma',
   },
   {
     x: 20,
     y: 92,
-    handler: params => params.createNewDialog('bio  used'),
+    handler: params => createOverlay(OverlayContentKey.BIO, params.scene),
     friendlyName: 'musings',
   },
   {
