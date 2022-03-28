@@ -66,6 +66,8 @@
           overflow-y: auto;
           overflow-x: auto;
           padding: 1rem;
+          display: flex;
+          flex-direction: column;
 
           .close-button-container {
             display: flex;
@@ -82,18 +84,84 @@
             }
           }
 
-          .main-container {
+          .game-overlay-main-container {
             color: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .game-overlay-component-container {
+              flex: 1;
+            }
 
             .diploma-container {
               text-align: center;
               position: relative;
+              opacity: 0;
+              transition: all ease-in 1s;
 
-              .diploma-content {
+              &-visible {
+                opacity: 1;
+              }
+
+              .diploma-image {
                 position: absolute;
                 top: 50%;
                 left: 50%;
                 transform: translate(-50%, -50%);
+                height: 90%;
+                max-height: 90%;
+              }
+
+              .diploma-content {
+                color: black;
+                font-family: 'Courier New', monospace;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: small;
+
+                &-school {
+                  font-weight: bolder;
+                  font-size: medium;
+                }
+              }
+            }
+
+            .talent-tree {
+              display: flex;
+
+              .talent-tree-container {
+                width: 60%;
+                margin-right: 0.5rem;
+                border: 2px solid $theme-light-grey;
+
+                .talent-tree-row {
+                  display: flex;
+                  margin-bottom: 5rem;
+
+                  &-node {
+                    margin-left: auto;
+                    margin-right: auto;
+                    font-size: 3rem;
+                    color: $theme-dark-yellow;
+
+                    &-active {
+                      color: $theme-white;
+                    }
+
+                    .talent-tree-points {
+                      font-size: 1rem;
+                    }
+                  }
+                }
+              }
+
+              .talent-tree-info {
+                width: 40%;
+                margin-left: 0.5rem;
+                border: 2px solid $theme-light-grey;
               }
             }
           }

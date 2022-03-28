@@ -18,6 +18,7 @@ fragment GregmurrayHome on GregmurrayHome {
   }
   technologyTitle
   technologyContent
+  technologyTree
   experiencesTitle
   experiencesContent {
     ... on GregmurrayExperience {

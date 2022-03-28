@@ -49,7 +49,7 @@ const selectOverlayState: StateSelector<OverlayState> = state => state.overlay;
 const selectOverlayOpen: StateSelector<OverlayState['open']> = state =>
   selectOverlayState(state).open;
 
-const selectOverlayContent: StateSelector<OverlayState['contentKey']> = state =>
+const selectOverlayContentKey: StateSelector<OverlayState['contentKey']> = state =>
   selectOverlayState(state).contentKey;
 
 const selectPausedScene: StateSelector<OverlayState['pausedScene']> = state =>
@@ -58,6 +58,6 @@ const selectPausedScene: StateSelector<OverlayState['pausedScene']> = state =>
 export const overlaySelectors = {
   selectOverlayState,
   selectOverlayOpen,
-  selectOverlayContent,
+  selectOverlayContentKey,
   selectPausedScene,
 };

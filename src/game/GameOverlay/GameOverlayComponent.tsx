@@ -61,7 +61,7 @@ const GameOverlayComponent = () => {
                 <Icon path={mdiClose} size={1} />
               </button>
             </div>
-            <div className="main-container">
+            <div className="game-overlay-main-container">
               {content.lead && (
                 <div className="lead-section">
                   <Typewriter words={[content.lead]} typeSpeed={30} />

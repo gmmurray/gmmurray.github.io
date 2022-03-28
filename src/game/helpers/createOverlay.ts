@@ -1,4 +1,5 @@
 import { OverlayContentKey } from '../types/overlayContent';
+import Phaser from 'phaser';
 import { overlayActions } from '../redux/overlaySlice';
 import { store } from '../redux/store';
 

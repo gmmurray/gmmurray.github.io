@@ -2,17 +2,20 @@ import { OverlayContentKey, OverlayContentMap } from '../types/overlayContent';
 
 import Diploma from './Diploma';
 import React from 'react';
+import TechTalentTree from './TechTalentTree';
 
 export const overlayContentMapping: OverlayContentMap = {
   [OverlayContentKey.UF]: {
-    lead: `bachelor's of anthropology from the university of florida '18`,
-    component: <Diploma key={OverlayContentKey.UF} />,
+    lead: `You find a scroll hidden behind the trophy...`,
+    component: <Diploma />,
   },
   [OverlayContentKey.UNF]: {
-    lead: `bachelor's of computing and information sciences from the university of north florida '20`,
+    lead: `You find a scroll hidden behind the medal...`,
+    component: <Diploma />,
   },
   [OverlayContentKey.SKILLS]: {
-    lead: `The PC battlestation turns on, accessing Greg's secret skills files...`,
+    lead: `The PC battlestation turns on, accessing Greg's secret RPG talent trees...`,
+    component: <TechTalentTree />,
   },
   [OverlayContentKey.BIO]: {
     lead: 'You seemed to have stumbled across an autobiography of sorts...',

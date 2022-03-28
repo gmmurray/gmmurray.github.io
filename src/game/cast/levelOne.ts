@@ -82,13 +82,13 @@ const items: ItemDefinition[] = [
     x: 10,
     y: 91,
     handler: params => createOverlay(OverlayContentKey.UNF, params.scene),
-    friendlyName: 'college diploma',
+    friendlyName: 'framed medal',
   },
   {
     x: 12,
     y: 90,
     handler: params => createOverlay(OverlayContentKey.UF, params.scene),
-    friendlyName: 'college diploma',
+    friendlyName: 'trophy',
   },
   {
     x: 20,
