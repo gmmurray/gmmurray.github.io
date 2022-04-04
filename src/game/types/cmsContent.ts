@@ -5,6 +5,7 @@ export interface TechnologyContent {
 export interface TechnologyTreeFlattened {
   items: {
     id: string;
+    title: string;
     content: string;
     parent?: string;
     code: string;
@@ -15,6 +16,7 @@ export interface TechnologyTreeFlattened {
 
 export interface TechnologyTree {
   id: string;
+  title: string;
   content: string;
   parent?: string;
   code: string;

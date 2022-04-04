@@ -133,9 +133,13 @@
               display: flex;
 
               .talent-tree-container {
-                width: 60%;
-                margin-right: 0.5rem;
-                border: 2px solid $theme-light-grey;
+                width: 100%;
+                opacity: 0;
+                transition: opacity ease-in 1s;
+
+                &-visible {
+                  opacity: 1;
+                }
 
                 .talent-tree-row {
                   display: flex;
@@ -144,11 +148,34 @@
                   &-node {
                     margin-left: auto;
                     margin-right: auto;
-                    font-size: 3rem;
+                    font-size: 2rem;
                     color: $theme-dark-yellow;
+                    border: 0.25rem solid $theme-dark-yellow;
+                    width: 5rem;
+                    height: 5rem;
+                    text-align: center;
+                    transition: all ease 250ms;
+                    cursor: pointer;
+
+                    &:hover,
+                    &-selected {
+                      border-color: $theme-yellow;
+                      color: $theme-yellow;
+                    }
 
                     &-active {
-                      color: $theme-white;
+                      color: $theme-light-grey;
+                      border-color: $theme-light-grey;
+
+                      &:hover {
+                        border-color: $theme-white;
+                        color: $theme-white;
+                      }
+
+                      &-selected {
+                        border-color: $theme-white;
+                        color: $theme-white;
+                      }
                     }
 
                     .talent-tree-points {
@@ -156,12 +183,62 @@
                     }
                   }
                 }
+
+                &-shifted {
+                  width: 60%;
+                }
+
+                .talent-tree-selector {
+                  display: flex;
+                  margin-bottom: 0.5rem;
+
+                  button {
+                    background-color: transparent;
+                    border: none;
+                    color: $theme-yellow;
+
+                    &:hover {
+                      color: $theme-dark-yellow;
+                    }
+
+                    &:focus {
+                      box-shadow: none;
+                    }
+                  }
+
+                  .talent-tree-selector-next {
+                    margin-left: auto;
+                  }
+                }
               }
 
               .talent-tree-info {
                 width: 40%;
-                margin-left: 0.5rem;
-                border: 2px solid $theme-light-grey;
+                margin-left: 1rem;
+                border-left: 2px solid $theme-light-grey;
+                padding: 1rem;
+                opacity: 0;
+                transition: opacity ease-in 500ms;
+
+                &-visible {
+                  opacity: 1;
+                }
+
+                &-header {
+                  display: flex;
+
+                  &-title {
+                    font-weight: bold;
+                  }
+
+                  &-points {
+                    margin-left: auto;
+                  }
+                }
+
+                &-content {
+                  font-size: 0.8rem;
+                }
               }
             }
           }

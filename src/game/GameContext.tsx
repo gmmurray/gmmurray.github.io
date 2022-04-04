@@ -52,9 +52,10 @@ export const GameContextProvider: FC = ({ children }) => {
     game.scale.resize(sizeDimension, sizeDimension);
     const canvasEl = (gameRef.current as HTMLDivElement)
       .children[0] as HTMLCanvasElement;
-    canvasEl.style.width = `${sizeDimension}px`;
-    canvasEl.style.height = `${sizeDimension}px`;
-
+    if (canvasEl) {
+      canvasEl.style.width = `${sizeDimension}px`;
+      canvasEl.style.height = `${sizeDimension}px`;
+    }
     setDimension(sizeDimension);
   }, [windowWidth, windowHeight, gameRef]);
 

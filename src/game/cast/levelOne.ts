@@ -19,15 +19,13 @@ import {
 import { Direction } from 'grid-engine';
 import { OverlayContentKey } from '../types/overlayContent';
 import { createOverlay } from '../helpers/createOverlay';
-import { overlayActions } from '../redux/overlaySlice';
-import { store } from '../redux/store';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
   // startingX: 24,
   // startingY: 52,
-  startingX: 15,
-  startingY: 96,
+  startingX: 7,
+  startingY: 92,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 

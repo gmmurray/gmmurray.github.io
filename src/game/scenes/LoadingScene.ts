@@ -3,6 +3,9 @@ import {
   LEVEL_ONE_SCENE_KEY,
   LEVEL_TWO_SCENE_KEY,
   LOADING_SCENE_KEY,
+  THEME_DARK_YELLOW_NUMBER,
+  THEME_WHITE,
+  THEME_YELLOW_NUMBER,
 } from '../constants';
 import {
   fireSpriteDefinitions,
@@ -60,7 +63,7 @@ export class LoadingScene extends Scene {
     const width = this._getGameWidth() / 2;
     this.progressBox = this.add
       .graphics()
-      .fillStyle(0x976f08, 1)
+      .fillStyle(THEME_DARK_YELLOW_NUMBER, 1)
       .fillRect(width - width / 2, width, width, 50)
       .setScrollFactor(0)
       .setDepth(1);
@@ -71,7 +74,7 @@ export class LoadingScene extends Scene {
       text: '0%',
       style: {
         font: '20px monospace',
-        color: '#fff',
+        color: THEME_WHITE,
       },
       scrollFactor: 0,
       origin: 0.5,
@@ -93,7 +96,7 @@ export class LoadingScene extends Scene {
 
     this.progressBar
       .clear()
-      .fillStyle(0xebaa02, 1)
+      .fillStyle(THEME_YELLOW_NUMBER, 1)
       .fillRect(
         boxWidth - boxWidth / 2 + 10,
         boxWidth + 10,

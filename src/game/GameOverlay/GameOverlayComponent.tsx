@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Icon from '@mdi/react';
 import { Typewriter } from 'react-simple-typewriter';
+import { gameCmsActions } from '../redux/gameCmsSlice';
 import { mdiClose } from '@mdi/js';
 import { overlayContentMapping } from './contentMapping';
 import { useGameContext } from '../GameContext';
@@ -19,6 +20,7 @@ const GameOverlayComponent = () => {
   const handleClose = useCallback(() => {
     game.scene.resume(pausedScene);
     dispatch(overlayActions.overlayClosed());
+    dispatch(gameCmsActions.selectedTalentTreeChanged(0));
   }, []);
 
   const handleInnerClick = useCallback(

@@ -1,6 +1,6 @@
+import { HUD_PLUGIN_KEY, THEME_WHITE } from '../constants';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 
-import { HUD_PLUGIN_KEY } from '../constants';
 import { HudConfig } from '../types/hud';
 
 const DEFAULT_CONFIG: HudConfig = {
@@ -8,7 +8,7 @@ const DEFAULT_CONFIG: HudConfig = {
     margin: 25,
     fontSize: 18,
     fontFamily: 'Monospace',
-    fontColor: '#fff',
+    fontColor: THEME_WHITE,
     depth: 49,
   },
 };

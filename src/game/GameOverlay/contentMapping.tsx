@@ -2,7 +2,7 @@ import { OverlayContentKey, OverlayContentMap } from '../types/overlayContent';
 
 import Diploma from './Diploma';
 import React from 'react';
-import TechTalentTree from './TechTalentTree';
+import TechTalentTree from './talentTree/TechTalentTree';
 
 export const overlayContentMapping: OverlayContentMap = {
   [OverlayContentKey.UF]: {

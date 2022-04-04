@@ -1,6 +1,12 @@
+import {
+  DIALOG_PLUGIN_KEY,
+  THEME_DARK_BLUE_NUMBER,
+  THEME_DARK_YELLOW,
+  THEME_DARK_YELLOW_NUMBER,
+  THEME_WHITE,
+} from '../constants';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 
-import { DIALOG_PLUGIN_KEY } from '../constants';
 import { DialogConfig } from '../types/dialog';
 import Phaser from 'phaser';
 
@@ -8,14 +14,14 @@ import Phaser from 'phaser';
 export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   public config: DialogConfig = {
     borderThickness: 3,
-    borderColor: 0x976f08,
+    borderColor: THEME_DARK_YELLOW_NUMBER,
     borderAlpha: 1,
     windowAlpha: 0.9,
-    windowColor: 0x050a2b,
+    windowColor: THEME_DARK_BLUE_NUMBER,
     windowHeight: 150,
     padding: 32,
     depth: 50,
-    closeBtnColor: '#976f08',
+    closeBtnColor: THEME_DARK_YELLOW,
     closeBtnFontSize: 24,
     fontSize: 20,
     speed: 5,
@@ -174,7 +180,6 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     closeButton.setInteractive();
 
-    closeButton.on('pointerover', () => closeButton.setTint(0xff0000));
     closeButton.on('pointerout', () => closeButton.clearTint());
     closeButton.on('pointerdown', () => {
       this.toggleWindow();
@@ -213,7 +218,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
           width: this._getGameWidth() - this.config.padding * 2 - 50,
           useAdvancedWrap: true,
         },
-        color: '#fff',
+        color: THEME_WHITE,
         fontSize: `${this.scaledTextSize}px`,
         fontFamily: 'Monospace',
       },

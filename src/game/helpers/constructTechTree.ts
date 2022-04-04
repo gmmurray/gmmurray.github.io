@@ -13,6 +13,7 @@ export const constructTechTree = (input: TechnologyTreeFlattened) => {
       code: '',
       points: 1,
       total: 1,
+      title: 'root',
       children: [],
     },
   };
@@ -36,4 +37,24 @@ export const constructTechTree = (input: TechnologyTreeFlattened) => {
   };
 
   return assemble(result);
+};
+
+export const createRows = (data: TechnologyTree) => {
+  const items = { ...data };
+  const rows = [];
+
+  const createNodes = (node: TechnologyTree, rowNum: number) => {
+    if (rows[rowNum]) {
+      rows[rowNum].push(node);
+    } else {
+      rows[rowNum] = [node];
+    }
+
+    if (node.children) {
+      node.children.forEach(child => createNodes(child, rowNum + 1));
+    }
+  };
+
+  createNodes(items, 0);
+  return rows;
 };

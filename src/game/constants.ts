@@ -27,3 +27,16 @@ export const PILLAR_THREE_ACTIVE_NAME = 'active3';
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';
+
+// colors
+export const THEME_DARK_BLUE = '#050a2b';
+export const THEME_DARK_BLUE_NUMBER = 0x050a2b;
+
+export const THEME_YELLOW = '#ebaa02';
+export const THEME_YELLOW_NUMBER = 0xebaa02;
+
+export const THEME_DARK_YELLOW = '#976f08';
+export const THEME_DARK_YELLOW_NUMBER = 0x976f08;
+
+export const THEME_WHITE = '#fff';
+export const THEME_LIGHT_GREY = '#b0b0b0';
