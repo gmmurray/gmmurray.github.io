@@ -21,6 +21,24 @@ import Icon from '@mdi/react';
 import TalentNode from './TalentNode';
 import { TechnologyTree } from '../../types/cmsContent';
 import classNames from 'classnames';
+import { combineCss } from '../../helpers/combineCss';
+import { useVisibleTimeout } from '../../helpers/customHooks';
+
+const overlay_cn = 'game-overlay-message-component-container';
+const base_cn = 'talent-tree';
+const container_cn = combineCss(base_cn, 'container');
+const shifted_cn = combineCss(container_cn, 'shifted');
+const visible_cn = combineCss(container_cn, 'visible');
+const selector_cn = combineCss(base_cn, 'selector');
+const next_selector_cn = combineCss(selector_cn, 'next');
+const row_cn = combineCss(base_cn, 'row');
+const info_cn = combineCss(base_cn, 'info');
+const visible_info_cn = combineCss(info_cn, 'visible');
+const info_header_cn = combineCss(info_cn, 'header');
+const info_header_title_cn = combineCss(info_header_cn, 'title');
+const info_header_points_cn = combineCss(info_header_cn, 'points');
+const info_content_cn = combineCss(info_cn, 'content');
+const small_btn_cn = 'button is-small';
 
 const TechTalentTree = () => {
   const dispatch = useDispatch();
@@ -33,7 +51,8 @@ const TechTalentTree = () => {
 
   const [selectedNode, setSelectedNode] = useState<TechnologyTree | null>(null);
 
-  const [treeIsVisible, setTreeIsVisible] = useState(false);
+  const treeIsVisible = useVisibleTimeout(2000);
+
   const [infoIsVisible, setInfoIsVisible] = useState(false);
 
   const tree = useMemo(() => constructTechTree({ ...data }), [data]);
@@ -63,34 +82,28 @@ const TechTalentTree = () => {
   );
 
   useEffect(() => {
-    const timeout = setTimeout(() => setTreeIsVisible(true), 1000);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  useEffect(() => {
     const newValue = selectedNode !== null;
     setInfoIsVisible(newValue);
   }, [selectedNode]);
 
   return (
-    <div className="game-overlay-component-container talent-tree">
+    <div className={classNames(overlay_cn, base_cn)}>
       <div
-        className={classNames('talent-tree-container', {
-          'talent-tree-container-shifted': selectedNode !== null,
-          'talent-tree-container-visible': treeIsVisible,
+        className={classNames(container_cn, {
+          [shifted_cn]: selectedNode !== null,
+          [visible_cn]: treeIsVisible,
         })}
       >
-        <div className="talent-tree-selector">
+        <div className={selector_cn}>
           <button
-            className="button is-small"
+            className={small_btn_cn}
             disabled={selectedTreeIndex === 0}
             onClick={handlePrevTree}
           >
             <Icon path={mdiArrowLeftThick} size={1} />
           </button>
           <button
-            className="button is-small talent-tree-selector-next"
+            className={classNames(small_btn_cn, next_selector_cn)}
             disabled={selectedTreeIndex === talentTrees.length - 1}
             onClick={handleNextTree}
           >
@@ -98,7 +111,7 @@ const TechTalentTree = () => {
           </button>
         </div>
         {talentTrees[selectedTreeIndex].map((row: TechnologyTree[]) => (
-          <div className="talent-tree-row">
+          <div className={row_cn}>
             {row.map(item => {
               const selected = selectedNode && selectedNode.id === item.id;
 
@@ -142,19 +155,17 @@ const TechTalentTree = () => {
       </div>
       {selectedNode && (
         <div
-          className={classNames('talent-tree-info', {
-            'talent-tree-info-visible': infoIsVisible,
+          className={classNames(info_cn, {
+            [visible_info_cn]: infoIsVisible,
           })}
         >
-          <div className="talent-tree-info-header">
-            <p className="talent-tree-info-header-title">
-              {selectedNode.title}
-            </p>
-            <p className="talent-tree-info-header-points">
+          <div className={info_header_cn}>
+            <p className={info_header_title_cn}>{selectedNode.title}</p>
+            <p className={info_header_points_cn}>
               {selectedNode.points}/{selectedNode.total}
             </p>
           </div>
-          <p className="talent-tree-info-content">{selectedNode.content}</p>
+          <p className={info_content_cn}>{selectedNode.content}</p>
         </div>
       )}
     </div>

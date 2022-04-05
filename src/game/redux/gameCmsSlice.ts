@@ -36,6 +36,9 @@ const selectGameCmsState: StateSelector<GameCmsState> = state => state.gameCms;
 const selectGameCmsData: StateSelector<GameCmsState['data']> = state =>
   selectGameCmsState(state).data;
 
+const selectGameCmsAboutContent: StateSelector<GameCmsState['data']['aboutContent']> = state =>
+  selectGameCmsData(state).aboutContent;
+
 const selectSelectedTalentTree: StateSelector<GameCmsState['selectedTalentTree']> = state =>
   selectGameCmsState(state).selectedTalentTree;
 
@@ -43,5 +46,6 @@ export const gameCmsActions = actions;
 export const gameCmsReducer = reducer;
 export const gameCmsSelectors = {
   selectGameCmsData,
+  selectGameCmsAboutContent,
   selectSelectedTalentTree,
 };

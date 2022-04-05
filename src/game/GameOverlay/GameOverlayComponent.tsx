@@ -4,10 +4,31 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import Icon from '@mdi/react';
 import { Typewriter } from 'react-simple-typewriter';
+import classNames from 'classnames';
+import { combineCss } from '../helpers/combineCss';
 import { gameCmsActions } from '../redux/gameCmsSlice';
 import { mdiClose } from '@mdi/js';
 import { overlayContentMapping } from './contentMapping';
 import { useGameContext } from '../GameContext';
+
+const base_cn = 'game-overlay';
+const container_cn = combineCss(base_cn, 'container');
+const backdrop_cn = combineCss(base_cn, 'backdrop');
+const message_cn = combineCss(base_cn, 'message');
+const message_container_cn = combineCss(message_cn, 'container');
+const message_container_close_button_cn = combineCss(
+  message_cn,
+  'close-button',
+);
+const message_container_close_button_container_cn = combineCss(
+  message_container_close_button_cn,
+  'container',
+);
+const small_button_cn = 'button is-small';
+const message_content_container_cn = combineCss(
+  message_cn,
+  'content-container',
+);
 
 const GameOverlayComponent = () => {
   const dispatch = useDispatch();
@@ -51,21 +72,27 @@ const GameOverlayComponent = () => {
   }, []);
 
   return (
-    <div className="game-overlay game-overlay-container">
+    <div className={classNames(base_cn, container_cn)}>
       <div
-        className="game-overlay-backdrop"
+        className={backdrop_cn}
         style={{ height: dimension, width: dimension }}
       >
-        <div className="game-overlay-message-container" onClick={handleClose}>
-          <div className="game-overlay-message" onClick={handleInnerClick}>
-            <div className="close-button-container">
-              <button className="button is-small" onClick={handleClose}>
+        <div className={message_container_cn} onClick={handleClose}>
+          <div className={message_cn} onClick={handleInnerClick}>
+            <div className={message_container_close_button_container_cn}>
+              <button
+                className={classNames(
+                  small_button_cn,
+                  message_container_close_button_cn,
+                )}
+                onClick={handleClose}
+              >
                 <Icon path={mdiClose} size={1} />
               </button>
             </div>
-            <div className="game-overlay-main-container">
+            <div className={message_content_container_cn}>
               {content.lead && (
-                <div className="lead-section">
+                <div>
                   <Typewriter words={[content.lead]} typeSpeed={30} />
                 </div>
               )}

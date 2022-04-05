@@ -2,6 +2,7 @@ import { OverlayContentKey, OverlayContentMap } from '../types/overlayContent';
 
 import Diploma from './Diploma';
 import React from 'react';
+import SimpleText from './SimpleText';
 import TechTalentTree from './talentTree/TechTalentTree';
 
 export const overlayContentMapping: OverlayContentMap = {
@@ -18,6 +19,7 @@ export const overlayContentMapping: OverlayContentMap = {
     component: <TechTalentTree />,
   },
   [OverlayContentKey.BIO]: {
-    lead: 'You seemed to have stumbled across an autobiography of sorts...',
+    lead: 'You seem to have stumbled across an autobiography of sorts...',
+    component: <SimpleText />,
   },
 };
