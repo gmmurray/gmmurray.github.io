@@ -1,4 +1,4 @@
-import { FireNumber, LevelTwoItem } from '../types/levelTwo';
+import { FireNumber, LevelTwoItem, PillarTwoSolution } from '../types/levelTwo';
 import {
   ItemDefinition,
   LevelCast,
@@ -161,3 +161,29 @@ export const fireStartLocations = {
     y: 13,
   },
 };
+
+export const pillarTwoSolutions: PillarTwoSolution[] = [
+  {
+    question: `What is Greg's favorite animal?`,
+    options: [
+      {
+        id: 1,
+        text: 'Baluga whale',
+      },
+      {
+        id: 2,
+        text: 'Poison dart frog',
+      },
+      {
+        id: 3,
+        text: 'Siamese cat',
+      },
+      {
+        id: 4,
+        text: 'Cardigan welsh corgi',
+      },
+    ],
+    answer: 1,
+    hint: `Frogs...why'd it have to be frogs?!`,
+  },
+];

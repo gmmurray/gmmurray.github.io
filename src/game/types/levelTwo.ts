@@ -16,9 +16,21 @@ export interface IPillarOneState {
   isFound: boolean;
 }
 
+export interface PillarTwoSolutionOption {
+  id: number;
+  text: string;
+}
+
 export interface PillarTwoSolution {
-  options: { id: string; text: string }[];
-  answer: string; // correct answer id
+  question: string;
+  options: PillarTwoSolutionOption[];
+  answer: number; // correct answer id
+  hint: string;
+}
+
+export interface IPillarTwoState {
+  solution: PillarTwoSolution;
+  isComplete: boolean;
 }
 
 export interface ILevelTwoProgress {

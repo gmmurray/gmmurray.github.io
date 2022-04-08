@@ -12,12 +12,18 @@ import {
   ILevelTwoProgress,
   IPillarOneState,
   IPillarThreeState,
+  IPillarTwoState,
   LevelTwoItem,
   LevelTwoProgress,
   PillarThreeState,
   PuzzleFires,
 } from '../types/levelTwo';
-import { fireStartLocations, levelTwoCast } from '../cast/levelTwo';
+import {
+  fireStartLocations,
+  levelTwoCast,
+  pillarTwoSolutions,
+} from '../cast/levelTwo';
+import { getRandomSolution, shuffleArray } from '../helpers/solutions';
 
 import { LevelScene } from './LevelScene';
 import { fireSpriteDefinitions } from '../assetDefinitions/sprites';
@@ -26,9 +32,10 @@ import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
 import { randomEnum } from '../helpers/randomEnum';
 
 export class LevelTwo extends LevelScene {
-  public puzzleFireState: IPillarThreeState;
   private progress: ILevelTwoProgress;
   private pillarOneState: IPillarOneState;
+  private pillarTwoState: IPillarTwoState;
+  public puzzleFireState: IPillarThreeState;
 
   constructor() {
     super(LEVEL_TWO_SCENE_KEY);
@@ -50,6 +57,7 @@ export class LevelTwo extends LevelScene {
       .attachKeyboardListener()
       ._initializeFireState()
       ._createPillarOneSolution()
+      ._createPillarTwoSolution()
       ._createPillarThreeSolution();
 
     this.dialog.init();
@@ -254,8 +262,12 @@ export class LevelTwo extends LevelScene {
     const options = (this.cast.items as LevelTwoItem[]).filter(
       i => i.pillar === 1 && i.hint !== undefined,
     );
-    const answerIndex = Math.floor(Math.random() * options.length);
-    const { friendlyName: itemName, hint } = options[answerIndex];
+    const solution = getRandomSolution(options);
+    if (!solution) {
+      throw new Error('Unable to create pillar one solution');
+    }
+
+    const { friendlyName: itemName, hint } = solution;
 
     this.pillarOneState = {
       solution: {
@@ -333,13 +345,56 @@ export class LevelTwo extends LevelScene {
   };
 
   public handlePillarTwoInteraction = () => {
-    if (1 === 1) {
-      // replace with completion parameter
+    if (this.pillarTwoState.isComplete) {
       this.createNewDialog('Well done, the power of this obelisk is yours');
-      this._completePillar(1);
+      this._completePillar(2);
       return;
     }
-    // TODO: handle interaction when the question is not answered
-    this.createNewDialog('');
+
+    this._createMultipleChoiceDialog();
+  };
+
+  private _createPillarTwoSolution = () => {
+    const solution = getRandomSolution(pillarTwoSolutions);
+
+    this.pillarTwoState = {
+      solution: {
+        ...solution,
+        options: shuffleArray(solution.options),
+      },
+      isComplete: false,
+    };
+
+    return this;
+  };
+
+  public handlePillarTwoAnswerChoice = (answer: number) => {
+    this._removeMultipleChoiceDialog();
+    if (answer === this.pillarTwoState.solution.answer) {
+      this.pillarTwoState = {
+        ...this.pillarTwoState,
+        isComplete: true,
+      };
+      return this.handlePillarTwoInteraction(); // completes pillar
+    }
+
+    this.createNewDialog(
+      'Sorry, that is not the correct answer. Maybe Greg can help with the next one?',
+    );
+    this._createPillarTwoSolution(); // create a new solution so they can't just brute force the answer (where's the fun in that?)
+  };
+
+  private _createMultipleChoiceDialog = () => {
+    const { options, hint } = this.pillarTwoState.solution;
+    // this.mcDialog.setText(options, hint); // TODO:
+    // this.mcDialog.setOnSelect(this.handlePillarTwoAnswerChoice); // TODO:
+    // this.mcDialog.toggleWindow(true); // TODO:
+    this.removeHudBottomText(); // the hud bottom text should always be removed so it doesn't overlap with dialog
+    this.toggleMovement();
+  };
+
+  private _removeMultipleChoiceDialog = () => {
+    this.toggleMovement();
+    // this.mcDialog.toggleWindow(false); // TODO:
   };
 }

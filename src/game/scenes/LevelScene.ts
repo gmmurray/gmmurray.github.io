@@ -54,6 +54,8 @@ export class LevelScene extends Scene {
   // dev mode
   public isDev = process.env.NODE_ENV === 'development';
 
+  public isMovementPaused: boolean = false;
+
   /**
    * sets player character and combines with npc characters to set characters
    *
@@ -208,7 +210,7 @@ export class LevelScene extends Scene {
     if (!this.playerCharacter) {
       return this;
     }
-    if (this.dialog.visible) {
+    if (this.dialog.visible || this.isMovementPaused) {
       return this;
     }
     const cursors = this.input.keyboard.createCursorKeys();
@@ -722,5 +724,13 @@ export class LevelScene extends Scene {
       SCALED_TILE_SIZE,
       SCALED_TILE_SIZE,
     );
+  };
+
+  /**
+   * toggles movement to the opposite of the current value
+   *
+   */
+  public toggleMovement = () => {
+    this.isMovementPaused = !this.isMovementPaused;
   };
 }
