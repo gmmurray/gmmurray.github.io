@@ -31,7 +31,9 @@ import {
 import { getRandomSolution, shuffleArray } from '../helpers/solutions';
 
 import { LevelScene } from './LevelScene';
+import { LevelTwoSavedData } from '../types/savedData';
 import McDialogPlugin from '../mcDialog/plugin';
+import { convertSecondsToTimeString } from '../helpers/time';
 import { getFireColorName } from '../helpers/fireColor';
 import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
 import { randomEnum } from '../helpers/randomEnum';
@@ -41,6 +43,8 @@ export class LevelTwo extends LevelScene {
   private pillarOneState: IPillarOneState;
   private pillarTwoState: IPillarTwoState;
   private puzzleFireState: IPillarThreeState;
+  private _timerInterval: NodeJS.Timeout;
+  private _timerElapsed: number = 0;
 
   public mcDialog: McDialogPlugin;
 
@@ -72,6 +76,9 @@ export class LevelTwo extends LevelScene {
     this.mcDialog.init();
 
     this._initializeCharacterMovement();
+    this._addPillarTrackerHudText();
+    this._initializeCurrentRecord();
+
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
@@ -337,15 +344,26 @@ export class LevelTwo extends LevelScene {
       this.progress[3].completed,
     ].filter(p => !!p).length;
 
-  private _completeLevel = () => {
-    alert('level complete');
+  private _completeLevel = (skipped = false) => {
+    if (!skipped) {
+      clearInterval(this._timerInterval);
+      const isRecord = this._saveTime();
+      if (isRecord) {
+        alert('Your time is a new record!');
+        this._displayRecord(this._timerElapsed);
+      }
+    } else {
+      this._timerElapsed = 0;
+    }
+    this.createNewDialog('You hear the sound of a portal opening up nearby...');
     // TODO: open portal to treasure room which contains experiences and portal to L1
   };
 
   public handleAngelInteraction = () => {
-    let message: string;
+    let message: string = '';
     const numComplete = this._getNumCompletedPillars();
     if (numComplete === 0) {
+      this._timerInterval = this._timerInterval ?? this._addTimerInterval();
       // TODO: angel message
     } else if (numComplete === 1) {
       // TODO: angel message
@@ -354,7 +372,7 @@ export class LevelTwo extends LevelScene {
     } else if (numComplete === 3) {
       // TODO: angel message
     }
-    this.createNewDialog(message);
+    //this.createNewDialog(message);
   };
 
   public handlePillarTwoInteraction = () => {
@@ -402,9 +420,8 @@ export class LevelTwo extends LevelScene {
     const { question, options } = this.pillarTwoState.solution;
     this.mcDialog.setQuestionText(question);
     this.mcDialog.setOptionsText(options);
-    this.mcDialog.setOnSelect(this.handlePillarTwoAnswerChoice); // TODO:
+    this.mcDialog.setOnSelect(this.handlePillarTwoAnswerChoice);
     this.mcDialog.toggleWindow(true);
-    this.removeHudBottomText(); // the hud bottom text should always be removed so it doesn't overlap with dialog
     this.toggleMovement();
   };
 
@@ -434,4 +451,39 @@ export class LevelTwo extends LevelScene {
   private _handleMcDialogStatus = () => {
     if (!this.mcDialog.visible && this.isMovementPaused) this.toggleMovement();
   };
+
+  private _addPillarTrackerHudText = (count: number = 0, time = 0) => {
+    this.hud.updateTopLeftText(
+      `Pillars unlocked: ${count}/3`,
+      `Time: ${convertSecondsToTimeString(time)}`,
+    );
+  };
+
+  private _addTimerInterval = () =>
+    setInterval(() => {
+      const newTime = this._timerElapsed + 1;
+      this._addPillarTrackerHudText(this._getNumCompletedPillars(), newTime);
+      this._timerElapsed = newTime;
+    }, 1000);
+
+  private _saveTime = () => {
+    const { time } = this.loadLevelSavedData<LevelTwoSavedData>() ?? {};
+    if (!time || this._timerElapsed < time) {
+      this.saveLevelData<LevelTwoSavedData>({ time: this._timerElapsed });
+      return true;
+    }
+    return false;
+  };
+
+  private _initializeCurrentRecord = () => {
+    const { time } = this.loadLevelSavedData<LevelTwoSavedData>() ?? {};
+    if (time !== undefined) {
+      this._displayRecord(time);
+    }
+  };
+
+  private _displayRecord = (seconds: number) =>
+    this.hud.updateTopCenterText(
+      `Record: ${convertSecondsToTimeString(seconds)}`,
+    );
 }

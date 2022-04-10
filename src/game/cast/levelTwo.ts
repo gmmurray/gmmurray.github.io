@@ -15,8 +15,8 @@ import { LevelTwo } from '../scenes/LevelTwo';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 10,
-  startingY: 18,
+  startingX: 21,
+  startingY: 31,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 

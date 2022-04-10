@@ -11,6 +11,7 @@ import {
 import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   ENTER_EVENT_KEY,
+  LOCAL_STORAGE_KEY,
   RANDOM_MOVEMENT_DELAY,
   SCALE,
   SCALED_TILE_SIZE,
@@ -271,13 +272,13 @@ export class LevelScene extends Scene {
     );
 
     const tileRect = this._createTileRectangle(x, y);
-    let bottomTextValue: string | undefined = undefined;
+    let bottomCenterTextValue: string | undefined = undefined;
     this.facingItem = this.items.find(item =>
       Geom.Intersects.RectangleToRectangle(item.sprite.getBounds(), tileRect),
     );
 
     if (this.facingItem) {
-      bottomTextValue = this.facingItem.friendlyName;
+      bottomCenterTextValue = this.facingItem.friendlyName;
     } else {
       this.facingCharacter = this.characters
         .filter(c => c.definition.key !== this.playerCharacter.definition.key)
@@ -287,7 +288,7 @@ export class LevelScene extends Scene {
     }
 
     if (this.facingCharacter) {
-      bottomTextValue = this.facingCharacter.friendlyName;
+      bottomCenterTextValue = this.facingCharacter.friendlyName;
     } else {
       this.facingPortal = this.portals.find(p =>
         Geom.Intersects.RectangleToRectangle(
@@ -298,7 +299,7 @@ export class LevelScene extends Scene {
     }
 
     if (this.facingPortal) {
-      bottomTextValue = this.facingPortal.friendlyName;
+      bottomCenterTextValue = this.facingPortal.friendlyName;
     } else {
       this.facingDoor = this.doors.find(d =>
         Geom.Intersects.RectangleToRectangle(
@@ -309,13 +310,13 @@ export class LevelScene extends Scene {
     }
 
     if (this.facingDoor) {
-      bottomTextValue = this.facingDoor.friendlyName;
+      bottomCenterTextValue = this.facingDoor.friendlyName;
     }
 
-    if (bottomTextValue && !this.dialog.visible) {
-      this.addHudBottomText(bottomTextValue);
-    } else if (this.hud.bottomTextIsDisplayed()) {
-      this.removeHudBottomText();
+    if (bottomCenterTextValue && !this.dialog.visible) {
+      this.addHudBottomCenterText(bottomCenterTextValue);
+    } else if (this.hud.bottomCenterTextIsDisplayed()) {
+      this.removeHudBottomCenterText();
     }
 
     return this;
@@ -367,7 +368,7 @@ export class LevelScene extends Scene {
   public createNewDialog = (text: string) => {
     this.dialog.setText(text);
     this.dialog.toggleWindow(true);
-    this.removeHudBottomText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
+    this.removeHudBottomCenterText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
   };
 
   /**
@@ -465,8 +466,8 @@ export class LevelScene extends Scene {
    * @param text
    * @returns this scene (chainable)
    */
-  public addHudBottomText = (text: string) => {
-    this.hud.updateBottomText(text);
+  public addHudBottomCenterText = (text: string) => {
+    this.hud.updateBottomCenterText(text);
     return this;
   };
 
@@ -475,8 +476,8 @@ export class LevelScene extends Scene {
    *
    * @returns this scene (chainable)
    */
-  public removeHudBottomText = () => {
-    this.hud.updateBottomText();
+  public removeHudBottomCenterText = () => {
+    this.hud.updateBottomCenterText();
     return this;
   };
 
@@ -733,4 +734,32 @@ export class LevelScene extends Scene {
   public toggleMovement = () => {
     this.isMovementPaused = !this.isMovementPaused;
   };
+
+  public loadAllSavedData = (): Record<string, any> | null =>
+    JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? null;
+
+  /**
+   * Retrieves saved data if it exists for this level
+   */
+  public loadLevelSavedData<T>(): T | null {
+    const save = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    return save && save[this.scene.key] ? (save[this.scene.key] as T) : null;
+  }
+
+  /**
+   * updates the save for this level
+   *
+   * @param data
+   */
+  public saveLevelData<T>(data: T) {
+    const current = this.loadAllSavedData() ?? {};
+    const value = {
+      ...current,
+      [this.scene.key]: {
+        ...current[this.scene.key],
+        ...data,
+      },
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
+  }
 }

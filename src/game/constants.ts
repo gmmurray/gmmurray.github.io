@@ -41,3 +41,5 @@ export const THEME_DARK_YELLOW_NUMBER = 0x976f08;
 
 export const THEME_WHITE = '#fff';
 export const THEME_LIGHT_GREY = '#b0b0b0';
+
+export const LOCAL_STORAGE_KEY = 'gmurray-game';
