@@ -2,12 +2,16 @@ import { FireNumber, LevelTwoItem, PillarTwoSolution } from '../types/levelTwo';
 import {
   ItemDefinition,
   LevelCast,
+  NpcCharacter,
   PlayerCharacter,
 } from '../types/interactions';
+import {
+  gregSpriteDefinition,
+  playerSpriteDefinition,
+} from '../assetDefinitions/sprites';
 
 import { BASE_PLAYER_SPEED } from '../constants';
 import { LevelTwo } from '../scenes/LevelTwo';
-import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
@@ -15,6 +19,17 @@ const player: PlayerCharacter = {
   startingY: 18,
   startingSpeed: BASE_PLAYER_SPEED,
 };
+
+const npcs: NpcCharacter[] = [
+  {
+    definition: gregSpriteDefinition,
+    startingX: 20,
+    startingY: 12,
+    startingSpeed: 2,
+    friendlyName: 'Greg',
+    handler: params => (params as LevelTwo).handleGregInteraction(),
+  },
+];
 
 const items: LevelTwoItem[] = [
   {
@@ -137,7 +152,7 @@ const items: LevelTwoItem[] = [
 
 export const levelTwoCast: LevelCast = {
   player,
-  npcs: [],
+  npcs,
   items,
   portals: [],
   doors: [],
@@ -185,5 +200,74 @@ export const pillarTwoSolutions: PillarTwoSolution[] = [
     ],
     answer: 2,
     hint: `Frogs...why'd it have to be frogs?!`,
+  },
+  {
+    question: `Get to the bottom of this: on a warm summer day, what is Greg's favorite drink?`,
+    options: [
+      {
+        id: 1,
+        text: 'Coca-Cola',
+      },
+      {
+        id: 2,
+        text: `Barq's Root Beer`,
+      },
+      {
+        id: 3,
+        text: 'Orange Crush',
+      },
+      {
+        id: 4,
+        text: 'Spring Water',
+      },
+    ],
+    answer: 2,
+    hint: `Let's just get to the root of the problem.`,
+  },
+  {
+    question: `Can you solve this? What is Greg's favorite fantasy/fiction world?`,
+    options: [
+      {
+        id: 1,
+        text: 'Lord of the Rings',
+      },
+      {
+        id: 2,
+        text: `Star Wars`,
+      },
+      {
+        id: 3,
+        text: 'Star Trek',
+      },
+      {
+        id: 4,
+        text: 'Harry Potter',
+      },
+    ],
+    answer: 2,
+    hint: `I can't talk right now, I'm listening to Duel of the Fates.`,
+  },
+  {
+    question: `Something simple for you. What is Greg's favorite Marvel character`,
+    options: [
+      {
+        id: 1,
+        text: 'Thor',
+      },
+      {
+        id: 2,
+        text: `Thanos`,
+      },
+      {
+        id: 3,
+        text: 'Spider Man',
+      },
+      {
+        id: 4,
+        text: 'Black Panther',
+      },
+    ],
+    answer: 4,
+    hint: `Has anyone seen any vibranium lately? I need to find some.`,
   },
 ];

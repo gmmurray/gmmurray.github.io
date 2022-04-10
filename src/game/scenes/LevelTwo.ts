@@ -4,6 +4,7 @@ import {
   PILLAR_ONE_ACTIVE_NAME,
   PILLAR_THREE_ACTIVE_NAME,
   PILLAR_TWO_ACTIVE_NAME,
+  RANDOM_MOVEMENT_DELAY,
   TILEMAPLAYER_TYPE,
 } from '../constants';
 import {
@@ -19,6 +20,10 @@ import {
   PuzzleFires,
 } from '../types/levelTwo';
 import {
+  fireSpriteDefinitions,
+  gregSpriteDefinition,
+} from '../assetDefinitions/sprites';
+import {
   fireStartLocations,
   levelTwoCast,
   pillarTwoSolutions,
@@ -27,7 +32,6 @@ import { getRandomSolution, shuffleArray } from '../helpers/solutions';
 
 import { LevelScene } from './LevelScene';
 import McDialogPlugin from '../mcDialog/plugin';
-import { fireSpriteDefinitions } from '../assetDefinitions/sprites';
 import { getFireColorName } from '../helpers/fireColor';
 import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
 import { randomEnum } from '../helpers/randomEnum';
@@ -67,6 +71,7 @@ export class LevelTwo extends LevelScene {
     this.hud.init();
     this.mcDialog.init();
 
+    this._initializeCharacterMovement();
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
@@ -75,7 +80,9 @@ export class LevelTwo extends LevelScene {
   };
 
   public update = () => {
-    this.useGridPlayerControls().setFacing();
+    this.useGridPlayerControls()
+      .setFacing()
+      ._handleMcDialogStatus();
   };
 
   private _initializeFireState = () => {
@@ -351,6 +358,7 @@ export class LevelTwo extends LevelScene {
   };
 
   public handlePillarTwoInteraction = () => {
+    if (this.mcDialog.visible) return;
     if (this.pillarTwoState.isComplete) {
       this.createNewDialog('Well done, the power of this obelisk is yours');
       this._completePillar(2);
@@ -403,5 +411,27 @@ export class LevelTwo extends LevelScene {
   private _removeMultipleChoiceDialog = () => {
     this.toggleMovement();
     this.mcDialog.toggleWindow(false);
+  };
+
+  public handleGregInteraction = () => {
+    if (this.pillarTwoState.isComplete) {
+      return this.createNewDialog(`Seems like you don't need help from me.`);
+    }
+    this.createNewDialog(this.pillarTwoState.solution.hint);
+  };
+
+  private _initializeCharacterMovement = () => {
+    const greg = this.characters.find(
+      c => c.definition.key === gregSpriteDefinition.key,
+    );
+    this.gridEngine.moveRandomly(
+      greg.definition.key,
+      RANDOM_MOVEMENT_DELAY,
+      greg.startingSpeed + 1,
+    );
+  };
+
+  private _handleMcDialogStatus = () => {
+    if (!this.mcDialog.visible && this.isMovementPaused) this.toggleMovement();
   };
 }
