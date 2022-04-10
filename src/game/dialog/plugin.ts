@@ -179,8 +179,10 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     });
 
     closeButton.setInteractive();
-
-    closeButton.on('pointerout', () => closeButton.clearTint());
+    closeButton.on('pointerover', () => closeButton.setColor('#fff'));
+    closeButton.on('pointerout', () =>
+      closeButton.setColor(this.config.closeBtnColor),
+    );
     closeButton.on('pointerdown', () => {
       this.toggleWindow();
       if (this.timedEvent) this.timedEvent.remove();

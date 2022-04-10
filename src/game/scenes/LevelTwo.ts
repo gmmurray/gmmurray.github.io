@@ -26,6 +26,7 @@ import {
 import { getRandomSolution, shuffleArray } from '../helpers/solutions';
 
 import { LevelScene } from './LevelScene';
+import McDialogPlugin from '../mcDialog/plugin';
 import { fireSpriteDefinitions } from '../assetDefinitions/sprites';
 import { getFireColorName } from '../helpers/fireColor';
 import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
@@ -35,7 +36,9 @@ export class LevelTwo extends LevelScene {
   private progress: ILevelTwoProgress;
   private pillarOneState: IPillarOneState;
   private pillarTwoState: IPillarTwoState;
-  public puzzleFireState: IPillarThreeState;
+  private puzzleFireState: IPillarThreeState;
+
+  public mcDialog: McDialogPlugin;
 
   constructor() {
     super(LEVEL_TWO_SCENE_KEY);
@@ -62,10 +65,12 @@ export class LevelTwo extends LevelScene {
 
     this.dialog.init();
     this.hud.init();
+    this.mcDialog.init();
 
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
+      this.mcDialog.updateDimensions(gameSize);
     });
   };
 
@@ -326,6 +331,7 @@ export class LevelTwo extends LevelScene {
     ].filter(p => !!p).length;
 
   private _completeLevel = () => {
+    alert('level complete');
     // TODO: open portal to treasure room which contains experiences and portal to L1
   };
 
@@ -370,7 +376,7 @@ export class LevelTwo extends LevelScene {
 
   public handlePillarTwoAnswerChoice = (answer: number) => {
     this._removeMultipleChoiceDialog();
-    if (answer === this.pillarTwoState.solution.answer) {
+    if (answer == this.pillarTwoState.solution.answer) {
       this.pillarTwoState = {
         ...this.pillarTwoState,
         isComplete: true,
@@ -385,16 +391,17 @@ export class LevelTwo extends LevelScene {
   };
 
   private _createMultipleChoiceDialog = () => {
-    const { options, hint } = this.pillarTwoState.solution;
-    // this.mcDialog.setText(options, hint); // TODO:
-    // this.mcDialog.setOnSelect(this.handlePillarTwoAnswerChoice); // TODO:
-    // this.mcDialog.toggleWindow(true); // TODO:
+    const { question, options } = this.pillarTwoState.solution;
+    this.mcDialog.setQuestionText(question);
+    this.mcDialog.setOptionsText(options);
+    this.mcDialog.setOnSelect(this.handlePillarTwoAnswerChoice); // TODO:
+    this.mcDialog.toggleWindow(true);
     this.removeHudBottomText(); // the hud bottom text should always be removed so it doesn't overlap with dialog
     this.toggleMovement();
   };
 
   private _removeMultipleChoiceDialog = () => {
     this.toggleMovement();
-    // this.mcDialog.toggleWindow(false); // TODO:
+    this.mcDialog.toggleWindow(false);
   };
 }

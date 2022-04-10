@@ -3,6 +3,7 @@ import {
   DIALOG_PLUGIN_KEY,
   GRID_ENGINE_PLUGIN_KEY,
   HUD_PLUGIN_KEY,
+  MC_DIALOG_PLUGIN_KEY,
   TILE_SIZE,
 } from './constants';
 
@@ -13,6 +14,7 @@ import HudPlugin from './hud/plugin';
 import { LevelOne } from './scenes/LevelOne';
 import { LevelTwo } from './scenes/LevelTwo';
 import { LoadingScene } from './scenes/LoadingScene';
+import McDialogPlugin from './mcDialog/plugin';
 import Phaser from 'phaser';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
 
@@ -65,6 +67,11 @@ export const gameConfig = {
         key: HUD_PLUGIN_KEY,
         plugin: HudPlugin,
         mapping: HUD_PLUGIN_KEY,
+      },
+      {
+        key: MC_DIALOG_PLUGIN_KEY,
+        plugin: McDialogPlugin,
+        mapping: MC_DIALOG_PLUGIN_KEY,
       },
     ],
   },

@@ -11,8 +11,8 @@ import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 40,
-  startingY: 14,
+  startingX: 10,
+  startingY: 18,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -164,7 +164,7 @@ export const fireStartLocations = {
 
 export const pillarTwoSolutions: PillarTwoSolution[] = [
   {
-    question: `What is Greg's favorite animal?`,
+    question: `Here's your question: what is Greg's favorite animal?`,
     options: [
       {
         id: 1,
@@ -183,7 +183,7 @@ export const pillarTwoSolutions: PillarTwoSolution[] = [
         text: 'Cardigan welsh corgi',
       },
     ],
-    answer: 1,
+    answer: 2,
     hint: `Frogs...why'd it have to be frogs?!`,
   },
 ];
