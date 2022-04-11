@@ -159,7 +159,9 @@ export class LevelScene extends Scene {
     }
 
     if (
-      addedMap.layers.some(l => l.name === this.mapDefinition.animatedLayer)
+      addedMap.layers.some(l =>
+        this.mapDefinition.animatedLayer.includes(l.name),
+      )
     ) {
       this.animatedTiles.init(addedMap);
     }
@@ -374,8 +376,8 @@ export class LevelScene extends Scene {
   /**
    * closes the dialog window
    */
-  public handleCloseDialog = () => {
-    if (this.dialogDisabled) return;
+  public handleCloseDialog = (force: boolean = false) => {
+    if (this.dialogDisabled && !force) return;
     this.dialog.toggleWindow(false);
   };
 
@@ -687,17 +689,19 @@ export class LevelScene extends Scene {
           this.cameras.main.fade(2500, 0, 0, 0);
         }, 1000);
         setTimeout(() => {
-          // @ts-ignore
-          this.scene.start(match.to);
-          this.scene.sleep(this.scene.key);
+          this.handleCloseDialog(true);
+          this.scene.wake(match.to as string);
+          this.scene.switch(match.to as string);
         }, 3500);
       } else if (
         match.type === PortalType.COORDINATE &&
         typeof match.to === 'object'
       ) {
+        this.cameras.main.flash(1500, 0, 0, 0);
         this.gridEngine.setPosition(
           this.playerCharacter.definition.key,
           match.to,
+          match.layer,
         );
         if (match.face) {
           this.gridEngine.turnTowards(

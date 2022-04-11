@@ -1,22 +1,26 @@
+import { BASE_PLAYER_SPEED, LEVEL_ONE_SCENE_KEY } from '../constants';
 import { FireNumber, LevelTwoItem, PillarTwoSolution } from '../types/levelTwo';
 import {
   ItemDefinition,
   LevelCast,
   NpcCharacter,
   PlayerCharacter,
+  PortalDefinition,
+  PortalType,
 } from '../types/interactions';
 import {
   gregSpriteDefinition,
   playerSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import { BASE_PLAYER_SPEED } from '../constants';
 import { LevelTwo } from '../scenes/LevelTwo';
+import { OverlayContentKey } from '../types/overlayContent';
+import { createOverlay } from '../helpers/createOverlay';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 21,
-  startingY: 31,
+  startingX: 19,
+  startingY: 66,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -148,13 +152,65 @@ const items: LevelTwoItem[] = [
     pillar: 1,
     hint: 'I may remind you of a vase but just know that I am large',
   },
+  {
+    // help sign
+    x: 32,
+    y: 25,
+    handler: params =>
+      params.createNewDialog(
+        `Confused? Try speaking with your guide (the angel over there) to get started. Each pillar will give you a hint to help you solve its mystery.`,
+      ),
+    friendlyName: 'help',
+  },
+  {
+    // skip button
+    x: 7,
+    y: 25,
+    handler: params => (params as LevelTwo).handleSkipButton(),
+    friendlyName: 'strange button (skip level)',
+  },
+  {
+    // experiences chest
+    x: 19,
+    y: 64,
+    handler: params =>
+      createOverlay(OverlayContentKey.EXPERIENCES, params.scene),
+    friendlyName: 'treasure',
+  },
+];
+
+const portals: PortalDefinition[] = [
+  {
+    from: {
+      x: 18,
+      y: 27,
+    },
+    type: PortalType.COORDINATE,
+    to: {
+      x: 19,
+      y: 67,
+    },
+    dialog: 'the portal has taken you to a mysterious area...',
+    friendlyName: 'escape portal',
+    layer: 'ground',
+  },
+  {
+    from: {
+      x: 19,
+      y: 61,
+    },
+    type: PortalType.SCENE,
+    to: LEVEL_ONE_SCENE_KEY,
+    dialog: 'the portal hums with magical energy as you approach...',
+    friendlyName: 'back to beginning',
+  },
 ];
 
 export const levelTwoCast: LevelCast = {
   player,
   npcs,
   items,
-  portals: [],
+  portals,
   doors: [],
 };
 
@@ -271,3 +327,10 @@ export const pillarTwoSolutions: PillarTwoSolution[] = [
     hint: `Has anyone seen any vibranium lately? I need to find some.`,
   },
 ];
+
+export const angelMessages = {
+  0: `Hello traveler. You seem lost, did you just arrive here? To go back you will need to use the portal just over there but, unfortunately, it is broken! To fix it you will need to activate the three pillars scattered across this area. Solve each pillar's mystery to obtain its power.`,
+  1: `Well done, you've successfully gained the power of one obelisk thus far. Keep up the good work and you'll be out of here in no time.`,
+  2: `Two pillars unlocked! Very good. You got this, just one more!`,
+  3: `Congratulations! The portal is open! Go through it to earn your reward and travel back to where you came from.`,
+};

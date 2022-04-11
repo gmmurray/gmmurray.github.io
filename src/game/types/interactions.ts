@@ -40,6 +40,7 @@ export interface PortalDefinition extends Interaction {
   to: string | Coordinates;
   dialog?: string;
   face?: Direction;
+  layer?: string;
 }
 
 export interface Character {

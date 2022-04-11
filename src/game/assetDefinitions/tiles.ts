@@ -1,11 +1,12 @@
 import { getTileMapSource, getTileSetSource } from '../helpers/getAssetSource';
 
+import { PORTAL_ACTIVE_NAME } from '../constants';
 import { TileMapDefinition } from '../types/assetDefinitions';
 
 export const levelOneMapDefinition: TileMapDefinition = {
   key: 'level-one-map',
   source: getTileMapSource('level_one'),
-  animatedLayer: 'animated',
+  animatedLayer: ['animated'],
   tilesets: [
     {
       name: 'nature tileset',
@@ -48,7 +49,7 @@ export const levelOneMapDefinition: TileMapDefinition = {
 export const levelTwoMapDefinition: TileMapDefinition = {
   key: 'level-two-map',
   source: getTileMapSource('level_two'),
-  animatedLayer: 'animated',
+  animatedLayer: ['animated', PORTAL_ACTIVE_NAME, 'treasure2'],
   tilesets: [
     {
       name: 'simple_pixel_grass_tileset',
@@ -84,6 +85,21 @@ export const levelTwoMapDefinition: TileMapDefinition = {
       name: 'interiors_tileset',
       key: 'interiors-tiles',
       source: getTileSetSource('interiors_tileset'),
+    },
+    {
+      name: 'portal_tileset',
+      key: 'portal-tiles',
+      source: getTileSetSource('portal_spritesheet'),
+    },
+    {
+      name: 'treasure_spritesheet',
+      key: 'treasure-tiles',
+      source: getTileSetSource('treasure_spritesheet'),
+    },
+    {
+      name: 'treasure_shine_tileset',
+      key: 'treasure-shine-tiles',
+      source: getTileSetSource('treasure_shine_tileset'),
     },
   ],
   characterLayer: {

@@ -19,7 +19,7 @@ export interface TileSetDefinition {
 export interface TileMapDefinition {
   key: string;
   source: string;
-  animatedLayer: string;
+  animatedLayer: string[];
   tilesets: TileSetDefinition[];
   characterLayer?: CharacterLayerDefinition;
 }

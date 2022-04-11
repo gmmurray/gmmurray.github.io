@@ -25,6 +25,7 @@ export const DEFAULT_FIRE_ANIMATION_FPS = 10;
 export const PILLAR_ONE_ACTIVE_NAME = 'active1';
 export const PILLAR_TWO_ACTIVE_NAME = 'active2';
 export const PILLAR_THREE_ACTIVE_NAME = 'active3';
+export const PORTAL_ACTIVE_NAME = 'active-portal';
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';

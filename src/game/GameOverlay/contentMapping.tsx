@@ -22,4 +22,7 @@ export const overlayContentMapping: OverlayContentMap = {
     lead: 'You seem to have stumbled across an autobiography of sorts...',
     component: <SimpleText />,
   },
+  [OverlayContentKey.EXPERIENCES]: {
+    lead: `Inside the chest is a glimpse into Greg's experiences...`,
+  },
 };

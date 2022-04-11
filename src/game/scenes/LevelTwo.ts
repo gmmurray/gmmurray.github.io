@@ -4,6 +4,7 @@ import {
   PILLAR_ONE_ACTIVE_NAME,
   PILLAR_THREE_ACTIVE_NAME,
   PILLAR_TWO_ACTIVE_NAME,
+  PORTAL_ACTIVE_NAME,
   RANDOM_MOVEMENT_DELAY,
   TILEMAPLAYER_TYPE,
 } from '../constants';
@@ -20,14 +21,15 @@ import {
   PuzzleFires,
 } from '../types/levelTwo';
 import {
-  fireSpriteDefinitions,
-  gregSpriteDefinition,
-} from '../assetDefinitions/sprites';
-import {
+  angelMessages,
   fireStartLocations,
   levelTwoCast,
   pillarTwoSolutions,
 } from '../cast/levelTwo';
+import {
+  fireSpriteDefinitions,
+  gregSpriteDefinition,
+} from '../assetDefinitions/sprites';
 import { getRandomSolution, shuffleArray } from '../helpers/solutions';
 
 import { LevelScene } from './LevelScene';
@@ -75,9 +77,13 @@ export class LevelTwo extends LevelScene {
     this.hud.init();
     this.mcDialog.init();
 
+    this.handleCloseDialog();
+
     this._initializeCharacterMovement();
     this._addPillarTrackerHudText();
     this._initializeCurrentRecord();
+
+    this._timerInterval = this._timerInterval ?? this._addTimerInterval();
 
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.hud.updateDimensions(gameSize);
@@ -356,23 +362,14 @@ export class LevelTwo extends LevelScene {
       this._timerElapsed = 0;
     }
     this.createNewDialog('You hear the sound of a portal opening up nearby...');
+    this._activatePortal();
     // TODO: open portal to treasure room which contains experiences and portal to L1
   };
 
   public handleAngelInteraction = () => {
-    let message: string = '';
     const numComplete = this._getNumCompletedPillars();
-    if (numComplete === 0) {
-      this._timerInterval = this._timerInterval ?? this._addTimerInterval();
-      // TODO: angel message
-    } else if (numComplete === 1) {
-      // TODO: angel message
-    } else if (numComplete === 2) {
-      // TODO: angel message
-    } else if (numComplete === 3) {
-      // TODO: angel message
-    }
-    //this.createNewDialog(message);
+
+    this.createNewDialog(angelMessages[numComplete]);
   };
 
   public handlePillarTwoInteraction = () => {
@@ -486,4 +483,31 @@ export class LevelTwo extends LevelScene {
     this.hud.updateTopCenterText(
       `Record: ${convertSecondsToTimeString(seconds)}`,
     );
+
+  private _activatePortal = () => {
+    const layers = this.children.list.filter(
+      go => go.type === TILEMAPLAYER_TYPE,
+    ) as Phaser.Tilemaps.TilemapLayer[];
+    const activeLayer = layers.find(l => l.layer.name === PORTAL_ACTIVE_NAME);
+    if (activeLayer) {
+      let interval = setInterval(() => {
+        activeLayer.setAlpha(activeLayer.alpha + 0.1);
+
+        if (activeLayer.alpha === 1) clearInterval(interval);
+      }, 200);
+    }
+
+    this.setPortals();
+    return this;
+  };
+
+  public handleSkipButton = () => {
+    const confirmed = confirm(
+      'Are you sure? Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
+    );
+    if (confirmed) {
+      this.createNewDialog('You press the strange button...');
+      this._completeLevel(true);
+    }
+  };
 }
