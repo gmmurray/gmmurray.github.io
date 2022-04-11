@@ -326,7 +326,7 @@ export class LevelTwo extends LevelScene {
     );
   };
 
-  private _completePillar = (pillar: 1 | 2 | 3) => {
+  private _completePillar = (pillar: 1 | 2 | 3, skip = false) => {
     this.progress = {
       ...this.progress,
       [pillar]: {
@@ -336,9 +336,11 @@ export class LevelTwo extends LevelScene {
     };
     this._activatePillar(pillar);
 
-    if (this._isLevelComplete()) {
+    if (!skip && this._isLevelComplete()) {
       this._completeLevel();
     }
+
+    return this;
   };
 
   private _isLevelComplete = () => this._getNumCompletedPillars() === 3;
@@ -351,8 +353,8 @@ export class LevelTwo extends LevelScene {
     ].filter(p => !!p).length;
 
   private _completeLevel = (skipped = false) => {
+    clearInterval(this._timerInterval);
     if (!skipped) {
-      clearInterval(this._timerInterval);
       const isRecord = this._saveTime();
       if (isRecord) {
         alert('Your time is a new record!');
@@ -360,10 +362,13 @@ export class LevelTwo extends LevelScene {
       }
     } else {
       this._timerElapsed = 0;
+      this._completePillar(1, true)
+        ._completePillar(2, true)
+        ._completePillar(3, true)
+        ._addPillarTrackerHudText(this._getNumCompletedPillars());
     }
     this.createNewDialog('You hear the sound of a portal opening up nearby...');
     this._activatePortal();
-    // TODO: open portal to treasure room which contains experiences and portal to L1
   };
 
   public handleAngelInteraction = () => {

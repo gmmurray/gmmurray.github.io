@@ -688,10 +688,17 @@ export class LevelScene extends Scene {
         setTimeout(() => {
           this.cameras.main.fade(2500, 0, 0, 0);
         }, 1000);
+
         setTimeout(() => {
           this.handleCloseDialog(true);
-          this.scene.wake(match.to as string);
-          this.scene.switch(match.to as string);
+          this.scene.sleep(this.scene.key);
+          this.scene.run(match.to as string);
+          this.cameras.main.resetFX();
+          this.gridEngine.setPosition(this.playerCharacter.definition.key, {
+            x: this.playerCharacter.startingX,
+            y: this.playerCharacter.startingY,
+          });
+          this.dialogDisabled = false;
         }, 3500);
       } else if (
         match.type === PortalType.COORDINATE &&

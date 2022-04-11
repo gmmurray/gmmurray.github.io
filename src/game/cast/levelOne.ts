@@ -22,10 +22,8 @@ import { createOverlay } from '../helpers/createOverlay';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  // startingX: 24,
-  // startingY: 52,
-  startingX: 7,
-  startingY: 92,
+  startingX: 24,
+  startingY: 52,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
