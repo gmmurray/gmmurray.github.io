@@ -12,6 +12,7 @@ import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
 import HudPlugin from './hud/plugin';
 import { LevelOne } from './scenes/LevelOne';
+import { LevelThree } from './scenes/LevelThree';
 import { LevelTwo } from './scenes/LevelTwo';
 import { LoadingScene } from './scenes/LoadingScene';
 import McDialogPlugin from './mcDialog/plugin';
@@ -45,7 +46,7 @@ export const gameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, LevelOne, LevelTwo],
+  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree],
   plugins: {
     scene: [
       {

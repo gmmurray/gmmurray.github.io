@@ -20,6 +20,7 @@ import {
 import { Geom, Scene, Tilemaps } from 'phaser';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
 import HudPlugin from '../hud/plugin';
 import { TileMapDefinition } from '../types/assetDefinitions';
@@ -582,7 +583,7 @@ export class LevelScene extends Scene {
     return this.items
       .filter(i => !!i.sprite)
       .map(({ x, y, sprite }) => ({
-        id: `object_${this.levelNumber}_${x}_${y}`,
+        id: this._getItemId(x, y),
         collides: true,
         startPosition: { x, y },
         sprite,
@@ -773,4 +774,26 @@ export class LevelScene extends Scene {
     };
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
   }
+
+  public removeItem = (coordinates: Coordinates) => {
+    const removeIndex = this.items.findIndex(
+      item => item.x === coordinates.x && item.y === coordinates.y,
+    );
+    if (removeIndex === -1) return;
+
+    const itemToRemove = this.items[removeIndex];
+
+    if (!itemToRemove) return;
+
+    this.gridEngine.removeCharacter(
+      this._getItemId(itemToRemove.x, itemToRemove.y),
+    );
+
+    itemToRemove.sprite.destroy();
+
+    this.items = this.items.filter((_, index) => index !== removeIndex);
+  };
+
+  private _getItemId = (x: number, y: number) =>
+    `object_${this.levelNumber}_${x}_${y}`;
 }

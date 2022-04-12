@@ -1,4 +1,8 @@
-import { BASE_PLAYER_SPEED, LEVEL_TWO_SCENE_KEY } from '../constants';
+import {
+  BASE_PLAYER_SPEED,
+  LEVEL_THREE_SCENE_KEY,
+  LEVEL_TWO_SCENE_KEY,
+} from '../constants';
 import {
   DoorDefinition,
   ItemDefinition,
@@ -145,9 +149,9 @@ const portals: PortalDefinition[] = [
       y: 9,
     },
     type: PortalType.SCENE,
-    to: '', // TODO: scene 3,
+    to: LEVEL_THREE_SCENE_KEY,
     dialog: 'the portal hums with magical energy as you approach...',
-    friendlyName: 'middle',
+    friendlyName: 'Creepy Catacombs',
   },
   {
     from: {

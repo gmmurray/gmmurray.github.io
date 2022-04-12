@@ -12,6 +12,7 @@ export const ASSETS_BASE_URL = 'assets/game/';
 export const LOADING_SCENE_KEY = 'loading-scene';
 export const LEVEL_ONE_SCENE_KEY = 'level-one';
 export const LEVEL_TWO_SCENE_KEY = 'level-two';
+export const LEVEL_THREE_SCENE_KEY = 'level-three';
 
 // plugin keys
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';
@@ -26,6 +27,10 @@ export const PILLAR_ONE_ACTIVE_NAME = 'active1';
 export const PILLAR_TWO_ACTIVE_NAME = 'active2';
 export const PILLAR_THREE_ACTIVE_NAME = 'active3';
 export const PORTAL_ACTIVE_NAME = 'active-portal';
+
+// level three
+export const POTION_LAYER_NAME = 'potions';
+export const ORB_LAYER_NAME = 'orbs';
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';

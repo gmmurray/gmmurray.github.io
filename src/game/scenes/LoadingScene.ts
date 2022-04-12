@@ -1,6 +1,7 @@
 import {
   ASSETS_BASE_URL,
   LEVEL_ONE_SCENE_KEY,
+  LEVEL_THREE_SCENE_KEY,
   LEVEL_TWO_SCENE_KEY,
   LOADING_SCENE_KEY,
   THEME_DARK_YELLOW_NUMBER,
@@ -17,6 +18,7 @@ import {
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 import {
   levelOneMapDefinition,
+  levelThreeMapDefinition,
   levelTwoMapDefinition,
 } from '../assetDefinitions/tiles';
 
@@ -29,7 +31,11 @@ const spriteDefinitions = [
   whiteCatSpriteDefinition,
   ...fireSpriteDefinitions,
 ];
-const tileDefinitions = [levelOneMapDefinition, levelTwoMapDefinition];
+const tileDefinitions = [
+  levelOneMapDefinition,
+  levelTwoMapDefinition,
+  levelThreeMapDefinition,
+];
 
 export class LoadingScene extends Scene {
   public isDev = process.env.NODE_ENV === 'development';
@@ -156,7 +162,8 @@ export class LoadingScene extends Scene {
   private _startFirstScene = () => {
     setTimeout(
       () => {
-        this.scene.start(LEVEL_ONE_SCENE_KEY);
+        //this.scene.start(LEVEL_ONE_SCENE_KEY);
+        this.scene.start(LEVEL_THREE_SCENE_KEY);
       },
       this.isDev ? 0 : 2000,
     );

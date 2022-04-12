@@ -149,3 +149,41 @@ export const levelTwoMapDefinition: TileMapDefinition = {
     ],
   },
 };
+
+export const levelThreeMapDefinition: TileMapDefinition = {
+  key: 'level-three-map',
+  source: getTileMapSource('level_three'),
+  animatedLayer: ['orbs'],
+  tilesets: [
+    {
+      name: 'catacomb_base_tileset',
+      key: 'catacomb-base-tiles',
+      source: getTileSetSource('catacomb_base_tileset'),
+    },
+    {
+      name: 'catacomb_decorations_tileset',
+      key: 'catacomb-decorations-tiles',
+      source: getTileSetSource('catacomb_decorations_tileset'),
+    },
+    {
+      name: 'torch_tileset',
+      key: 'torch-tileset',
+      source: getTileSetSource('torch_tileset'),
+    },
+    {
+      name: 'green_orb_tileset',
+      key: 'green-orb-tileset',
+      source: getTileSetSource('green_orb_tileset'),
+    },
+    {
+      name: 'magical_items_tileset',
+      key: 'magical-items-tileset',
+      source: getTileSetSource('magical_items_tileset'),
+    },
+  ],
+  characterLayer: {
+    lower: 'ground',
+    upper: 'overhead',
+    transitions: [],
+  },
+};
