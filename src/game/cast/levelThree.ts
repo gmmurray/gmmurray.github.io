@@ -1,6 +1,5 @@
 import {
   DoorDefinition,
-  ItemDefinition,
   LevelCast,
   NpcCharacter,
   PlayerCharacter,
@@ -10,7 +9,6 @@ import {
   LevelThreeDifficulty,
   LevelThreeDifficultySettingsMap,
   LevelThreeItem,
-  LevelThreeState,
   OrbMap,
   PotionType,
 } from '../types/levelThree';
@@ -399,18 +397,3 @@ export const levelThreeFireExplosionLocations: Coordinates[] = [
     y: 46,
   },
 ];
-
-export const levelThreeInitialState: LevelThreeState = {
-  orbs: {
-    1: false,
-    2: false,
-    3: false,
-  },
-  health: 100,
-  difficultySettings: {
-    ...levelThreeDifficultySettingsMap[LevelThreeDifficulty.EASY],
-  },
-  standingInFire: false,
-  fireIsActive: false,
-  steppedOnFire: undefined,
-};

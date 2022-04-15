@@ -17,19 +17,6 @@ export enum LevelThreeDifficulty {
   NIGHTMARE,
 }
 
-export interface LevelThreeState {
-  orbs: {
-    1: boolean;
-    2: boolean;
-    3: boolean;
-  };
-  health: number;
-  difficultySettings: LevelThreeDifficultySettings;
-  standingInFire: boolean;
-  fireIsActive: boolean;
-  steppedOnFire?: Coordinates;
-}
-
 export interface OrbDefinition {
   location: {
     primary: Coordinates;
@@ -76,4 +63,9 @@ export interface LevelThreeDamagingFireDefinition {
   scale: number;
   frameCount: number;
   frameRate: number;
+}
+
+export enum LevelThreeFireType {
+  COLUMN,
+  EXPLOSION,
 }

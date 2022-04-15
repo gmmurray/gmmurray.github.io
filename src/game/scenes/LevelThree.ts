@@ -7,26 +7,28 @@ import {
   ORB_LAYER_NAME,
   POTION_LAYER_NAME,
 } from '../constants';
-import { LevelThreeState, PotionType } from '../types/levelThree';
+import { LevelThreeFireType, PotionType } from '../types/levelThree';
+import {
+  levelThreeActions,
+  levelThreeSelectors,
+} from '../redux/levelThreeSlice';
 import {
   levelThreeCast,
   levelThreeFireColumnLocations,
   levelThreeFireExplosionLocations,
-  levelThreeInitialState,
   orbMap,
 } from '../cast/levelThree';
 import {
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
 } from '../assetDefinitions/sprites';
+import { store, storeDispatch } from '../redux/store';
 
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
 
 export class LevelThree extends LevelScene {
-  private _state: LevelThreeState = { ...levelThreeInitialState };
-
   constructor() {
     super(LEVEL_THREE_SCENE_KEY);
     this.levelNumber = 3;
@@ -98,30 +100,23 @@ export class LevelThree extends LevelScene {
 
     this.removeItem(primary);
 
-    this._state = {
-      ...this._state,
-      orbs: {
-        ...this._state.orbs,
-        [orb]: true,
-      },
-    };
+    storeDispatch(levelThreeActions.orbCollected(orb));
 
     this._unlockStairs();
   };
 
   private _takeHealthPotion = (isMini: boolean = false) => {
-    const { healthPotions } = this._state.difficultySettings;
+    const {
+      healthPotions,
+    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+
     const potionHealthValue = isMini
       ? healthPotions.mini
       : healthPotions.normal;
-    const healedAmount = this._state.health + potionHealthValue;
-    const health = healedAmount > 100 ? 100 : healedAmount;
-    this._state = {
-      ...this._state,
-      health,
-    };
-    console.log(healedAmount);
-    console.log(this._state);
+
+    storeDispatch(levelThreeActions.healthChanged(potionHealthValue));
   };
 
   private _takeSpeedPotion = () => {
@@ -134,7 +129,7 @@ export class LevelThree extends LevelScene {
   };
 
   private _unlockStairs = () => {
-    const { orbs } = this._state;
+    const orbs = levelThreeSelectors.selectLevelThreeOrbs(store.getState());
     const firstStairActive = orbs[1];
     const secondStairActive = orbs[2] && orbs[2];
 
@@ -179,10 +174,19 @@ export class LevelThree extends LevelScene {
 
       sprite
         .on('animationstart', () =>
-          this._onFireAnimationStart(sprite, animationLengthMs),
+          this._onFireAnimationStart(
+            sprite,
+            animationLengthMs,
+            LevelThreeFireType.COLUMN,
+          ),
         )
         .on('animationrepeat', () =>
-          this._onFireAnimationRepeat(sprite, animationLengthMs, position),
+          this._onFireAnimationRepeat(
+            sprite,
+            animationLengthMs,
+            position,
+            LevelThreeFireType.COLUMN,
+          ),
         )
         .play(animKey);
 
@@ -220,10 +224,19 @@ export class LevelThree extends LevelScene {
 
       sprite
         .on('animationstart', () =>
-          this._onFireAnimationStart(sprite, animationLengthMs),
+          this._onFireAnimationStart(
+            sprite,
+            animationLengthMs,
+            LevelThreeFireType.EXPLOSION,
+          ),
         )
         .on('animationrepeat', () =>
-          this._onFireAnimationRepeat(sprite, animationLengthMs, position),
+          this._onFireAnimationRepeat(
+            sprite,
+            animationLengthMs,
+            position,
+            LevelThreeFireType.EXPLOSION,
+          ),
         )
         .play(animKey);
 
@@ -241,9 +254,10 @@ export class LevelThree extends LevelScene {
   private _onFireAnimationStart = (
     sprite: Phaser.GameObjects.Sprite,
     animationLength: number,
+    type: LevelThreeFireType,
   ) => {
     sprite.setVisible(true);
-    this._state.fireIsActive = true;
+    storeDispatch(levelThreeActions.activeFiresChanged({ type, active: true }));
     setTimeout(() => sprite.setVisible(false), animationLength);
   };
 
@@ -251,24 +265,28 @@ export class LevelThree extends LevelScene {
     sprite: Phaser.GameObjects.Sprite,
     animationLength: number,
     position: Coordinates,
+    type: LevelThreeFireType,
   ) => {
-    this._state.fireIsActive = true;
+    storeDispatch(levelThreeActions.activeFiresChanged({ type, active: true }));
     sprite.setVisible(true);
-    if (this._isStandingInActiveFire(position)) {
+
+    if (this._isStandingInActiveFire(position, type)) {
       this._dealFireDamage();
     }
 
     // do damage to the player if they are in it,
     // but only once per LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD
     const interval = setInterval(() => {
-      if (this._isStandingInActiveFire(position)) {
+      if (this._isStandingInActiveFire(position, type)) {
         this._dealFireDamage();
       }
     }, LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD);
 
     setTimeout(() => {
       clearInterval(interval);
-      this._state.fireIsActive = false;
+      storeDispatch(
+        levelThreeActions.activeFiresChanged({ type, active: false }),
+      );
       sprite.setVisible(false);
     }, animationLength);
   };
@@ -279,64 +297,108 @@ export class LevelThree extends LevelScene {
     frameRate: number,
     frameConfig: Phaser.Types.Animations.GenerateFrameNumbers,
   ) => {
+    const {
+      fire: { speedModifier },
+    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+
     this.anims.create({
       key: animKey,
       frameRate,
       frames: this.anims.generateFrameNumbers(key, frameConfig),
       repeat: -1,
       // delay changes based on current difficulty
-      repeatDelay:
-        LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY *
-        this._state.difficultySettings.fire.speedModifier,
+      repeatDelay: LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY * speedModifier,
     });
 
     return this;
   };
 
   private _dealFireDamage = () => {
-    const damage =
-      LEVEL_THREE_FIRE_BASE_DAMAGE *
-      this._state.difficultySettings.fire.damageModifier;
-    this._dealDamage(damage);
+    const {
+      fire: { damageModifier },
+    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+
+    this._dealDamage(LEVEL_THREE_FIRE_BASE_DAMAGE * damageModifier);
   };
 
   private _dealDamage = (amount: number) => {
-    // handle less than 0 health
-    const newHealth = this._state.health - amount;
-    if (newHealth <= 0) {
+    storeDispatch(levelThreeActions.healthChanged(-amount));
+    const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
+      store.getState(),
+    );
+    if (currentHealth <= 0) {
       console.log('u ded');
     }
-    this._state.health = newHealth;
-    console.log(newHealth);
   };
 
   private _setFireCollisionListeners = () => {
     this.gridEngine
       .steppedOn(
         [this.playerCharacter.definition.key],
-        [...levelThreeFireColumnLocations, ...levelThreeFireExplosionLocations],
+        levelThreeFireColumnLocations,
       )
       .subscribe(({ enterTile }) => {
-        this._state.steppedOnFire = {
-          x: enterTile.x,
-          y: enterTile.y,
-        };
-        if (this._state.fireIsActive) {
+        storeDispatch(
+          levelThreeActions.standingInFireChanged({
+            x: enterTile.x,
+            y: enterTile.y,
+          }),
+        );
+        const isActive = levelThreeSelectors.selectLevelThreeActiveFires(
+          store.getState(),
+        );
+
+        if (isActive[LevelThreeFireType.COLUMN]) {
+          this._dealFireDamage();
+        }
+      });
+
+    this.gridEngine
+      .steppedOn(
+        [this.playerCharacter.definition.key],
+        levelThreeFireExplosionLocations,
+      )
+      .subscribe(({ enterTile }) => {
+        storeDispatch(
+          levelThreeActions.standingInFireChanged({ ...enterTile }),
+        );
+        const isActive = levelThreeSelectors.selectLevelThreeActiveFires(
+          store.getState(),
+        );
+        if (isActive[LevelThreeFireType.EXPLOSION]) {
           this._dealFireDamage();
         }
       });
 
     this.gridEngine.positionChangeStarted().subscribe(({ charId }) => {
       if (charId === this.playerCharacter.definition.key) {
-        this._state.steppedOnFire = undefined;
+        storeDispatch(levelThreeActions.standingInFireChanged(undefined));
       }
     });
 
     return this;
   };
 
-  private _isStandingInActiveFire = (position: Coordinates) =>
-    this._state.steppedOnFire &&
-    this._state.steppedOnFire.x === position.x &&
-    this._state.steppedOnFire.y === position.y;
+  private _isStandingInActiveFire = (
+    position: Coordinates,
+    type: LevelThreeFireType,
+  ) => {
+    const isActive = levelThreeSelectors.selectLevelThreeActiveFires(
+      store.getState(),
+    );
+    const location = levelThreeSelectors.selectLevelThreeStandingInFire(
+      store.getState(),
+    );
+
+    return (
+      isActive[type] &&
+      location &&
+      location.x === position.x &&
+      location.y === position.y
+    );
+  };
 }
