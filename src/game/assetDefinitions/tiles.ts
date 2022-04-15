@@ -176,6 +176,11 @@ export const levelThreeMapDefinition: TileMapDefinition = {
       source: getTileSetSource('green_orb_tileset'),
     },
     {
+      name: 'orange_orb_tileset',
+      key: 'orange-orb-tileset',
+      source: getTileSetSource('orange_orb_tileset'),
+    },
+    {
       name: 'magical_items_tileset',
       key: 'magical-items-tileset',
       source: getTileSetSource('magical_items_tileset'),

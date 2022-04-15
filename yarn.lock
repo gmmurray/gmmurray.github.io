@@ -7112,10 +7112,10 @@ graphql@^14.6.0:
   dependencies:
     iterall "^1.2.2"
 
-grid-engine@^2.13.0:
-  version "2.13.0"
-  resolved "https://registry.yarnpkg.com/grid-engine/-/grid-engine-2.13.0.tgz#df1c7e6c3b809bf6d108acf1981da3548a25b197"
-  integrity sha512-hsqDkDiNiqj6qSSwqkkKGsj9M/7X/cee6gU4D+2YOEUn4VtWq7gL4eU03J15n6Yid+/UGbXxq8c35OlDBiM3Gg==
+grid-engine@^2.15.0:
+  version "2.15.0"
+  resolved "https://registry.yarnpkg.com/grid-engine/-/grid-engine-2.15.0.tgz#e1a8f5b3aeac47bce87827eae398e13105ee209b"
+  integrity sha512-3Fdqz3gbBgV9KmdTWzWOmnRK28Er1Q4N/g/9gP7vKPNeMVgLNeG7N+qhfIGznAM2H2KdekfFuQhz8itCxwPD8g==
   dependencies:
     rxjs "^7.3.1"
 

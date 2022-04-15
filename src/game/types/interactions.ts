@@ -32,6 +32,10 @@ export interface DoorDefinition extends Interaction {
   from: Coordinates[];
   to: Coordinates;
   face?: Direction;
+  inactive?: boolean;
+  inactiveMoveDir?: Direction;
+  inactiveDialog?: string;
+  layer?: string;
 }
 
 export interface PortalDefinition extends Interaction {

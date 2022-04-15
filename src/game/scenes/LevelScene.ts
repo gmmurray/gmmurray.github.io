@@ -56,7 +56,9 @@ export class LevelScene extends Scene {
   // dev mode
   public isDev = process.env.NODE_ENV === 'development';
 
+  // movement
   public isMovementPaused: boolean = false;
+  public speedModifier: number = 1;
 
   /**
    * sets player character and combines with npc characters to set characters
@@ -226,12 +228,12 @@ export class LevelScene extends Scene {
     if (cursors.shift.isDown) {
       this.gridEngine.setSpeed(
         this.playerCharacter.definition.key,
-        this.playerCharacter.startingSpeed * 2,
+        this.playerCharacter.startingSpeed * 2 * this.speedModifier,
       );
     } else {
       this.gridEngine.setSpeed(
         this.playerCharacter.definition.key,
-        this.playerCharacter.startingSpeed,
+        this.playerCharacter.startingSpeed * this.speedModifier,
       );
     }
 
@@ -653,13 +655,29 @@ export class LevelScene extends Scene {
     );
 
     if (match) {
-      this.cameras.main.flash(750, 0, 0, 0);
-      this.gridEngine.setPosition(playerSpriteDefinition.key, match.to);
-      if (match.face) {
-        this.gridEngine.turnTowards(
-          this.playerCharacter.definition.key,
-          match.face,
+      if (!match.inactive) {
+        this.cameras.main.flash(750, 0, 0, 0);
+        this.gridEngine.setPosition(
+          playerSpriteDefinition.key,
+          match.to,
+          match.layer,
         );
+        if (match.face) {
+          this.gridEngine.turnTowards(
+            this.playerCharacter.definition.key,
+            match.face,
+          );
+        }
+      } else {
+        if (match.inactiveDialog) {
+          this.createNewDialog(match.inactiveDialog);
+        }
+        if (match.inactiveMoveDir) {
+          this.gridEngine.move(
+            this.playerCharacter.definition.key,
+            match.inactiveMoveDir,
+          );
+        }
       }
     }
 
@@ -796,4 +814,12 @@ export class LevelScene extends Scene {
 
   private _getItemId = (x: number, y: number) =>
     `object_${this.levelNumber}_${x}_${y}`;
+
+  public setSpeedModifier = (amount: number) => {
+    this.speedModifier = amount;
+  };
+
+  public resetBackgroundColor = () => {
+    this.cameras.main.setBackgroundColor('#000');
+  };
 }

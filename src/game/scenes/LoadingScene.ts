@@ -12,6 +12,8 @@ import {
   fireSpriteDefinitions,
   gregSpriteDefinition,
   greyCatSpriteDefinition,
+  levelThreeFireExplosionDefinition,
+  levelthreeFireColumnDefinition,
   playerSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
@@ -30,6 +32,8 @@ const spriteDefinitions = [
   greyCatSpriteDefinition,
   whiteCatSpriteDefinition,
   ...fireSpriteDefinitions,
+  levelthreeFireColumnDefinition,
+  levelThreeFireExplosionDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,

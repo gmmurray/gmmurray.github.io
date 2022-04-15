@@ -4,6 +4,7 @@ import {
 } from '../types/assetDefinitions';
 
 import { FireColor } from '../types/levelTwo';
+import { LevelThreeDamagingFireDefinition } from '../types/levelThree';
 import { SCALE } from '../constants';
 import { getFireColorName } from '../helpers/fireColor';
 import { getSpriteSource } from '../helpers/getAssetSource';
@@ -71,3 +72,23 @@ export const fireSpriteDefinitions: FireSpriteDefinition[] = [
   createFireSprite(FireColor.PURPLE),
   createFireSprite(FireColor.WHITE),
 ];
+
+export const levelthreeFireColumnDefinition: LevelThreeDamagingFireDefinition = {
+  key: 'level-three-fire-column',
+  source: getSpriteSource('level_three_fire_column_spritesheet'),
+  frameWidth: 45,
+  frameHeight: 90,
+  scale: 2,
+  frameCount: 14,
+  frameRate: 4,
+};
+
+export const levelThreeFireExplosionDefinition: LevelThreeDamagingFireDefinition = {
+  key: 'level-three-fire-explosion',
+  source: getSpriteSource('level_three_fire_explosion_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  scale: 2,
+  frameCount: 4,
+  frameRate: 3,
+};

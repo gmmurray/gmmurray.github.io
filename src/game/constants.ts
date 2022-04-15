@@ -31,6 +31,10 @@ export const PORTAL_ACTIVE_NAME = 'active-portal';
 // level three
 export const POTION_LAYER_NAME = 'potions';
 export const ORB_LAYER_NAME = 'orbs';
+export const LEVEL_THREE_BACKGROUND_COLOR = '#070707';
+export const LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY = 2000;
+export const LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD = 1000;
+export const LEVEL_THREE_FIRE_BASE_DAMAGE = 10;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';
