@@ -14,11 +14,13 @@ import {
 } from '../redux/levelThreeSlice';
 import {
   levelThreeCast,
+  levelThreeFireBarrierLocations,
   levelThreeFireColumnLocations,
   levelThreeFireExplosionLocations,
   orbMap,
 } from '../cast/levelThree';
 import {
+  levelThreeFireBarrierDefinition,
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
 } from '../assetDefinitions/sprites';
@@ -45,6 +47,7 @@ export class LevelThree extends LevelScene {
       .setMap()
       .setCharacterLayerTransitions()
       ._setBackground()
+      ._setFireBarriers()
       ._setFireColumns()
       ._setFireExplosions()
       ._setFireCollisionListeners()
@@ -251,6 +254,40 @@ export class LevelThree extends LevelScene {
     return this;
   };
 
+  private _setFireBarriers = () => {
+    const {
+      key,
+      scale,
+      frameCount,
+      frameRate,
+      offsetY,
+    } = levelThreeFireBarrierDefinition;
+    const animKey = `${key}-animation`;
+
+    levelThreeFireBarrierLocations.forEach(position => {
+      const sprite = this.add
+        .sprite(0, 0, key)
+        .setScale(scale)
+        .setVisible(true);
+
+      this._createPassiveFireAnimation(key, animKey, frameRate, {
+        end: frameCount - 1,
+      });
+
+      sprite.play(animKey);
+
+      this.gridEngine.addCharacter({
+        id: key,
+        startPosition: position,
+        sprite,
+        collides: true,
+        offsetY,
+      });
+    });
+
+    return this;
+  };
+
   private _onFireAnimationStart = (
     sprite: Phaser.GameObjects.Sprite,
     animationLength: number,
@@ -310,6 +347,22 @@ export class LevelThree extends LevelScene {
       repeat: -1,
       // delay changes based on current difficulty
       repeatDelay: LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY * speedModifier,
+    });
+
+    return this;
+  };
+
+  private _createPassiveFireAnimation = (
+    key: string,
+    animKey: string,
+    frameRate: number,
+    frameConfig: Phaser.Types.Animations.GenerateFrameNumbers,
+  ) => {
+    this.anims.create({
+      key: animKey,
+      frameRate,
+      frames: this.anims.generateFrameNumbers(key, frameConfig),
+      repeat: -1,
     });
 
     return this;

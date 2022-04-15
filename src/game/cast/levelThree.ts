@@ -126,10 +126,10 @@ export const orbMap: OrbMap = {
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 4,
-  startingY: 48,
-  // startingX: 53,
-  // startingY: 9,
+  // startingX: 4,
+  // startingY: 48,
+  startingX: 47,
+  startingY: 63,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -214,6 +214,28 @@ const items: LevelThreeItem[] = [
     friendlyName: 'speed potion',
   },
   {
+    // p3 mini health 1
+    x: 50,
+    y: 77,
+    handler: params =>
+      (params as LevelThree).handlePotionConsume(PotionType.MINI_HEALTH, {
+        x: 50,
+        y: 77,
+      }),
+    friendlyName: 'mini health potion',
+  },
+  {
+    // p3 mini health 2
+    x: 43,
+    y: 82,
+    handler: params =>
+      (params as LevelThree).handlePotionConsume(PotionType.MINI_HEALTH, {
+        x: 43,
+        y: 82,
+      }),
+    friendlyName: 'mini health potion',
+  },
+  {
     // orb 1
     x: orbMap[1].location.primary.x,
     y: orbMap[1].location.primary.y,
@@ -260,6 +282,30 @@ const doors: DoorDefinition[] = [
     inactiveMoveDir: Direction.RIGHT,
   },
   {
+    // p2 to go downstairs
+    from: [
+      {
+        x: 59,
+        y: 43,
+      },
+      {
+        x: 60,
+        y: 43,
+      },
+      {
+        x: 61,
+        y: 43,
+      },
+    ],
+    to: { x: 47, y: 63 },
+    friendlyName: 'descend',
+    face: Direction.DOWN,
+    layer: 'ground',
+    inactive: true,
+    inactiveDialog: 'you must gather this floors orbs before descending',
+    inactiveMoveDir: Direction.DOWN,
+  },
+  {
     // p2 to go upstairs
     from: [
       {
@@ -274,6 +320,30 @@ const doors: DoorDefinition[] = [
     to: {
       x: 39,
       y: 31,
+    },
+    friendlyName: 'ascend',
+    face: Direction.DOWN,
+    layer: 'ground',
+  },
+  {
+    // p3 to go upstairs
+    from: [
+      {
+        x: 46,
+        y: 60,
+      },
+      {
+        x: 47,
+        y: 60,
+      },
+      {
+        x: 48,
+        y: 60,
+      },
+    ],
+    to: {
+      x: 60,
+      y: 46,
     },
     friendlyName: 'ascend',
     face: Direction.DOWN,
@@ -374,26 +444,198 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
 
 export const levelThreeFireColumnLocations: Coordinates[] = [
   {
-    x: 3,
-    y: 44,
+    x: 46,
+    y: 78,
   },
   {
-    x: 4,
-    y: 44,
+    x: 46,
+    y: 79,
   },
   {
-    x: 5,
-    y: 44,
+    x: 46,
+    y: 80,
   },
-  {
-    x: 6,
-    y: 44,
-  },
+  { x: 49, y: 75 },
+  { x: 50, y: 75 },
+  { x: 51, y: 75 },
+  { x: 44, y: 82 },
+  { x: 44, y: 83 },
+  { x: 48, y: 85 },
+  { x: 48, y: 86 },
+  { x: 52, y: 85 },
+  { x: 52, y: 86 },
+  { x: 52, y: 88 },
+  { x: 52, y: 89 },
+  { x: 51, y: 88 },
+  { x: 51, y: 89 },
 ];
 
 export const levelThreeFireExplosionLocations: Coordinates[] = [
   {
-    x: 4,
-    y: 46,
+    x: 43,
+    y: 78,
+  },
+  {
+    x: 43,
+    y: 79,
+  },
+  {
+    x: 43,
+    y: 80,
+  },
+  {
+    x: 50,
+    y: 85,
+  },
+  {
+    x: 50,
+    y: 86,
+  },
+];
+
+export const levelThreeFireBarrierLocations: Coordinates[] = [
+  {
+    x: 40,
+    y: 77,
+  },
+  {
+    x: 41,
+    y: 77,
+  },
+  {
+    x: 48,
+    y: 77,
+  },
+  {
+    x: 48,
+    y: 76,
+  },
+  {
+    x: 48,
+    y: 75,
+  },
+  {
+    x: 49,
+    y: 74,
+  },
+  {
+    x: 49,
+    y: 73,
+  },
+  {
+    x: 50,
+    y: 73,
+  },
+  {
+    x: 50,
+    y: 72,
+  },
+  {
+    x: 51,
+    y: 72,
+  },
+  {
+    x: 52,
+    y: 72,
+  },
+  {
+    x: 52,
+    y: 73,
+  },
+  {
+    x: 52,
+    y: 75,
+  },
+  {
+    x: 52,
+    y: 76,
+  },
+  {
+    x: 52,
+    y: 77,
+  },
+  {
+    x: 51,
+    y: 84,
+  },
+  {
+    x: 50,
+    y: 84,
+  },
+  {
+    x: 49,
+    y: 84,
+  },
+  {
+    x: 48,
+    y: 84,
+  },
+  {
+    x: 48,
+    y: 83,
+  },
+  {
+    x: 47,
+    y: 82,
+  },
+  {
+    x: 46,
+    y: 81,
+  },
+  {
+    x: 45,
+    y: 81,
+  },
+  {
+    x: 44,
+    y: 81,
+  },
+  {
+    x: 43,
+    y: 81,
+  },
+  {
+    x: 42,
+    y: 81,
+  },
+  {
+    x: 42,
+    y: 82,
+  },
+  {
+    x: 42,
+    y: 83,
+  },
+  {
+    x: 52,
+    y: 87,
+  },
+  {
+    x: 51,
+    y: 87,
+  },
+  {
+    x: 50,
+    y: 87,
+  },
+  {
+    x: 49,
+    y: 87,
+  },
+  {
+    x: 48,
+    y: 87,
+  },
+  {
+    x: 47,
+    y: 87,
+  },
+  {
+    x: 47,
+    y: 88,
+  },
+  {
+    x: 47,
+    y: 89,
   },
 ];

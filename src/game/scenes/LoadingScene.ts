@@ -12,6 +12,7 @@ import {
   fireSpriteDefinitions,
   gregSpriteDefinition,
   greyCatSpriteDefinition,
+  levelThreeFireBarrierDefinition,
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
   playerSpriteDefinition,
@@ -34,6 +35,7 @@ const spriteDefinitions = [
   ...fireSpriteDefinitions,
   levelthreeFireColumnDefinition,
   levelThreeFireExplosionDefinition,
+  levelThreeFireBarrierDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,

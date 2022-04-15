@@ -92,3 +92,14 @@ export const levelThreeFireExplosionDefinition: LevelThreeDamagingFireDefinition
   frameCount: 4,
   frameRate: 3,
 };
+
+export const levelThreeFireBarrierDefinition = {
+  key: 'level-three-fire-barrier',
+  source: getSpriteSource('orange_fire_spritesheet'),
+  frameWidth: 20,
+  frameHeight: 24,
+  scale: 3,
+  frameCount: 8,
+  frameRate: 4,
+  offsetY: -20,
+};
