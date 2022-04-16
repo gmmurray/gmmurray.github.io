@@ -22,6 +22,7 @@ export type LevelThreeState = {
     [LevelThreeFireType.EXPLOSION]: boolean;
   };
   standingInFire?: Coordinates;
+  playerIsDead: boolean;
 };
 
 const initialState: LevelThreeState = {
@@ -39,6 +40,7 @@ const initialState: LevelThreeState = {
     [LevelThreeFireType.EXPLOSION]: false,
   },
   standingInFire: undefined,
+  playerIsDead: false,
 };
 
 export const levelThreeSlice = createSlice({
@@ -75,6 +77,9 @@ export const levelThreeSlice = createSlice({
           }
         : undefined,
     }),
+    playerDied: () => ({
+      ...initialState,
+    }),
   },
 });
 
@@ -92,6 +97,8 @@ const selectLevelThreeStandingInFire: StateSelector<LevelThreeState['standingInF
   selectLevelThreeState(state).standingInFire;
 const selectLevelThreeActiveFires: StateSelector<LevelThreeState['activeFires']> = state =>
   selectLevelThreeState(state).activeFires;
+const selectLevelThreePlayerIsDead: StateSelector<LevelThreeState['playerIsDead']> = state =>
+  selectLevelThreeState(state).playerIsDead;
 
 export const levelThreeActions = actions;
 export const levelThreeReducer = reducer;
@@ -101,6 +108,7 @@ export const levelThreeSelectors = {
   selectLevelThreeOrbs,
   selectLevelThreeStandingInFire,
   selectLevelThreeActiveFires,
+  selectLevelThreePlayerIsDead,
 };
 
 const changeHealth = (currHealth: number, changeValue: number) => {

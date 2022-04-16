@@ -384,7 +384,7 @@ export class LevelThree extends LevelScene {
       store.getState(),
     );
     if (currentHealth <= 0) {
-      console.log('u ded');
+      this._handleDeath();
     }
   };
 
@@ -453,5 +453,25 @@ export class LevelThree extends LevelScene {
       location.x === position.x &&
       location.y === position.y
     );
+  };
+
+  private _handleDeath = () => {
+    // hud message TODO:
+    const playerIsDead = levelThreeSelectors.selectLevelThreePlayerIsDead(
+      store.getState(),
+    );
+
+    if (playerIsDead) return;
+    const cameraFade = 2500;
+    const cameraFadeInterval = 1000;
+    this.isMovementPaused = true;
+    storeDispatch(levelThreeActions.playerDied());
+    setTimeout(() => {
+      this.cameras.main.fade(cameraFade, 0, 0, 0);
+    }, cameraFadeInterval);
+    setTimeout(() => {
+      this.scene.restart();
+      this.isMovementPaused = false;
+    }, cameraFade + cameraFadeInterval);
   };
 }
