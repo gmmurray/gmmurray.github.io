@@ -46,6 +46,7 @@ export class LevelThree extends LevelScene {
       .setDoors()
       .setCamera()
       .setMap()
+      .setPortals()
       .setCharacterLayerTransitions()
       ._setBackground()
       ._setFireBarriers()

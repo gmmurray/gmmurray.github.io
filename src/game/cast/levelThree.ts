@@ -1,9 +1,11 @@
+import { BASE_PLAYER_SPEED, LEVEL_ONE_SCENE_KEY } from '../constants';
 import {
   DoorDefinition,
   LevelCast,
   NpcCharacter,
   PlayerCharacter,
   PortalDefinition,
+  PortalType,
 } from '../types/interactions';
 import {
   LevelThreeDifficulty,
@@ -13,7 +15,6 @@ import {
   PotionType,
 } from '../types/levelThree';
 
-import { BASE_PLAYER_SPEED } from '../constants';
 import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
@@ -126,10 +127,8 @@ export const orbMap: OrbMap = {
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  // startingX: 4,
-  // startingY: 48,
-  startingX: 47,
-  startingY: 63,
+  startingX: 4,
+  startingY: 47,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -258,7 +257,18 @@ const items: LevelThreeItem[] = [
   },
 ];
 
-const portals: PortalDefinition[] = [];
+const portals: PortalDefinition[] = [
+  {
+    from: {
+      x: 48,
+      y: 89,
+    },
+    type: PortalType.SCENE,
+    to: LEVEL_ONE_SCENE_KEY,
+    dialog: 'the portal hums with magical energy as you approach...',
+    friendlyName: 'back to beginning',
+  },
+];
 
 const doors: DoorDefinition[] = [
   {

@@ -365,9 +365,9 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     const barWidth = gameWidth / 4;
 
     let barColor: number;
-    if (value >= 0.3) {
+    if (value > 30) {
       barColor = highColor;
-    } else if (value >= 0.15) {
+    } else if (value >= 15) {
       barColor = mediumColor;
     } else {
       barColor = lowColor;

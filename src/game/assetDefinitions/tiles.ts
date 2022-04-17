@@ -153,7 +153,7 @@ export const levelTwoMapDefinition: TileMapDefinition = {
 export const levelThreeMapDefinition: TileMapDefinition = {
   key: 'level-three-map',
   source: getTileMapSource('level_three'),
-  animatedLayer: ['orbs'],
+  animatedLayer: ['orbs', 'animated'],
   tilesets: [
     {
       name: 'catacomb_base_tileset',
@@ -184,6 +184,11 @@ export const levelThreeMapDefinition: TileMapDefinition = {
       name: 'magical_items_tileset',
       key: 'magical-items-tileset',
       source: getTileSetSource('magical_items_tileset'),
+    },
+    {
+      name: 'portal_tileset',
+      key: 'portal-tiles',
+      source: getTileSetSource('portal_spritesheet'),
     },
   ],
   characterLayer: {
