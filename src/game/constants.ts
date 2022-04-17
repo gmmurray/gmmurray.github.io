@@ -55,7 +55,10 @@ export const THEME_WHITE = '#fff';
 export const THEME_LIGHT_GREY = '#b0b0b0';
 
 export const THEME_NEGATIVE_EFFECT = '#C41E3A';
+export const THEME_NEGATIVE_EFFECT_NUMBER = 0xc41e3a;
 export const THEME_DANGER_EFFECT = '#FFAC1C';
+export const THEME_DANGER_EFFECT_NUMBER = 0xffac1c;
 export const THEME_POSITIVE_EFFECT = '#228B22';
+export const THEME_POSTIVE_EFFECT_NUMBER = 0x228b22;
 
 export const LOCAL_STORAGE_KEY = 'gmurray-game';

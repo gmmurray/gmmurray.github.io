@@ -15,6 +15,11 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     hpValue?: Phaser.GameObjects.Text;
   } = {};
 
+  private _singularGraphicsGameObjects: {
+    hpBarValue?: Phaser.GameObjects.Graphics;
+    hpBarBackground?: Phaser.GameObjects.Graphics;
+  } = {};
+
   private _multiplicativeTextGameObjects: {
     buffs?: Phaser.GameObjects.Text[];
     debuffs?: Phaser.GameObjects.Text[];
@@ -47,8 +52,14 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     this.scene = undefined;
   };
 
-  public init = (config?: HudConfig) => {
-    this._setConfig(config)._setTextDisplays();
+  public init = (config?: HudConfig, showHp: boolean = false) => {
+    this._setConfig(config)
+      ._setTextDisplays()
+      ._setHpBarGraphics();
+
+    if (showHp) {
+      this._setHpBarBackground()._setHpTextDisplay();
+    }
   };
 
   public updateBottomCenterText = (value?: string) => {
@@ -81,12 +92,30 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
 
   public addBuffText = (value: string, duration: number) => {
     this._addBuffDebuffText('buffs', value, duration);
-    //this._fadeScrollText('buff', visibleDuration, duration);
   };
 
   public addDebuffText = (value: string, duration: number) => {
     this._addBuffDebuffText('debuffs', value, duration);
-    //this._fadeScrollText('debuff', visibleDuration, duration);
+  };
+
+  public updateHpBar = (value: number) => {
+    this._updateHpBar(value);
+  };
+
+  public updateHpValue = (value?: number) => {
+    if (value) {
+      this._setHpValue(value);
+    } else {
+      this._removeHpValue();
+    }
+  };
+
+  public updateHealth = (value?: number) => {
+    if (value) {
+      this._updateHpBar(value).updateHpValue(value);
+    } else {
+      this._removeHpValue();
+    }
   };
 
   private _updateBasicText = (
@@ -111,11 +140,7 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     }
 
     const newTextIndex = this._multiplicativeTextGameObjects[type].length;
-    const newText = this._createBuffDebuffTextDisplay(
-      type,
-      value,
-      newTextIndex,
-    );
+    const newText = this._createBuffDebuffTextDisplay(type, value);
     this._multiplicativeTextGameObjects[type].push(newText);
 
     this._fadeScrollBuffDebuffText(newText, fadeScrollDuration);
@@ -290,6 +315,134 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     return this;
   };
 
+  private _setHpBarGraphics = () => {
+    this._singularGraphicsGameObjects.hpBarValue = this.scene.add
+      .graphics()
+      .setScrollFactor(0);
+    this._singularGraphicsGameObjects.hpBarBackground = this.scene.add
+      .graphics()
+      .setScrollFactor(0);
+  };
+
+  private _setHpBarBackground = () => {
+    if (!this._singularGraphicsGameObjects.hpBarBackground) return;
+
+    const {
+      paddingX,
+      paddingY,
+      barHeight,
+      backgroundColor,
+    } = this.config.bars.hp;
+
+    const gameWidth = this._getGameWidth();
+
+    const barWidth = gameWidth / 4;
+
+    this._singularGraphicsGameObjects.hpBarBackground
+      .fillStyle(backgroundColor, 1)
+      .fillRect(gameWidth - barWidth - paddingX, paddingY, barWidth, barHeight)
+      .setDepth(15);
+
+    return this;
+  };
+
+  private _updateHpBar = (value: number) => {
+    if (!this._singularGraphicsGameObjects.hpBarValue) return;
+
+    const {
+      paddingX,
+      paddingY,
+      barHeight,
+      lowColor,
+      mediumColor,
+      highColor,
+    } = this.config.bars.hp;
+
+    const { maxHealth } = this.config;
+
+    const gameWidth = this._getGameWidth();
+
+    const barWidth = gameWidth / 4;
+
+    let barColor: number;
+    if (value >= 0.3) {
+      barColor = highColor;
+    } else if (value >= 0.15) {
+      barColor = mediumColor;
+    } else {
+      barColor = lowColor;
+    }
+
+    this._singularGraphicsGameObjects.hpBarValue
+      .clear()
+      .fillStyle(barColor, 1)
+      .fillRect(
+        gameWidth - barWidth - paddingX,
+        paddingY,
+        (barWidth * value) / maxHealth,
+        barHeight,
+      )
+      .setDepth(16);
+
+    return this;
+  };
+
+  private _setHpTextDisplay = () => {
+    if (this._singularTextGameObjects.hpLabel)
+      this._singularTextGameObjects.hpLabel.destroy();
+
+    if (this._singularTextGameObjects.hpValue)
+      this._singularTextGameObjects.hpValue.destroy();
+
+    const { hp: hpConfig } = this.config.texts;
+    const { hp: barConfig } = this.config.bars;
+
+    const { fontSize, fontFamily, fontColor, depth } = hpConfig.label;
+
+    const { paddingX, paddingY, barHeight } = barConfig;
+
+    const gameWidth = this._getGameWidth();
+
+    const barWidth = gameWidth / 4;
+
+    const y = paddingY + 2 * barHeight;
+    const leftX = gameWidth - barWidth - paddingX;
+    const rightX = gameWidth - paddingX;
+
+    this._singularTextGameObjects.hpLabel = this.scene.make.text({
+      x: leftX,
+      y,
+      depth,
+      text: 'HP',
+      visible: true,
+      scrollFactor: 0,
+      style: {
+        color: fontColor,
+        fontFamily,
+        fontSize: `${fontSize}px`,
+      },
+      origin: 0,
+    });
+
+    this._singularTextGameObjects.hpValue = this.scene.make
+      .text({
+        x: rightX,
+        y,
+        depth,
+        text: '',
+        visible: false,
+        scrollFactor: 0,
+        style: {
+          color: fontColor,
+          fontFamily,
+          fontSize: `${fontSize}px`,
+        },
+      })
+      .setOrigin(1, 0);
+
+    return this;
+  };
+
   private _setCenterTextDisplay = () => {
     const text = this._singularTextGameObjects.center;
     const textConfig = this.config.texts.center;
@@ -333,7 +486,6 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   private _createBuffDebuffTextDisplay = (
     key: keyof typeof this._multiplicativeTextGameObjects,
     value: string,
-    index: number,
   ) => {
     const textConfig = this.config.texts[key];
 
@@ -416,6 +568,20 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     key: keyof typeof this._singularTextGameObjects,
   ) => {
     const text = this._singularTextGameObjects[key];
+    if (!text) return;
+    text.setVisible(false).setText('');
+  };
+
+  private _setHpValue = (value: number) => {
+    const text = this._singularTextGameObjects.hpValue;
+    if (!text) return;
+
+    const { maxHealth } = this.config;
+    text.setText(`${value}/${maxHealth}`).setVisible(true);
+  };
+
+  private _removeHpValue = () => {
+    const text = this._singularTextGameObjects.hpValue;
     if (!text) return;
     text.setVisible(false).setText('');
   };

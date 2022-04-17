@@ -1,6 +1,9 @@
 import {
+  THEME_DANGER_EFFECT_NUMBER,
   THEME_NEGATIVE_EFFECT,
+  THEME_NEGATIVE_EFFECT_NUMBER,
   THEME_POSITIVE_EFFECT,
+  THEME_POSTIVE_EFFECT_NUMBER,
   THEME_WHITE,
 } from '../constants';
 
@@ -65,6 +68,26 @@ const defaultDebuffTextConfig: BuffDebuffTextConfig = {
   align: 'right',
 };
 
+export interface HpBarConfig {
+  backgroundColor: number;
+  lowColor: number;
+  mediumColor: number;
+  highColor: number;
+  barHeight: number;
+  paddingX: number;
+  paddingY: number;
+}
+
+const defaultHpBarConfig: HpBarConfig = {
+  backgroundColor: 0x000,
+  lowColor: THEME_NEGATIVE_EFFECT_NUMBER,
+  mediumColor: THEME_DANGER_EFFECT_NUMBER,
+  highColor: THEME_POSTIVE_EFFECT_NUMBER,
+  barHeight: 10,
+  paddingX: 32,
+  paddingY: 32,
+};
+
 export interface HudConfig {
   texts: {
     bottomCenter?: BasicTextConfig;
@@ -78,6 +101,10 @@ export interface HudConfig {
     buffs?: BuffDebuffTextConfig;
     debuffs?: BuffDebuffTextConfig;
   };
+  bars: {
+    hp?: HpBarConfig;
+  };
+  maxHealth: number;
 }
 
 export const DEFAULT_CONFIG: HudConfig = {
@@ -105,4 +132,8 @@ export const DEFAULT_CONFIG: HudConfig = {
       ...defaultDebuffTextConfig,
     },
   },
+  bars: {
+    hp: { ...defaultHpBarConfig },
+  },
+  maxHealth: 100,
 };

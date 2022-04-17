@@ -55,7 +55,7 @@ export class LevelThree extends LevelScene {
       .attachKeyboardListener();
 
     this.dialog.init();
-    this.hud.init();
+    this.hud.init(undefined, true);
 
     this.handleCloseDialog();
 
@@ -63,6 +63,8 @@ export class LevelThree extends LevelScene {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
     });
+
+    this.hud.updateHealth(100);
   };
 
   public update = () => {
@@ -70,15 +72,21 @@ export class LevelThree extends LevelScene {
   };
 
   public handlePotionConsume = (type: PotionType, coordinates: Coordinates) => {
+    let taken = false;
     switch (type) {
       case PotionType.MINI_HEALTH:
       case PotionType.HEALTH:
-        this._takeHealthPotion(type);
+        taken = this._takeHealthPotion(type);
         break;
       case PotionType.SPEED:
-        this._takeSpeedPotion();
+        taken = this._takeSpeedPotion();
         break;
     }
+
+    if (!taken) {
+      return;
+    }
+
     this.map.removeTileAt(
       coordinates.x,
       coordinates.y,
@@ -115,6 +123,12 @@ export class LevelThree extends LevelScene {
     } = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
+    const health = levelThreeSelectors.selectLevelThreeHealth(store.getState());
+    if (health === 100) {
+      this.hud.updateCenterText('You already have full health!');
+      this.time.delayedCall(2000, () => this.hud.updateCenterText(), [], this);
+      return false;
+    }
 
     const potionHealthValue =
       type === PotionType.MINI_HEALTH
@@ -123,6 +137,11 @@ export class LevelThree extends LevelScene {
 
     this._displayBuff(`+${potionHealthValue} hp`);
     storeDispatch(levelThreeActions.healthChanged(potionHealthValue));
+    const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
+      store.getState(),
+    );
+    this.hud.updateHealth(currentHealth);
+    return true;
   };
 
   private _takeSpeedPotion = () => {
@@ -139,6 +158,7 @@ export class LevelThree extends LevelScene {
       this.setSpeedModifier(baseModifier);
       this._displayDebuff('-speed buff');
     }, speedDuration);
+    return true;
   };
 
   private _displayBuff = (value: string) => {
@@ -412,6 +432,7 @@ export class LevelThree extends LevelScene {
     const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
       store.getState(),
     );
+    this.hud.updateHealth(currentHealth);
     if (currentHealth <= 0) {
       this._handleDeath();
     }
