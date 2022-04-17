@@ -320,7 +320,7 @@ export class LevelScene extends Scene {
 
     if (bottomCenterTextValue && !this.dialog.visible) {
       this.addHudBottomCenterText(bottomCenterTextValue);
-    } else if (this.hud.bottomCenterTextIsDisplayed()) {
+    } else if (this.hud.textIsDisplayed('bottomCenter')) {
       this.removeHudBottomCenterText();
     }
 

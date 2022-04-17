@@ -1,5 +1,6 @@
 import {
   LEVEL_THREE_BACKGROUND_COLOR,
+  LEVEL_THREE_BUFF_DEBUFF_DURATION,
   LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY,
   LEVEL_THREE_FIRE_BASE_DAMAGE,
   LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
@@ -71,10 +72,8 @@ export class LevelThree extends LevelScene {
   public handlePotionConsume = (type: PotionType, coordinates: Coordinates) => {
     switch (type) {
       case PotionType.MINI_HEALTH:
-        this._takeHealthPotion(true);
-        break;
       case PotionType.HEALTH:
-        this._takeHealthPotion();
+        this._takeHealthPotion(type);
         break;
       case PotionType.SPEED:
         this._takeSpeedPotion();
@@ -108,27 +107,46 @@ export class LevelThree extends LevelScene {
     this._unlockStairs();
   };
 
-  private _takeHealthPotion = (isMini: boolean = false) => {
+  private _takeHealthPotion = (
+    type: PotionType.MINI_HEALTH | PotionType.HEALTH,
+  ) => {
     const {
       healthPotions,
     } = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
 
-    const potionHealthValue = isMini
-      ? healthPotions.mini
-      : healthPotions.normal;
+    const potionHealthValue =
+      type === PotionType.MINI_HEALTH
+        ? healthPotions.mini
+        : healthPotions.normal;
 
+    this._displayBuff(`+${potionHealthValue} hp`);
     storeDispatch(levelThreeActions.healthChanged(potionHealthValue));
   };
 
   private _takeSpeedPotion = () => {
     const baseModifier = 1;
-    const enhancedModifier = 1.5;
-    this.setSpeedModifier(enhancedModifier);
+    const {
+      speedMod,
+      speedDuration,
+    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    ).player;
+    this.setSpeedModifier(speedMod);
+    this._displayBuff(`${speedMod}x speed for ${speedDuration / 1000} seconds`);
     setTimeout(() => {
       this.setSpeedModifier(baseModifier);
-    }, 5000);
+      this._displayDebuff('-speed buff');
+    }, speedDuration);
+  };
+
+  private _displayBuff = (value: string) => {
+    this.hud.addBuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
+  };
+
+  private _displayDebuff = (value: string) => {
+    this.hud.addDebuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
   };
 
   private _unlockStairs = () => {
@@ -379,6 +397,17 @@ export class LevelThree extends LevelScene {
   };
 
   private _dealDamage = (amount: number) => {
+    const currTime = new Date();
+    const prevTime = levelThreeSelectors.selectLevelThreeLastDamageTimestamp(
+      store.getState(),
+    );
+    const difference = currTime.getTime() - new Date(prevTime).getTime(); // be fair and only damage at most every 1 second
+
+    if (difference < LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD) {
+      return;
+    }
+
+    this._displayDebuff(`-${amount}hp`);
     storeDispatch(levelThreeActions.healthChanged(-amount));
     const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
       store.getState(),
@@ -456,7 +485,8 @@ export class LevelThree extends LevelScene {
   };
 
   private _handleDeath = () => {
-    // hud message TODO:
+    this.hud.updateCenterText('You died!');
+
     const playerIsDead = levelThreeSelectors.selectLevelThreePlayerIsDead(
       store.getState(),
     );

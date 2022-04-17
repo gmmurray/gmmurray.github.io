@@ -35,6 +35,10 @@ export interface LevelThreeDifficultySettings {
     mini: number;
     normal: number;
   };
+  player: {
+    speedMod: number;
+    speedDuration: number;
+  };
   enemy: {
     damageMod: number;
     critsEnabled: boolean;

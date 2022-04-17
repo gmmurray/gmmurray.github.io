@@ -365,6 +365,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
       mini: 10,
       normal: 50,
     },
+    player: {
+      speedMod: 1.5,
+      speedDuration: 5000,
+    },
     enemy: {
       damageMod: 1,
       critsEnabled: false,
@@ -380,6 +384,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     healthPotions: {
       mini: 20,
       normal: 50,
+    },
+    player: {
+      speedMod: 1.5,
+      speedDuration: 6000,
     },
     enemy: {
       damageMod: 2,
@@ -397,6 +405,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
       mini: 20,
       normal: 50,
     },
+    player: {
+      speedMod: 1.5,
+      speedDuration: 7000,
+    },
     enemy: {
       damageMod: 2,
       critsEnabled: true,
@@ -413,6 +425,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
       mini: 20,
       normal: 50,
     },
+    player: {
+      speedMod: 1.5,
+      speedDuration: 8000,
+    },
     enemy: {
       damageMod: 2,
       critsEnabled: true,
@@ -428,6 +444,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     healthPotions: {
       mini: 20,
       normal: 50,
+    },
+    player: {
+      speedMod: 1.5,
+      speedDuration: 10000,
     },
     enemy: {
       damageMod: 2,

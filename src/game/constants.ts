@@ -35,6 +35,8 @@ export const LEVEL_THREE_BACKGROUND_COLOR = '#070707';
 export const LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY = 2000;
 export const LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD = 1000;
 export const LEVEL_THREE_FIRE_BASE_DAMAGE = 10;
+export const LEVEL_THREE_BUFF_DEBUFF_DELAY = 1000;
+export const LEVEL_THREE_BUFF_DEBUFF_DURATION = 3000;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';
@@ -51,5 +53,9 @@ export const THEME_DARK_YELLOW_NUMBER = 0x976f08;
 
 export const THEME_WHITE = '#fff';
 export const THEME_LIGHT_GREY = '#b0b0b0';
+
+export const THEME_NEGATIVE_EFFECT = '#C41E3A';
+export const THEME_DANGER_EFFECT = '#FFAC1C';
+export const THEME_POSITIVE_EFFECT = '#228B22';
 
 export const LOCAL_STORAGE_KEY = 'gmurray-game';

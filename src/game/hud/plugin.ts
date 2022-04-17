@@ -5,10 +5,20 @@ import { HUD_PLUGIN_KEY } from '../constants';
 
 export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   public config: HudConfig = { ...DEFAULT_CONFIG };
-  private _bottomCenterText: Phaser.GameObjects.Text;
-  private _topLeftPrimaryText: Phaser.GameObjects.Text;
-  private _topLeftSecondaryText: Phaser.GameObjects.Text;
-  private _topCenterText: Phaser.GameObjects.Text;
+  private _singularTextGameObjects: {
+    bottomCenter?: Phaser.GameObjects.Text;
+    topLeftPrimary?: Phaser.GameObjects.Text;
+    topLeftSecondary?: Phaser.GameObjects.Text;
+    topCenter?: Phaser.GameObjects.Text;
+    center?: Phaser.GameObjects.Text;
+    hpLabel?: Phaser.GameObjects.Text;
+    hpValue?: Phaser.GameObjects.Text;
+  } = {};
+
+  private _multiplicativeTextGameObjects: {
+    buffs?: Phaser.GameObjects.Text[];
+    debuffs?: Phaser.GameObjects.Text[];
+  } = {};
 
   constructor(
     scene: Phaser.Plugins.ScenePlugin['scene'],
@@ -26,10 +36,10 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   public shutdown = () => {
-    if (this._bottomCenterText) this._bottomCenterText.destroy();
-    if (this._topLeftPrimaryText) this._topLeftPrimaryText.destroy();
-    if (this._topLeftSecondaryText) this._topLeftSecondaryText.destroy();
-    if (this._topCenterText) this._topCenterText.destroy();
+    Object.keys(this._singularTextGameObjects).forEach(key => {
+      if (this._singularTextGameObjects[key])
+        this._singularTextGameObjects[key].shutdown();
+    });
   };
 
   public destroy = () => {
@@ -38,26 +48,18 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   public init = (config?: HudConfig) => {
-    this._setConfig(config);
-    this._setBottomCenterTextDisplay();
-    this._setTopLeftTextDisplay();
-    this._setTopCenterTextDisplay();
+    this._setConfig(config)._setTextDisplays();
   };
 
   public updateBottomCenterText = (value?: string) => {
-    if (!this._bottomCenterText) return;
-    if (value) {
-      this._setBottomCenterText(value);
-    } else {
-      this._removeBottomCenterText();
-    }
+    this._updateBasicText('bottomCenter', value);
   };
 
   public updateTopLeftText = (primary?: string, secondary?: string) => {
-    if (!this._topLeftPrimaryText) return;
+    if (!this._singularTextGameObjects.topLeftPrimary) return;
 
     if (primary) {
-      this._setTopLeftPrimaryText(primary);
+      this._setBasicText('topLeftPrimary', primary);
       if (secondary) {
         this._setTopLeftSecondaryText(secondary);
       } else {
@@ -70,43 +72,86 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   public updateTopCenterText = (value?: string) => {
-    if (!this._topCenterText) return;
+    this._updateBasicText('topCenter', value);
+  };
+
+  public updateCenterText = (value?: string) => {
+    this._updateBasicText('center', value);
+  };
+
+  public addBuffText = (value: string, duration: number) => {
+    this._addBuffDebuffText('buffs', value, duration);
+    //this._fadeScrollText('buff', visibleDuration, duration);
+  };
+
+  public addDebuffText = (value: string, duration: number) => {
+    this._addBuffDebuffText('debuffs', value, duration);
+    //this._fadeScrollText('debuff', visibleDuration, duration);
+  };
+
+  private _updateBasicText = (
+    key: keyof typeof this._singularTextGameObjects,
+    value?: string,
+  ) => {
+    if (!this._singularTextGameObjects[key]) return;
     if (value) {
-      this._setTopCenterText(value);
+      this._setBasicText(key, value);
     } else {
-      this._removeTopCenterText();
+      this._removeBasicText(key);
     }
   };
 
-  public bottomCenterTextIsDisplayed = () =>
-    this._bottomCenterText &&
-    this._bottomCenterText.visible &&
-    this._bottomCenterText.text &&
-    this._bottomCenterText.text !== '';
-
-  public topLeftTextIsDisplayed = () =>
-    this._topLeftPrimaryText &&
-    this._topLeftPrimaryText.visible &&
-    this._topLeftPrimaryText.text &&
-    this._topLeftPrimaryText.text !== '';
-
-  public topCenterTextIsDisplayed = () =>
-    this._topCenterText &&
-    this._topCenterText.visible &&
-    this._topCenterText.text &&
-    this._topCenterText.text !== '';
-
-  public updateDimensions = (gameSize: Phaser.Structs.Size) => {
-    if (this._bottomCenterText) {
-      const newX = gameSize.width / 2;
-      const newY = gameSize.height - this.config.texts.bottomCenterText.margin;
-      this._bottomCenterText.setX(newX);
-      this._bottomCenterText.setY(newY);
+  private _addBuffDebuffText = (
+    type: keyof typeof this._multiplicativeTextGameObjects,
+    value: string,
+    fadeScrollDuration: number,
+  ) => {
+    if (!this._multiplicativeTextGameObjects[type]) {
+      this._multiplicativeTextGameObjects[type] = [];
     }
 
-    if (this._topCenterText) {
+    const newTextIndex = this._multiplicativeTextGameObjects[type].length;
+    const newText = this._createBuffDebuffTextDisplay(
+      type,
+      value,
+      newTextIndex,
+    );
+    this._multiplicativeTextGameObjects[type].push(newText);
+
+    this._fadeScrollBuffDebuffText(newText, fadeScrollDuration);
+    this.scene.time.delayedCall(
+      fadeScrollDuration,
+      this._removeBuffDebuffText,
+      [type, newTextIndex],
+      this,
+    );
+  };
+
+  public textIsDisplayed = (
+    key: keyof typeof this._singularTextGameObjects,
+  ) => {
+    const text = this._singularTextGameObjects[key];
+    return text && text.visible && text.text && text.text !== '';
+  };
+
+  public updateDimensions = (gameSize: Phaser.Structs.Size) => {
+    if (this._singularTextGameObjects.bottomCenter) {
       const newX = gameSize.width / 2;
-      this._topCenterText.setX(newX);
+      const newY = gameSize.height - this.config.texts.bottomCenter.margin;
+      this._singularTextGameObjects.bottomCenter.setX(newX).setY(newY);
+    }
+
+    if (this._singularTextGameObjects.topCenter) {
+      const newX = gameSize.width / 2;
+      this._singularTextGameObjects.topCenter.setX(newX);
+    }
+
+    if (this._singularTextGameObjects.center) {
+      const newXY = gameSize.width / 2;
+      const { paddingX, paddingY } = this.config.texts.center;
+      this._singularTextGameObjects.center
+        .setX(newXY + paddingX)
+        .setY(newXY - paddingY);
     }
   };
 
@@ -119,12 +164,21 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     return this;
   };
 
+  private _setTextDisplays = () => {
+    this._setBottomCenterTextDisplay()
+      ._setTopLeftTextDisplay()
+      ._setTopCenterTextDisplay()
+      ._setCenterTextDisplay();
+    return this;
+  };
+
   private _getGameWidth = () => getGameWidth(this.scene);
 
   private _getGameHeight = () => getGameHeight(this.scene);
 
   private _setBottomCenterTextDisplay = () => {
-    if (this._bottomCenterText) this._bottomCenterText.destroy();
+    if (this._singularTextGameObjects.bottomCenter)
+      this._singularTextGameObjects.bottomCenter.destroy();
 
     const {
       fontSize,
@@ -132,12 +186,12 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       fontColor,
       depth,
       margin,
-    } = this.config.texts.bottomCenterText;
+    } = this.config.texts.bottomCenter;
 
     const x = this._getGameWidth() / 2;
     const y = this._getGameHeight() - margin;
 
-    this._bottomCenterText = this.scene.make.text({
+    this._singularTextGameObjects.bottomCenter = this.scene.make.text({
       x,
       y,
       depth,
@@ -151,11 +205,15 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       scrollFactor: 0,
       origin: 0.5,
     });
+
+    return this;
   };
 
   private _setTopLeftTextDisplay = () => {
-    if (this._topLeftPrimaryText) this._topLeftPrimaryText.destroy();
-    if (this._topLeftSecondaryText) this._topLeftSecondaryText.destroy();
+    if (this._singularTextGameObjects.topLeftPrimary)
+      this._singularTextGameObjects.topLeftPrimary.destroy();
+    if (this._singularTextGameObjects.topLeftSecondary)
+      this._singularTextGameObjects.topLeftSecondary.destroy();
 
     const {
       fontSize,
@@ -163,12 +221,12 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       fontColor,
       depth,
       padding,
-    } = this.config.texts.topLeftText;
+    } = this.config.texts.topLeft;
 
     const xPrimary = padding;
     const yPrimary = padding;
 
-    this._topLeftPrimaryText = this.scene.make.text({
+    this._singularTextGameObjects.topLeftPrimary = this.scene.make.text({
       x: xPrimary,
       y: yPrimary,
       depth,
@@ -182,7 +240,7 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       scrollFactor: 0,
     });
 
-    this._topLeftSecondaryText = this.scene.make.text({
+    this._singularTextGameObjects.topLeftSecondary = this.scene.make.text({
       x: xPrimary,
       y: yPrimary + fontSize + 10,
       depth,
@@ -195,10 +253,13 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       visible: false,
       scrollFactor: 0,
     });
+
+    return this;
   };
 
   private _setTopCenterTextDisplay = () => {
-    if (this._topCenterText) this._topCenterText.destroy();
+    if (this._singularTextGameObjects.topCenter)
+      this._singularTextGameObjects.topCenter.destroy();
 
     const {
       fontSize,
@@ -206,12 +267,12 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       fontColor,
       depth,
       padding,
-    } = this.config.texts.topCenterText;
+    } = this.config.texts.topCenter;
 
     const x = this._getGameWidth() / 2;
     const y = padding;
 
-    this._topCenterText = this.scene.make.text({
+    this._singularTextGameObjects.topCenter = this.scene.make.text({
       x,
       y,
       depth,
@@ -225,46 +286,196 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
       scrollFactor: 0,
       origin: 0.5,
     });
+
+    return this;
   };
 
-  private _setBottomCenterText = (value: string) => {
-    if (!this._bottomCenterText) return;
-    this._bottomCenterText.setText(value).setVisible(true);
+  private _setCenterTextDisplay = () => {
+    const text = this._singularTextGameObjects.center;
+    const textConfig = this.config.texts.center;
+
+    if (text) text.destroy();
+
+    const {
+      fontSize,
+      fontFamily,
+      fontColor,
+      depth,
+      fontStyle,
+      paddingX,
+      paddingY,
+    } = textConfig;
+
+    const centerXY = this._getGameHeight() / 2;
+
+    const x = centerXY + paddingX;
+    const y = centerXY - paddingY;
+
+    this._singularTextGameObjects.center = this.scene.make.text({
+      x,
+      y,
+      depth,
+      text: '',
+      visible: false,
+      scrollFactor: 0,
+      origin: 0.5,
+      style: {
+        color: fontColor,
+        fontFamily,
+        fontSize: `${fontSize}px`,
+        fontStyle,
+      },
+    });
+
+    return this;
   };
 
-  private _removeBottomCenterText = () => {
-    this._bottomCenterText.setVisible(false).setText('');
-  };
+  private _createBuffDebuffTextDisplay = (
+    key: keyof typeof this._multiplicativeTextGameObjects,
+    value: string,
+    index: number,
+  ) => {
+    const textConfig = this.config.texts[key];
 
-  private _setTopLeftPrimaryText = (value: string) => {
-    if (!this._topLeftPrimaryText) return;
-    this._topLeftPrimaryText.setText(value).setVisible(true);
+    const {
+      fontSize,
+      fontFamily,
+      fontColor,
+      depth,
+      paddingX,
+      fontStyle,
+      align,
+    } = textConfig;
+
+    const centerXY = this._getGameHeight() / 2;
+
+    const x = centerXY + paddingX;
+    const y = centerXY;
+
+    return this.scene.make.text({
+      x,
+      y,
+      depth,
+      text: value,
+      visible: true,
+      scrollFactor: 0,
+      origin: 0.5,
+      style: {
+        color: fontColor,
+        fontFamily,
+        fontSize: `${fontSize}px`,
+        align,
+        fontStyle,
+      },
+    });
   };
 
   private _setTopLeftSecondaryText = (value: string) => {
-    if (!(this._topLeftPrimaryText && this._topLeftSecondaryText)) return;
-    this._topLeftSecondaryText.setText(value).setVisible(true);
+    if (
+      !(
+        this._singularTextGameObjects.topLeftPrimary &&
+        this._singularTextGameObjects.topLeftSecondary
+      )
+    )
+      return;
+    this._singularTextGameObjects.topLeftSecondary
+      .setText(value)
+      .setVisible(true);
   };
 
   private _removeTopLeftPrimaryText = () => {
-    if (!this._topLeftPrimaryText) return;
-    this._topLeftPrimaryText.setVisible(false).setText('');
+    if (!this._singularTextGameObjects.topLeftPrimary) return;
+    this._singularTextGameObjects.topLeftPrimary.setVisible(false).setText('');
 
     this._removeTopLeftSecondaryText();
   };
 
   private _removeTopLeftSecondaryText = () => {
-    if (!(this._topLeftPrimaryText && this._topLeftSecondaryText)) return;
-    this._topLeftSecondaryText.setVisible(false).setText('');
+    if (
+      !(
+        this._singularTextGameObjects.topLeftPrimary &&
+        this._singularTextGameObjects.topLeftSecondary
+      )
+    )
+      return;
+    this._singularTextGameObjects.topLeftSecondary
+      .setVisible(false)
+      .setText('');
   };
 
-  private _setTopCenterText = (value: string) => {
-    if (!this._topCenterText) return;
-    this._topCenterText.setText(value).setVisible(true);
+  private _setBasicText = (
+    key: keyof typeof this._singularTextGameObjects,
+    value: string,
+  ) => {
+    const text = this._singularTextGameObjects[key];
+    if (!text) return;
+    text.setText(value).setVisible(true);
   };
 
-  private _removeTopCenterText = () => {
-    if (!this._topCenterText) return;
-    this._topCenterText.setVisible(false).setText('');
+  private _removeBasicText = (
+    key: keyof typeof this._singularTextGameObjects,
+  ) => {
+    const text = this._singularTextGameObjects[key];
+    if (!text) return;
+    text.setVisible(false).setText('');
+  };
+
+  private _fadeScrollText = (
+    text: Phaser.GameObjects.Text,
+    delay: number,
+    duration: number,
+  ) => {
+    this.scene.time.delayedCall(
+      delay,
+      () => {
+        this._fadeOutText(text, duration)._scrollDownText(text, duration);
+      },
+      [],
+      this,
+    );
+  };
+
+  private _fadeScrollBuffDebuffText = (
+    text: Phaser.GameObjects.Text,
+    fadeScrollDuration: number,
+  ) => {
+    this._fadeScrollText(text, 0, fadeScrollDuration);
+
+    return this;
+  };
+
+  private _fadeOutText = (text: Phaser.GameObjects.Text, duration: number) => {
+    this.scene.add.tween({
+      targets: [text],
+      duration,
+      ease: 'Linear',
+      alpha: 0,
+    });
+
+    return this;
+  };
+
+  private _scrollDownText = (
+    text: Phaser.GameObjects.Text,
+    duration: number,
+  ) => {
+    this.scene.add.tween({
+      targets: [text],
+      duration,
+      ease: 'Linear',
+      y: '+=100',
+    });
+
+    return this;
+  };
+
+  private _removeBuffDebuffText = (
+    type: keyof typeof this._multiplicativeTextGameObjects,
+    index: number,
+  ) => {
+    const textRemoved = this._multiplicativeTextGameObjects[type].splice(
+      index,
+      1,
+    );
   };
 }

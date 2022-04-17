@@ -23,6 +23,7 @@ export type LevelThreeState = {
   };
   standingInFire?: Coordinates;
   playerIsDead: boolean;
+  lastDamageTimestamp?: string;
 };
 
 const initialState: LevelThreeState = {
@@ -41,6 +42,7 @@ const initialState: LevelThreeState = {
   },
   standingInFire: undefined,
   playerIsDead: false,
+  lastDamageTimestamp: undefined,
 };
 
 export const levelThreeSlice = createSlice({
@@ -50,6 +52,8 @@ export const levelThreeSlice = createSlice({
     healthChanged: (state, action: PayloadAction<number>) => ({
       ...state,
       health: changeHealth(state.health, action.payload),
+      lastDamageTimestamp:
+        action.payload < 0 ? new Date().toString() : state.lastDamageTimestamp,
     }),
     orbCollected: (state, action: PayloadAction<1 | 2 | 3>) => ({
       ...state,
@@ -99,6 +103,8 @@ const selectLevelThreeActiveFires: StateSelector<LevelThreeState['activeFires']>
   selectLevelThreeState(state).activeFires;
 const selectLevelThreePlayerIsDead: StateSelector<LevelThreeState['playerIsDead']> = state =>
   selectLevelThreeState(state).playerIsDead;
+const selectLevelThreeLastDamageTimestamp: StateSelector<LevelThreeState['lastDamageTimestamp']> = state =>
+  selectLevelThreeState(state).lastDamageTimestamp;
 
 export const levelThreeActions = actions;
 export const levelThreeReducer = reducer;
@@ -109,6 +115,7 @@ export const levelThreeSelectors = {
   selectLevelThreeStandingInFire,
   selectLevelThreeActiveFires,
   selectLevelThreePlayerIsDead,
+  selectLevelThreeLastDamageTimestamp,
 };
 
 const changeHealth = (currHealth: number, changeValue: number) => {
