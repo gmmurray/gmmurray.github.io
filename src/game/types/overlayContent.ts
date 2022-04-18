@@ -6,6 +6,7 @@ export enum OverlayContentKey {
   UNF,
   BIO,
   EXPERIENCES,
+  FEATURED_PROJECTS,
 }
 
 export interface OverlayContent {

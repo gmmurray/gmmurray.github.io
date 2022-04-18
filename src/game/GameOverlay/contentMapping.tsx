@@ -1,6 +1,7 @@
 import { OverlayContentKey, OverlayContentMap } from '../types/overlayContent';
 
 import Diploma from './Diploma';
+import QuestLog from './quests/QuestLog';
 import React from 'react';
 import SimpleText from './SimpleText';
 import TechTalentTree from './talentTree/TechTalentTree';
@@ -23,6 +24,10 @@ export const overlayContentMapping: OverlayContentMap = {
     component: <SimpleText />,
   },
   [OverlayContentKey.EXPERIENCES]: {
-    lead: `Inside the chest is a glimpse into Greg's experiences...`,
+    lead: `Inside the chest is Greg's quest log...`,
+    component: <QuestLog />,
+  },
+  [OverlayContentKey.FEATURED_PROJECTS]: {
+    lead: `Inside the chest is a glimpse into Greg's featured projects...`,
   },
 };

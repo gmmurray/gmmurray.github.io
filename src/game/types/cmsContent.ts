@@ -32,6 +32,13 @@ export interface Experience {
   content: {
     items: string[];
   };
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+}
+
+export interface IdentifiableExperience extends Experience {
+  id: number;
 }
 
 export interface IFeaturedProject {

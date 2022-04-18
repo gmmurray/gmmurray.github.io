@@ -190,6 +190,16 @@ export const levelThreeMapDefinition: TileMapDefinition = {
       key: 'portal-tiles',
       source: getTileSetSource('portal_spritesheet'),
     },
+    {
+      name: 'treasure_spritesheet',
+      key: 'treasure-tiles',
+      source: getTileSetSource('treasure_spritesheet'),
+    },
+    {
+      name: 'treasure_shine_tileset',
+      key: 'treasure-shine-tiles',
+      source: getTileSetSource('treasure_shine_tileset'),
+    },
   ],
   characterLayer: {
     lower: 'ground',

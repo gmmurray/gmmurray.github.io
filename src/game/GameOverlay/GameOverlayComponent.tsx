@@ -41,7 +41,7 @@ const GameOverlayComponent = () => {
   const handleClose = useCallback(() => {
     game.scene.resume(pausedScene);
     dispatch(overlayActions.overlayClosed());
-    dispatch(gameCmsActions.selectedTalentTreeChanged(0));
+    dispatch(gameCmsActions.reset());
   }, []);
 
   const handleInnerClick = useCallback(

@@ -18,6 +18,8 @@ import {
 import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
+import { OverlayContentKey } from '../types/overlayContent';
+import { createOverlay } from '../helpers/createOverlay';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export const orbMap: OrbMap = {
@@ -127,8 +129,10 @@ export const orbMap: OrbMap = {
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 4,
-  startingY: 47,
+  // startingX: 4,
+  // startingY: 47,
+  startingX: 82,
+  startingY: 85,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -255,6 +259,14 @@ const items: LevelThreeItem[] = [
     handler: params => (params as LevelThree).handleOrbCollection(3),
     friendlyName: 'third orb',
   },
+  {
+    // featured projects
+    x: 82,
+    y: 83,
+    handler: params =>
+      createOverlay(OverlayContentKey.FEATURED_PROJECTS, params.scene),
+    friendlyName: 'treasure',
+  },
 ];
 
 const portals: PortalDefinition[] = [
@@ -262,6 +274,21 @@ const portals: PortalDefinition[] = [
     from: {
       x: 48,
       y: 89,
+    },
+    type: PortalType.COORDINATE,
+    to: {
+      x: 82,
+      y: 86,
+    },
+    dialog: 'the portal hums with magical energy as you approach...',
+    friendlyName: 'treasure',
+    layer: 'ground',
+    face: Direction.UP,
+  },
+  {
+    from: {
+      x: 82,
+      y: 81,
     },
     type: PortalType.SCENE,
     to: LEVEL_ONE_SCENE_KEY,

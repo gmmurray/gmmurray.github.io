@@ -8,6 +8,9 @@ fragment GregmurrayExperience on GregmurrayExperience {
   title
   subtitle
   content
+  startDate
+  endDate
+  isActive
   gregmurrayHome {
     ... on GregmurrayHome {
       remoteTypeName: __typename

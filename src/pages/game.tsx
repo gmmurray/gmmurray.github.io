@@ -37,6 +37,9 @@ export const pageQuery = graphql`
         title
         subtitle
         content
+        startDate
+        endDate
+        isActive
       }
       featuredContent {
         title
