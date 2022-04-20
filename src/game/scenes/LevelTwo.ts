@@ -239,7 +239,11 @@ export class LevelTwo extends LevelScene {
       solution,
     };
 
-    console.log(Object.values(solution).map(color => getFireColorName(color)));
+    if (this.isDev) {
+      console.log(
+        Object.values(solution).map(color => getFireColorName(color)),
+      );
+    }
 
     return this;
   };

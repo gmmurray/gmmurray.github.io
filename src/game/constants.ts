@@ -40,6 +40,8 @@ export const LEVEL_THREE_BUFF_DEBUFF_DURATION = 3000;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';
+export const DEFAULT_PORTAL_TEXT =
+  'The portal hums with magical energy as you approach...';
 
 // colors
 export const THEME_DARK_BLUE = '#050a2b';

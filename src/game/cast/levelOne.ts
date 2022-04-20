@@ -1,5 +1,6 @@
 import {
   BASE_PLAYER_SPEED,
+  DEFAULT_PORTAL_TEXT,
   LEVEL_THREE_SCENE_KEY,
   LEVEL_TWO_SCENE_KEY,
 } from '../constants';
@@ -82,54 +83,54 @@ const items: ItemDefinition[] = [
     x: 10,
     y: 91,
     handler: params => createOverlay(OverlayContentKey.UNF, params.scene),
-    friendlyName: 'framed medal',
+    friendlyName: 'Framed medal',
   },
   {
     x: 12,
     y: 90,
     handler: params => createOverlay(OverlayContentKey.UF, params.scene),
-    friendlyName: 'trophy',
+    friendlyName: 'Trophy',
   },
   {
     x: 20,
     y: 92,
     handler: params => createOverlay(OverlayContentKey.BIO, params.scene),
-    friendlyName: 'musings',
+    friendlyName: 'Musings',
   },
   {
     x: 23,
     y: 92,
-    handler: params => params.createNewDialog('sweet nectar of the gods!'),
-    friendlyName: 'black gold',
+    handler: params => params.createNewDialog('Sweet nectar of the gods!'),
+    friendlyName: 'Black gold',
   },
   {
     x: 38,
     y: 76,
     handler: params =>
       params.createNewDialog(
-        'you power on the Game Cube. what will you play today, Super Smash Bros Melee or Mario Kart Double Dash?',
+        'You power on the Game Cube. What will you play today, Super Smash Bros: Melee or Mario Kart: Double Dash?',
       ),
-    friendlyName: 'game cube',
+    friendlyName: 'Game Cube',
   },
   {
     x: 40,
     y: 75,
-    handler: params => params.createNewDialog('a wild Magikarp appears!'),
-    friendlyName: 'fish tank',
+    handler: params => params.createNewDialog('A wild Magikarp appears!'),
+    friendlyName: 'Fish tank',
   },
   {
     x: 44,
     y: 78,
     handler: params =>
       params.createNewDialog(`I can't even remember what I bought...`),
-    friendlyName: 'packages',
+    friendlyName: 'Packages',
   },
   {
     x: 23,
     y: 34,
     handler: ({ createNewDialog }) =>
       createNewDialog(`LEFT: Greg's house. STRAIGHT: Portal Pond`),
-    friendlyName: 'sign post',
+    friendlyName: 'Sign post',
   },
 ];
 const portals: PortalDefinition[] = [
@@ -140,7 +141,7 @@ const portals: PortalDefinition[] = [
     },
     type: PortalType.SCENE,
     to: LEVEL_TWO_SCENE_KEY,
-    dialog: 'the portal hums with magical energy as you approach...',
+    dialog: DEFAULT_PORTAL_TEXT,
     friendlyName: 'Mysterious Forest',
   },
   {
@@ -150,7 +151,7 @@ const portals: PortalDefinition[] = [
     },
     type: PortalType.SCENE,
     to: LEVEL_THREE_SCENE_KEY,
-    dialog: 'the portal hums with magical energy as you approach...',
+    dialog: DEFAULT_PORTAL_TEXT,
     friendlyName: 'Creepy Catacombs',
   },
   {
@@ -160,7 +161,7 @@ const portals: PortalDefinition[] = [
     },
     type: PortalType.SCENE,
     to: '', // TODO: scene 4,
-    dialog: 'the portal hums with magical energy as you approach...',
+    dialog: DEFAULT_PORTAL_TEXT,
     friendlyName: 'rightmost portal',
   },
 ];
@@ -171,17 +172,17 @@ const doors: DoorDefinition[] = [
       { x: 20, y: 29 },
     ],
     to: { x: 15, y: 98 },
-    friendlyName: 'go inside',
+    friendlyName: 'Go inside',
   },
   {
     from: [{ x: 15, y: 99 }],
     to: { x: 20, y: 31 },
-    friendlyName: 'go outside',
+    friendlyName: 'Go outside',
   },
   {
     from: [{ x: 18, y: 91 }],
     to: { x: 46, y: 78 },
-    friendlyName: 'go upstairs',
+    friendlyName: 'Go upstairs',
     face: Direction.DOWN,
   },
   {
@@ -190,7 +191,7 @@ const doors: DoorDefinition[] = [
       { x: 46, y: 76 },
     ],
     to: { x: 17, y: 91 },
-    friendlyName: 'go downstairs',
+    friendlyName: 'Go downstairs',
     face: Direction.LEFT,
   },
 ];

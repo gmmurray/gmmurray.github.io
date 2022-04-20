@@ -1,4 +1,8 @@
-import { BASE_PLAYER_SPEED, LEVEL_ONE_SCENE_KEY } from '../constants';
+import {
+  BASE_PLAYER_SPEED,
+  DEFAULT_PORTAL_TEXT,
+  LEVEL_ONE_SCENE_KEY,
+} from '../constants';
 import {
   DoorDefinition,
   LevelCast,
@@ -129,10 +133,10 @@ export const orbMap: OrbMap = {
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  // startingX: 4,
-  // startingY: 47,
-  startingX: 82,
-  startingY: 85,
+  startingX: 4,
+  startingY: 47,
+  // startingX: 82,
+  // startingY: 85,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -148,7 +152,7 @@ const items: LevelThreeItem[] = [
         x: 20,
         y: 47,
       }),
-    friendlyName: 'mini health potion',
+    friendlyName: 'Mini health potion',
   },
   {
     // p1 health mini 2
@@ -159,7 +163,7 @@ const items: LevelThreeItem[] = [
         x: 24,
         y: 19,
       }),
-    friendlyName: 'mini health potion',
+    friendlyName: 'Mini health potion',
   },
   {
     // p1 speed potion
@@ -170,7 +174,7 @@ const items: LevelThreeItem[] = [
         x: 7,
         y: 8,
       }),
-    friendlyName: 'speed potion',
+    friendlyName: 'Speed potion',
   },
   {
     // p2 normal health
@@ -181,7 +185,7 @@ const items: LevelThreeItem[] = [
         x: 94,
         y: 9,
       }),
-    friendlyName: 'big health potion',
+    friendlyName: 'Big health potion',
   },
   {
     // p2 mini health (hidden)
@@ -192,7 +196,7 @@ const items: LevelThreeItem[] = [
         x: 81,
         y: 12,
       }),
-    friendlyName: 'hidden mini health potion',
+    friendlyName: 'Hidden mini health potion',
   },
   {
     // p2 mini health
@@ -203,7 +207,7 @@ const items: LevelThreeItem[] = [
         x: 80,
         y: 31,
       }),
-    friendlyName: 'mini health potion',
+    friendlyName: 'Mini health potion',
   },
   {
     // p2 speed potion
@@ -214,7 +218,7 @@ const items: LevelThreeItem[] = [
         x: 80,
         y: 23,
       }),
-    friendlyName: 'speed potion',
+    friendlyName: 'Speed potion',
   },
   {
     // p3 mini health 1
@@ -225,7 +229,7 @@ const items: LevelThreeItem[] = [
         x: 50,
         y: 77,
       }),
-    friendlyName: 'mini health potion',
+    friendlyName: 'Mini health potion',
   },
   {
     // p3 mini health 2
@@ -236,36 +240,35 @@ const items: LevelThreeItem[] = [
         x: 43,
         y: 82,
       }),
-    friendlyName: 'mini health potion',
+    friendlyName: 'Mini health potion',
   },
   {
     // orb 1
     x: orbMap[1].location.primary.x,
     y: orbMap[1].location.primary.y,
     handler: params => (params as LevelThree).handleOrbCollection(1),
-    friendlyName: 'first orb',
+    friendlyName: 'First orb',
   },
   {
     // orb 2
     x: orbMap[2].location.primary.x,
     y: orbMap[2].location.primary.y,
     handler: params => (params as LevelThree).handleOrbCollection(2),
-    friendlyName: 'second orb',
+    friendlyName: 'Second orb',
   },
   {
     // orb 3
     x: orbMap[3].location.primary.x,
     y: orbMap[3].location.primary.y,
     handler: params => (params as LevelThree).handleOrbCollection(3),
-    friendlyName: 'third orb',
+    friendlyName: 'Third orb',
   },
   {
     // featured projects
     x: 82,
     y: 83,
-    handler: params =>
-      createOverlay(OverlayContentKey.FEATURED_PROJECTS, params.scene),
-    friendlyName: 'treasure',
+    handler: params => createOverlay(OverlayContentKey.PROJECTS, params.scene),
+    friendlyName: 'Treasure',
   },
 ];
 
@@ -280,7 +283,7 @@ const portals: PortalDefinition[] = [
       x: 82,
       y: 86,
     },
-    dialog: 'the portal hums with magical energy as you approach...',
+    dialog: DEFAULT_PORTAL_TEXT,
     friendlyName: 'treasure',
     layer: 'ground',
     face: Direction.UP,
@@ -292,8 +295,8 @@ const portals: PortalDefinition[] = [
     },
     type: PortalType.SCENE,
     to: LEVEL_ONE_SCENE_KEY,
-    dialog: 'the portal hums with magical energy as you approach...',
-    friendlyName: 'back to beginning',
+    dialog: DEFAULT_PORTAL_TEXT,
+    friendlyName: 'Back to beginning',
   },
 ];
 
@@ -311,11 +314,11 @@ const doors: DoorDefinition[] = [
       },
     ],
     to: { x: 53, y: 9 },
-    friendlyName: 'descend',
+    friendlyName: 'Descend',
     face: Direction.DOWN,
     layer: 'ground',
     inactive: true,
-    inactiveDialog: 'you must gather this floors orbs before descending',
+    inactiveDialog: 'You must gather this floors orbs before descending',
     inactiveMoveDir: Direction.RIGHT,
   },
   {
@@ -335,11 +338,11 @@ const doors: DoorDefinition[] = [
       },
     ],
     to: { x: 47, y: 63 },
-    friendlyName: 'descend',
+    friendlyName: 'Descend',
     face: Direction.DOWN,
     layer: 'ground',
     inactive: true,
-    inactiveDialog: 'you must gather this floors orbs before descending',
+    inactiveDialog: 'You must gather this floors orbs before descending',
     inactiveMoveDir: Direction.DOWN,
   },
   {
@@ -358,7 +361,7 @@ const doors: DoorDefinition[] = [
       x: 39,
       y: 31,
     },
-    friendlyName: 'ascend',
+    friendlyName: 'Ascend',
     face: Direction.DOWN,
     layer: 'ground',
   },
@@ -382,7 +385,7 @@ const doors: DoorDefinition[] = [
       x: 60,
       y: 46,
     },
-    friendlyName: 'ascend',
+    friendlyName: 'Ascend',
     face: Direction.DOWN,
     layer: 'ground',
   },

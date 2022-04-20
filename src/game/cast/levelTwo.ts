@@ -1,7 +1,10 @@
-import { BASE_PLAYER_SPEED, LEVEL_ONE_SCENE_KEY } from '../constants';
+import {
+  BASE_PLAYER_SPEED,
+  DEFAULT_PORTAL_TEXT,
+  LEVEL_ONE_SCENE_KEY,
+} from '../constants';
 import { FireNumber, LevelTwoItem, PillarTwoSolution } from '../types/levelTwo';
 import {
-  ItemDefinition,
   LevelCast,
   NpcCharacter,
   PlayerCharacter,
@@ -19,10 +22,10 @@ import { createOverlay } from '../helpers/createOverlay';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  startingX: 19,
-  startingY: 66,
-  // startingX: 23,
-  // startingY: 31,
+  // startingX: 19,
+  // startingY: 66,
+  startingX: 23,
+  startingY: 31,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
@@ -43,34 +46,34 @@ const items: LevelTwoItem[] = [
     x: 24,
     y: 27,
     handler: params => (params as LevelTwo).handleAngelInteraction(),
-    friendlyName: 'guide',
+    friendlyName: 'Guide',
   },
   {
     x: 40,
     y: 10,
     handler: params => (params as LevelTwo).showNextFire(FireNumber.ONE),
-    friendlyName: 'first fire',
+    friendlyName: 'First fire',
     pillar: 3,
   },
   {
     x: 43,
     y: 13,
     handler: params => (params as LevelTwo).showNextFire(FireNumber.TWO),
-    friendlyName: 'second fire',
+    friendlyName: 'Second fire',
     pillar: 3,
   },
   {
     x: 40,
     y: 16,
     handler: params => (params as LevelTwo).showNextFire(FireNumber.THREE),
-    friendlyName: 'third fire',
+    friendlyName: 'Third fire',
     pillar: 3,
   },
   {
     x: 37,
     y: 13,
     handler: params => (params as LevelTwo).showNextFire(FireNumber.FOUR),
-    friendlyName: 'fourth fire',
+    friendlyName: 'Fourth fire',
     pillar: 3,
   },
   {
@@ -78,39 +81,39 @@ const items: LevelTwoItem[] = [
     x: 37,
     y: 30,
     handler: params => (params as LevelTwo).handlePillarThreeInteraction(),
-    friendlyName: 'pillar of matching',
+    friendlyName: 'Pillar of Matching',
   },
   {
     // pillar 1
     x: 2,
     y: 41,
     handler: params => (params as LevelTwo).handlePillarOneInteraction(),
-    friendlyName: 'monolith to exploration',
+    friendlyName: 'Monolith of Exploration',
   },
   {
     // pillar 2
     x: 7,
     y: 10,
     handler: params => (params as LevelTwo).handlePillarTwoInteraction(),
-    friendlyName: 'column of choice',
+    friendlyName: 'Column of Choice',
   },
   {
     // barrel
     x: 2,
     y: 30,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('barrel'),
-    friendlyName: 'barrel',
+      (params as LevelTwo).handlePillarOneItemInteraction('Barrel'),
+    friendlyName: 'Barrel',
     pillar: 1,
-    hint: `don't confuse me for a keg`,
+    hint: `Don't confuse me for a keg`,
   },
   {
     // small urn
     x: 36,
     y: 43,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('small urn'),
-    friendlyName: 'small urn',
+      (params as LevelTwo).handlePillarOneItemInteraction('Small urn'),
+    friendlyName: 'Small urn',
     pillar: 1,
     hint: `I may remind you of a vase but just know that I am small`,
   },
@@ -119,38 +122,38 @@ const items: LevelTwoItem[] = [
     x: 39,
     y: 43,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('bowl'),
-    friendlyName: 'bowl',
+      (params as LevelTwo).handlePillarOneItemInteraction('Bowl'),
+    friendlyName: 'Bowl',
     pillar: 1,
-    hint: `do you put milk or cereal first?`,
+    hint: `Do you put milk or cereal first?`,
   },
   {
     // crate
     x: 21,
     y: 23,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('crate'),
-    friendlyName: 'crate',
+      (params as LevelTwo).handlePillarOneItemInteraction('Crate'),
+    friendlyName: 'Crate',
     pillar: 1,
-    hint: `you can use me to transport all of your stuff`,
+    hint: `You can use me to transport all of your stuff`,
   },
   {
     // chest
     x: 5,
     y: 16,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('chest'),
-    friendlyName: 'chest',
+      (params as LevelTwo).handlePillarOneItemInteraction('Chest'),
+    friendlyName: 'Chest',
     pillar: 1,
-    hint: `pirates are currently looking for me`,
+    hint: `Pirates are currently looking for me`,
   },
   {
     // large urn
     x: 1,
     y: 13,
     handler: params =>
-      (params as LevelTwo).handlePillarOneItemInteraction('large urn'),
-    friendlyName: 'large urn',
+      (params as LevelTwo).handlePillarOneItemInteraction('Large urn'),
+    friendlyName: 'Large urn',
     pillar: 1,
     hint: 'I may remind you of a vase but just know that I am large',
   },
@@ -162,14 +165,14 @@ const items: LevelTwoItem[] = [
       params.createNewDialog(
         `Confused? Try speaking with your guide (the angel over there) to get started. Each pillar will give you a hint to help you solve its mystery.`,
       ),
-    friendlyName: 'help',
+    friendlyName: 'Help',
   },
   {
     // skip button
     x: 7,
     y: 25,
     handler: params => (params as LevelTwo).handleSkipButton(),
-    friendlyName: 'strange button (skip level)',
+    friendlyName: 'Strange button (skip level)',
   },
   {
     // experiences chest
@@ -177,7 +180,7 @@ const items: LevelTwoItem[] = [
     y: 64,
     handler: params =>
       createOverlay(OverlayContentKey.EXPERIENCES, params.scene),
-    friendlyName: 'treasure',
+    friendlyName: 'Treasure',
   },
 ];
 
@@ -192,8 +195,8 @@ const portals: PortalDefinition[] = [
       x: 19,
       y: 67,
     },
-    dialog: 'the portal has taken you to a mysterious area...',
-    friendlyName: 'escape portal',
+    dialog: 'The portal has taken you to a mysterious area...',
+    friendlyName: 'Escape portal',
     layer: 'ground',
   },
   {
@@ -203,8 +206,8 @@ const portals: PortalDefinition[] = [
     },
     type: PortalType.SCENE,
     to: LEVEL_ONE_SCENE_KEY,
-    dialog: 'the portal hums with magical energy as you approach...',
-    friendlyName: 'back to beginning',
+    dialog: DEFAULT_PORTAL_TEXT,
+    friendlyName: 'Back to beginning',
   },
 ];
 
