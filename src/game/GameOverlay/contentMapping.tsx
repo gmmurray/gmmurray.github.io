@@ -1,6 +1,7 @@
 import { OverlayContentKey, OverlayContentMap } from '../types/overlayContent';
 
 import Diploma from './Diploma';
+import Inventory from './inventory/Inventory';
 import QuestLog from './quests/QuestLog';
 import React from 'react';
 import SimpleText from './SimpleText';
@@ -27,7 +28,8 @@ export const overlayContentMapping: OverlayContentMap = {
     lead: `Inside the chest is Greg's quest log...`,
     component: <QuestLog />,
   },
-  [OverlayContentKey.FEATURED_PROJECTS]: {
-    lead: `Inside the chest is a glimpse into Greg's featured projects...`,
+  [OverlayContentKey.PROJECTS]: {
+    lead: `The chest gives you access to Greg's inventory...`,
+    component: <Inventory />,
   },
 };

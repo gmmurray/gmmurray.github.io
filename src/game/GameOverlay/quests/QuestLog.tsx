@@ -48,15 +48,6 @@ const QuestLog = () => {
     experiencesContent,
   ]);
 
-  const selectedQuest = useMemo(
-    () => filteredQuests.find(q => q.id === activeQuest),
-    [activeQuest],
-  );
-
-  useEffect(() => {
-    console.log('changed');
-  }, [filteredQuests]);
-
   useEffect(
     () => setFilteredQuests(filterQuests(identifiedQuests, activeTab)),
     [activeTab],

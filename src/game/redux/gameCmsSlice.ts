@@ -1,6 +1,6 @@
+import { GameCmsContent, InventoryProject } from '../types/cmsContent';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { GameCmsContent } from '../types/cmsContent';
 import { StateSelector } from '../types/redux';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -9,6 +9,7 @@ type GameCmsState = {
   selectedTalentTree: number;
   selectedQuestTab: 0 | 1 | 2;
   selectedQuest: number;
+  selectedProject: InventoryProject;
 };
 
 const initialState: GameCmsState = {
@@ -16,6 +17,7 @@ const initialState: GameCmsState = {
   selectedTalentTree: 0,
   selectedQuestTab: 0,
   selectedQuest: 0,
+  selectedProject: null,
 };
 
 export const gameCmsSlice = createSlice({
@@ -38,6 +40,18 @@ export const gameCmsSlice = createSlice({
       ...state,
       selectedQuest: action.payload,
     }),
+    selectedProjectChanged: (
+      state,
+      action: PayloadAction<InventoryProject | null>,
+    ) => ({
+      ...state,
+      selectedProject:
+        state.selectedProject &&
+        action.payload &&
+        action.payload.title === state.selectedProject.title
+          ? null
+          : action.payload,
+    }),
     reset: state => ({ ...initialState, data: state.data }),
   },
 });
@@ -58,11 +72,20 @@ const selectSelectedTalentTree: StateSelector<GameCmsState['selectedTalentTree']
 const selectGameCmsExperiencesContent: StateSelector<GameCmsState['data']['experiencesContent']> = state =>
   selectGameCmsState(state).data.experiencesContent;
 
+const selectGameCmsFeaturedContent: StateSelector<GameCmsState['data']['featuredContent']> = state =>
+  selectGameCmsState(state).data.featuredContent;
+
+const selectGameCmsOtherContent: StateSelector<GameCmsState['data']['otherContent']> = state =>
+  selectGameCmsState(state).data.otherContent;
+
 const selectGameCmsSelectedQuestTab: StateSelector<GameCmsState['selectedQuestTab']> = state =>
   selectGameCmsState(state).selectedQuestTab;
 
 const selectGameCmsSelectedQuest: StateSelector<GameCmsState['selectedQuest']> = state =>
   selectGameCmsState(state).selectedQuest;
+
+const selectGameCmsSelectedProject: StateSelector<GameCmsState['selectedProject']> = state =>
+  selectGameCmsState(state).selectedProject;
 
 export const gameCmsActions = actions;
 export const gameCmsReducer = reducer;
@@ -73,4 +96,7 @@ export const gameCmsSelectors = {
   selectGameCmsExperiencesContent,
   selectGameCmsSelectedQuestTab,
   selectGameCmsSelectedQuest,
+  selectGameCmsFeaturedContent,
+  selectGameCmsOtherContent,
+  selectGameCmsSelectedProject,
 };

@@ -15,4 +15,6 @@ fragment GregmurrayOther on GregmurrayOther {
     }
   }
   techTags
+  iconName
+  iconColor
 }

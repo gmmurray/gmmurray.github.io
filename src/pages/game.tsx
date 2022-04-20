@@ -56,6 +56,8 @@ export const pageQuery = graphql`
           }
         }
         techTags
+        iconName
+        iconColor
       }
       otherContent {
         title
@@ -64,6 +66,8 @@ export const pageQuery = graphql`
         websiteUrl
         techTags
         createdAt
+        iconName
+        iconColor
       }
       githubUrl
       linkedInUrl

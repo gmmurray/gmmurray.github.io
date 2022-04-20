@@ -46,6 +46,8 @@ export interface IFeaturedProject {
   createdAt: Date;
   title: string;
   titleUrl: string;
+  iconName: string;
+  iconColor: string;
   image: {
     localFile: {
       childImageSharp: {
@@ -65,6 +67,8 @@ export class FeaturedProject implements IFeaturedProject {
   public createdAt: Date;
   public title: string;
   public titleUrl: string;
+  public iconName: string;
+  public iconColor: string;
   public image: {
     localFile: {
       childImageSharp: {
@@ -88,6 +92,8 @@ export interface OtherProject {
   repositoryUrl: string;
   title: string;
   websiteUrl: string;
+  iconName: string;
+  iconColor: string;
   techTags: {
     items: string[];
   };
@@ -118,4 +124,14 @@ export class GameCmsContent implements IGameCmsContent {
     this.featuredContent = null;
     this.otherContent = null;
   }
+}
+
+export interface InventoryProject {
+  title: string;
+  url: string;
+  content: string;
+  techTags: string[];
+  type: 'featured' | 'other';
+  iconName: string;
+  iconColor: string;
 }
