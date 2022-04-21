@@ -1,6 +1,7 @@
 import {
   ASSETS_BASE_URL,
   LEVEL_ONE_SCENE_KEY,
+  LEVEL_THREE_SCENE_KEY,
   LOADING_SCENE_KEY,
   THEME_DARK_YELLOW_NUMBER,
   THEME_WHITE,
@@ -8,12 +9,15 @@ import {
 } from '../constants';
 import {
   fireSpriteDefinitions,
+  goblinSpriteDefinition,
   gregSpriteDefinition,
   greyCatSpriteDefinition,
   levelThreeFireBarrierDefinition,
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
   playerSpriteDefinition,
+  skeletonOneSpriteDefinition,
+  skeletonTwoSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
@@ -34,6 +38,9 @@ const spriteDefinitions = [
   levelthreeFireColumnDefinition,
   levelThreeFireExplosionDefinition,
   levelThreeFireBarrierDefinition,
+  goblinSpriteDefinition,
+  skeletonOneSpriteDefinition,
+  skeletonTwoSpriteDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,
@@ -166,7 +173,8 @@ export class LoadingScene extends Scene {
   private _startFirstScene = () => {
     setTimeout(
       () => {
-        this.scene.start(LEVEL_ONE_SCENE_KEY);
+        //this.scene.start(LEVEL_ONE_SCENE_KEY);
+        this.scene.start(LEVEL_THREE_SCENE_KEY);
       },
       this.isDev ? 0 : 2000,
     );

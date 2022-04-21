@@ -1,5 +1,6 @@
 import { Coordinates } from './position';
 import { ItemDefinition } from './interactions';
+import { SpriteDefinition } from './assetDefinitions';
 
 export enum PotionType {
   MINI_HEALTH,
@@ -72,4 +73,11 @@ export interface LevelThreeDamagingFireDefinition {
 export enum LevelThreeFireType {
   COLUMN,
   EXPLOSION,
+}
+
+export interface LevelThreeEnemiesDefinition {
+  options: SpriteDefinition[];
+  locations: Coordinates[];
+  startingSpeed: number;
+  radius: number;
 }

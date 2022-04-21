@@ -5,6 +5,7 @@ export const ENTER_EVENT_KEY = 'Enter';
 export const SPACE_EVENT_KEY = ' ';
 export const RANDOM_MOVEMENT_DELAY = 2000; // 2 seconds
 export const BASE_PLAYER_SPEED = 4;
+export const PLAYER_MOVED_EVENT = 'player_moved_event';
 
 export const ASSETS_BASE_URL = 'assets/game/';
 
@@ -37,6 +38,7 @@ export const LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD = 1000;
 export const LEVEL_THREE_FIRE_BASE_DAMAGE = 10;
 export const LEVEL_THREE_BUFF_DEBUFF_DELAY = 1000;
 export const LEVEL_THREE_BUFF_DEBUFF_DURATION = 3000;
+export const LEVEL_THREE_ENEMY_FOLLOW_RANGE = 3;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';

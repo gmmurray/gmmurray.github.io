@@ -24,6 +24,7 @@ export type LevelThreeState = {
   standingInFire?: Coordinates;
   playerIsDead: boolean;
   lastDamageTimestamp?: string;
+  enemies: string[];
 };
 
 const initialState: LevelThreeState = {
@@ -34,7 +35,7 @@ const initialState: LevelThreeState = {
   },
   health: 100,
   difficultySettings: {
-    ...levelThreeDifficultySettingsMap[LevelThreeDifficulty.EASY],
+    ...levelThreeDifficultySettingsMap[LevelThreeDifficulty.NIGHTMARE],
   },
   activeFires: {
     [LevelThreeFireType.COLUMN]: false,
@@ -43,6 +44,7 @@ const initialState: LevelThreeState = {
   standingInFire: undefined,
   playerIsDead: false,
   lastDamageTimestamp: undefined,
+  enemies: [],
 };
 
 export const levelThreeSlice = createSlice({
@@ -84,6 +86,10 @@ export const levelThreeSlice = createSlice({
     playerDied: () => ({
       ...initialState,
     }),
+    enemiesChanged: (state, action: PayloadAction<string[]>) => ({
+      ...state,
+      enemies: action.payload,
+    }),
   },
 });
 
@@ -105,6 +111,8 @@ const selectLevelThreePlayerIsDead: StateSelector<LevelThreeState['playerIsDead'
   selectLevelThreeState(state).playerIsDead;
 const selectLevelThreeLastDamageTimestamp: StateSelector<LevelThreeState['lastDamageTimestamp']> = state =>
   selectLevelThreeState(state).lastDamageTimestamp;
+const selectLevelThreeEnemies: StateSelector<LevelThreeState['enemies']> = state =>
+  selectLevelThreeState(state).enemies;
 
 export const levelThreeActions = actions;
 export const levelThreeReducer = reducer;
@@ -116,6 +124,7 @@ export const levelThreeSelectors = {
   selectLevelThreeActiveFires,
   selectLevelThreePlayerIsDead,
   selectLevelThreeLastDamageTimestamp,
+  selectLevelThreeEnemies,
 };
 
 const changeHealth = (currHealth: number, changeValue: number) => {

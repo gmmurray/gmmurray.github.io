@@ -57,6 +57,33 @@ export const whiteCatSpriteDefinition: SpriteDefinition = {
   scale: 2,
 };
 
+export const skeletonOneSpriteDefinition: SpriteDefinition = {
+  key: 'skeleton-one',
+  source: getSpriteSource('skeleton_one_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
+export const skeletonTwoSpriteDefinition: SpriteDefinition = {
+  key: 'skeleton-two',
+  source: getSpriteSource('skeleton_two_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
+export const goblinSpriteDefinition: SpriteDefinition = {
+  key: 'goblin',
+  source: getSpriteSource('goblin_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
 const createFireSprite = (color: FireColor): FireSpriteDefinition => ({
   key: `${getFireColorName(color)}-fire`,
   source: getSpriteSource(`${getFireColorName(color)}_fire_spritesheet`),

@@ -103,7 +103,7 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   public updateHpValue = (value?: number) => {
-    if (value) {
+    if (value !== undefined) {
       this._setHpValue(value);
     } else {
       this._removeHpValue();
@@ -111,7 +111,7 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   public updateHealth = (value?: number) => {
-    if (value) {
+    if (value !== undefined) {
       this._updateHpBar(value).updateHpValue(value);
     } else {
       this._removeHpValue();
@@ -123,7 +123,7 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     value?: string,
   ) => {
     if (!this._singularTextGameObjects[key]) return;
-    if (value) {
+    if (value !== undefined) {
       this._setBasicText(key, value);
     } else {
       this._removeBasicText(key);

@@ -12,6 +12,7 @@ import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   ENTER_EVENT_KEY,
   LOCAL_STORAGE_KEY,
+  PLAYER_MOVED_EVENT,
   RANDOM_MOVEMENT_DELAY,
   SCALE,
   SCALED_TILE_SIZE,
@@ -237,14 +238,23 @@ export class LevelScene extends Scene {
       );
     }
 
+    let moved = false;
     if (cursors.left.isDown || wasd['A'].isDown) {
       this.gridEngine.move(key, Direction.LEFT);
+      moved = true;
     } else if (cursors.right.isDown || wasd['D'].isDown) {
       this.gridEngine.move(key, Direction.RIGHT);
+      moved = true;
     } else if (cursors.up.isDown || wasd['W'].isDown) {
       this.gridEngine.move(key, Direction.UP);
+      moved = true;
     } else if (cursors.down.isDown || wasd['S'].isDown) {
       this.gridEngine.move(key, Direction.DOWN);
+      moved = true;
+    }
+
+    if (moved) {
+      this.events.emit(PLAYER_MOVED_EVENT);
     }
 
     if (!this.gridEngine.isMoving(key) && this.doors.length > 0) {

@@ -1,20 +1,27 @@
 import {
   LEVEL_THREE_BACKGROUND_COLOR,
   LEVEL_THREE_BUFF_DEBUFF_DURATION,
+  LEVEL_THREE_ENEMY_FOLLOW_RANGE,
   LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY,
   LEVEL_THREE_FIRE_BASE_DAMAGE,
   LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
   LEVEL_THREE_SCENE_KEY,
   ORB_LAYER_NAME,
+  PLAYER_MOVED_EVENT,
   POTION_LAYER_NAME,
 } from '../constants';
-import { LevelThreeFireType, PotionType } from '../types/levelThree';
+import {
+  LevelThreeEnemiesDefinition,
+  LevelThreeFireType,
+  PotionType,
+} from '../types/levelThree';
 import {
   levelThreeActions,
   levelThreeSelectors,
 } from '../redux/levelThreeSlice';
 import {
   levelThreeCast,
+  levelThreeEnemiesDefinition,
   levelThreeFireBarrierLocations,
   levelThreeFireColumnLocations,
   levelThreeFireExplosionLocations,
@@ -27,11 +34,16 @@ import {
 } from '../assetDefinitions/sprites';
 import { store, storeDispatch } from '../redux/store';
 
+import { CharacterData } from 'grid-engine';
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
+import { SpriteDefinition } from '../types/assetDefinitions';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
+import { v4 as uuidv4 } from 'uuid';
 
 export class LevelThree extends LevelScene {
+  private _justHitByEnemy = false;
+
   constructor() {
     super(LEVEL_THREE_SCENE_KEY);
     this.levelNumber = 3;
@@ -53,6 +65,7 @@ export class LevelThree extends LevelScene {
       ._setFireColumns()
       ._setFireExplosions()
       ._setFireCollisionListeners()
+      ._initializeEnemyCharacters()
       .attachKeyboardListener();
 
     this.dialog.init();
@@ -66,10 +79,14 @@ export class LevelThree extends LevelScene {
     });
 
     this.hud.updateHealth(100);
+
+    //this.events.on(PLAYER_MOVED_EVENT, this._handlePlayerEnemyMovement);
   };
 
   public update = () => {
-    this.useGridPlayerControls().setFacing();
+    this.useGridPlayerControls()
+      .setFacing()
+      ._handlePlayerEnemyMovement();
   };
 
   public handlePotionConsume = (type: PotionType, coordinates: Coordinates) => {
@@ -417,7 +434,7 @@ export class LevelThree extends LevelScene {
     this._dealDamage(LEVEL_THREE_FIRE_BASE_DAMAGE * damageModifier);
   };
 
-  private _dealDamage = (amount: number) => {
+  private _dealDamage = (amount: number, isCrit: boolean = false) => {
     const currTime = new Date();
     const prevTime = levelThreeSelectors.selectLevelThreeLastDamageTimestamp(
       store.getState(),
@@ -428,7 +445,7 @@ export class LevelThree extends LevelScene {
       return;
     }
 
-    this._displayDebuff(`-${amount}hp`);
+    this._displayDebuff(`-${amount}hp${isCrit ? ' (critical hit)' : ''}`);
     storeDispatch(levelThreeActions.healthChanged(-amount));
     const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
       store.getState(),
@@ -437,6 +454,10 @@ export class LevelThree extends LevelScene {
     if (currentHealth <= 0) {
       this._handleDeath();
     }
+    setTimeout(
+      () => (this._justHitByEnemy = false),
+      LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
+    );
   };
 
   private _setFireCollisionListeners = () => {
@@ -525,5 +546,100 @@ export class LevelThree extends LevelScene {
       this.scene.restart();
       this.isMovementPaused = false;
     }, cameraFade + cameraFadeInterval);
+  };
+
+  private _initializeEnemyCharacters = () => {
+    const enemies: CharacterData[] = this._createEnemyGridEngineCharacters(
+      levelThreeEnemiesDefinition,
+    );
+
+    const keys: string[] = [];
+
+    enemies.forEach(e => {
+      this.gridEngine.addCharacter(e);
+      this.gridEngine.moveRandomly(e.id, 1000 + 1000 * Math.random() * 1, 4);
+      keys.push(e.id);
+    });
+
+    storeDispatch(levelThreeActions.enemiesChanged(keys));
+    return this;
+  };
+
+  private _createEnemyGridEngineCharacters = (
+    enemiesDefinition: LevelThreeEnemiesDefinition,
+  ) => {
+    const { options, startingSpeed, locations } = enemiesDefinition;
+    const { enemy } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+
+    return locations.map(l => {
+      const randomCharacterNumber = Math.floor(Math.random() * options.length);
+      const definition = options[randomCharacterNumber];
+      const sprite = this.add
+        .sprite(0, 0, definition.key)
+        .setScale(definition.scale);
+
+      return {
+        id: uuidv4(),
+        startPosition: {
+          x: l.x,
+          y: l.y,
+        },
+        speed: startingSpeed * enemy.speedMod,
+        sprite,
+        walkingAnimationMapping: definition.walkingAnimationMapping,
+      };
+    });
+  };
+
+  private _handlePlayerEnemyMovement = () => {
+    if (this._justHitByEnemy) return;
+    const { definition } = this.playerCharacter;
+    const enemyIds = levelThreeSelectors.selectLevelThreeEnemies(
+      store.getState(),
+    );
+    if ((enemyIds ?? []).length === 0) return;
+
+    const enemyPositions = enemyIds.map(id => ({
+      id,
+      pos: this.gridEngine.getPosition(id),
+    }));
+
+    const playerPos = this.gridEngine.getPosition(definition.key);
+
+    if (
+      enemyPositions.some(enemyPos =>
+        this._isCharacterAdjacent(playerPos, enemyPos.pos),
+      )
+    ) {
+      const { enemy } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+        store.getState(),
+      );
+      let damage = 10 * enemy.damageMod;
+      let isCrit = false;
+      if (enemy.critsEnabled) {
+        const random = Math.random() * 100;
+        if (random <= 5) {
+          damage *= 1.5;
+          isCrit = true;
+        }
+      }
+      this._dealDamage(damage, isCrit);
+      this._justHitByEnemy = true;
+    }
+
+    return this;
+  };
+
+  private _isCharacterAdjacent = (
+    player: Coordinates,
+    character: Coordinates,
+  ) => {
+    const isAbove = player.x === character.x && player.y === character.y + 1;
+    const isBelow = player.x === character.x && player.y === character.y - 1;
+    const isLeft = player.x === character.x - 1 && player.y === character.y;
+    const isRight = player.x === character.x + 1 && player.y === character.y;
+    return isAbove || isBelow || isLeft || isRight;
   };
 }

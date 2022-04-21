@@ -14,17 +14,23 @@ import {
 import {
   LevelThreeDifficulty,
   LevelThreeDifficultySettingsMap,
+  LevelThreeEnemiesDefinition,
   LevelThreeItem,
   OrbMap,
   PotionType,
 } from '../types/levelThree';
+import {
+  goblinSpriteDefinition,
+  playerSpriteDefinition,
+  skeletonOneSpriteDefinition,
+  skeletonTwoSpriteDefinition,
+} from '../assetDefinitions/sprites';
 
 import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
 import { OverlayContentKey } from '../types/overlayContent';
 import { createOverlay } from '../helpers/createOverlay';
-import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export const orbMap: OrbMap = {
   1: {
@@ -269,6 +275,15 @@ const items: LevelThreeItem[] = [
     y: 83,
     handler: params => createOverlay(OverlayContentKey.PROJECTS, params.scene),
     friendlyName: 'Treasure',
+  },
+  {
+    x: 85,
+    y: 86,
+    handler: params =>
+      params.createNewDialog(
+        'Looks like enough gold to buy a rune scimmy on the GE',
+      ),
+    friendlyName: `25k gold`,
   },
 ];
 
@@ -699,3 +714,91 @@ export const levelThreeFireBarrierLocations: Coordinates[] = [
     y: 89,
   },
 ];
+
+export const levelThreeEnemiesDefinition: LevelThreeEnemiesDefinition = {
+  options: [
+    goblinSpriteDefinition,
+    skeletonOneSpriteDefinition,
+    skeletonTwoSpriteDefinition,
+  ],
+  locations: [
+    {
+      x: 17,
+      y: 41,
+    },
+    {
+      x: 20,
+      y: 41,
+    },
+    {
+      x: 24,
+      y: 41,
+    },
+    {
+      x: 15,
+      y: 28,
+    },
+    {
+      x: 15,
+      y: 22,
+    },
+    {
+      x: 25,
+      y: 28,
+    },
+    {
+      x: 25,
+      y: 22,
+    },
+    {
+      x: 5,
+      y: 20,
+    },
+    {
+      x: 38,
+      y: 37,
+    },
+    {
+      x: 65,
+      y: 10,
+    },
+    {
+      x: 72,
+      y: 10,
+    },
+    {
+      x: 85,
+      y: 11,
+    },
+    {
+      x: 81,
+      y: 16,
+    },
+    {
+      x: 86,
+      y: 21,
+    },
+    {
+      x: 92,
+      y: 17,
+    },
+    {
+      x: 93,
+      y: 33,
+    },
+    {
+      x: 73,
+      y: 32,
+    },
+    {
+      x: 79,
+      y: 40,
+    },
+    {
+      x: 70,
+      y: 46,
+    },
+  ],
+  startingSpeed: 2,
+  radius: 4,
+};
