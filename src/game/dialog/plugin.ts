@@ -33,6 +33,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   public graphics: Phaser.GameObjects.Graphics;
   public closeBtn: Phaser.GameObjects.Text;
   public timedEvent: Phaser.Time.TimerEvent;
+  private _onClose: () => any;
 
   private scaledTextSize = this.config.fontSize;
 
@@ -77,11 +78,21 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     return this;
   };
 
-  toggleWindow = (newValue: boolean = !this.visible) => {
+  toggleWindow = (
+    newValue: boolean = !this.visible,
+    callback: () => any = undefined,
+  ) => {
     this.visible = newValue;
     if (this.text) this.text.setVisible(this.visible);
     if (this.graphics) this.graphics.setVisible(this.visible);
     if (this.closeBtn) this.closeBtn.visible = this.visible;
+    if (!newValue && this._onClose !== undefined) {
+      this._onClose();
+      this._onClose = undefined;
+    }
+    if (newValue && callback) {
+      this._onClose = callback;
+    }
   };
 
   setText = (text: string, animate: boolean = true) => {

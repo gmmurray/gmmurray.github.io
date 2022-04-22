@@ -18,6 +18,7 @@ import {
   playerSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
+  soldierSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
@@ -41,6 +42,7 @@ const spriteDefinitions = [
   goblinSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
+  soldierSpriteDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,

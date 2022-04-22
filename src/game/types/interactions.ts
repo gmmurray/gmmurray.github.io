@@ -53,6 +53,7 @@ export interface Character {
   startingX: number;
   startingY: number;
   startingSpeed: number;
+  facingDirection?: Direction;
 }
 
 export interface PlayerCharacter extends Character {}

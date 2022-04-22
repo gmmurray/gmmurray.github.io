@@ -380,9 +380,9 @@ export class LevelScene extends Scene {
    *
    * @param text
    */
-  public createNewDialog = (text: string) => {
+  public createNewDialog = (text: string, callback: () => any = undefined) => {
     this.dialog.setText(text);
-    this.dialog.toggleWindow(true);
+    this.dialog.toggleWindow(true, callback);
     this.removeHudBottomCenterText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
   };
 
@@ -574,6 +574,7 @@ export class LevelScene extends Scene {
           startingX,
           startingY,
           startingSpeed,
+          facingDirection,
         }) => ({
           id: key,
           startPosition: {
@@ -583,6 +584,7 @@ export class LevelScene extends Scene {
           speed: startingSpeed,
           sprite,
           walkingAnimationMapping,
+          facingDirection,
         }),
       );
   };

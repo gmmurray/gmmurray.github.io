@@ -24,6 +24,7 @@ import {
   playerSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
+  soldierSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
 import { Coordinates } from '../types/position';
@@ -146,7 +147,17 @@ const player: PlayerCharacter = {
   startingSpeed: BASE_PLAYER_SPEED,
 };
 
-const npcs: NpcCharacter[] = [];
+const npcs: NpcCharacter[] = [
+  {
+    definition: soldierSpriteDefinition,
+    startingX: 2,
+    startingY: 46,
+    startingSpeed: 2,
+    friendlyName: 'Dungeon difficulty guide',
+    handler: params => (params as LevelThree).handleGuideInteraction(),
+    facingDirection: Direction.RIGHT,
+  },
+];
 
 const items: LevelThreeItem[] = [
   {
@@ -277,6 +288,7 @@ const items: LevelThreeItem[] = [
     friendlyName: 'Treasure',
   },
   {
+    // pile of gold in treasure room
     x: 85,
     y: 86,
     handler: params =>
@@ -284,6 +296,13 @@ const items: LevelThreeItem[] = [
         'Looks like enough gold to buy a rune scimmy on the GE',
       ),
     friendlyName: `25k gold`,
+  },
+  {
+    // skip key
+    x: 3,
+    y: 40,
+    handler: params => (params as LevelThree).handleLevelSkip(),
+    friendlyName: 'Old key',
   },
 ];
 
@@ -416,8 +435,10 @@ export const levelThreeCast: LevelCast = {
 
 export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = {
   [LevelThreeDifficulty.EASY]: {
+    friendlyName: 'Easy',
+    message: `I can't blame you, nightmare is pretty hard`,
     healthPotions: {
-      mini: 10,
+      mini: 20,
       normal: 50,
     },
     player: {
@@ -436,6 +457,8 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     },
   },
   [LevelThreeDifficulty.NORMAL]: {
+    friendlyName: 'Normal',
+    message: `You want a bit more of a challenge? I respect that.`,
     healthPotions: {
       mini: 20,
       normal: 50,
@@ -456,8 +479,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     },
   },
   [LevelThreeDifficulty.HEROIC]: {
+    friendlyName: 'Heroic',
+    message: `Finally, someone who wants a real challenge.`,
     healthPotions: {
-      mini: 20,
+      mini: 15,
       normal: 50,
     },
     player: {
@@ -476,8 +501,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     },
   },
   [LevelThreeDifficulty.LEGENDARY]: {
+    friendlyName: 'Legendary',
+    message: `This is going to be legend - wait for it - dary.`,
     healthPotions: {
-      mini: 20,
+      mini: 10,
       normal: 50,
     },
     player: {
@@ -496,8 +523,10 @@ export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = 
     },
   },
   [LevelThreeDifficulty.NIGHTMARE]: {
+    friendlyName: 'Nightmare',
+    message: `Now your nightmare comes to life.`,
     healthPotions: {
-      mini: 20,
+      mini: 10,
       normal: 50,
     },
     player: {

@@ -11,6 +11,7 @@ import {
   POTION_LAYER_NAME,
 } from '../constants';
 import {
+  LevelThreeDifficulty,
   LevelThreeEnemiesDefinition,
   LevelThreeFireType,
   PotionType,
@@ -21,6 +22,7 @@ import {
 } from '../redux/levelThreeSlice';
 import {
   levelThreeCast,
+  levelThreeDifficultySettingsMap,
   levelThreeEnemiesDefinition,
   levelThreeFireBarrierLocations,
   levelThreeFireColumnLocations,
@@ -80,7 +82,9 @@ export class LevelThree extends LevelScene {
 
     this.hud.updateHealth(100);
 
-    //this.events.on(PLAYER_MOVED_EVENT, this._handlePlayerEnemyMovement);
+    this._showDifficultyText()
+      ._updateOrbText()
+      ._showStarterDialog();
   };
 
   public update = () => {
@@ -130,17 +134,18 @@ export class LevelThree extends LevelScene {
 
     storeDispatch(levelThreeActions.orbCollected(orb));
 
+    this._updateOrbText();
+
     this._unlockStairs();
   };
 
   private _takeHealthPotion = (
     type: PotionType.MINI_HEALTH | PotionType.HEALTH,
   ) => {
-    const {
-      healthPotions,
-    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
+    const { healthPotions } = levelThreeDifficultySettingsMap[difficulty];
     const health = levelThreeSelectors.selectLevelThreeHealth(store.getState());
     if (health === 100) {
       this.hud.updateCenterText('You already have full health!');
@@ -164,12 +169,14 @@ export class LevelThree extends LevelScene {
 
   private _takeSpeedPotion = () => {
     const baseModifier = 1;
-    const {
-      speedMod,
-      speedDuration,
-    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
-    ).player;
+    );
+    const {
+      player: { speedMod, speedDuration },
+    } = levelThreeDifficultySettingsMap[difficulty];
+
     this.setSpeedModifier(speedMod);
     this._displayBuff(`${speedMod}x speed for ${speedDuration / 1000} seconds`);
     setTimeout(() => {
@@ -390,11 +397,12 @@ export class LevelThree extends LevelScene {
     frameRate: number,
     frameConfig: Phaser.Types.Animations.GenerateFrameNumbers,
   ) => {
-    const {
-      fire: { speedModifier },
-    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
+    const {
+      fire: { speedModifier },
+    } = levelThreeDifficultySettingsMap[difficulty];
 
     this.anims.create({
       key: animKey,
@@ -425,11 +433,12 @@ export class LevelThree extends LevelScene {
   };
 
   private _dealFireDamage = () => {
-    const {
-      fire: { damageModifier },
-    } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
+    const {
+      fire: { damageModifier },
+    } = levelThreeDifficultySettingsMap[difficulty];
 
     this._dealDamage(LEVEL_THREE_FIRE_BASE_DAMAGE * damageModifier);
   };
@@ -535,17 +544,8 @@ export class LevelThree extends LevelScene {
     );
 
     if (playerIsDead) return;
-    const cameraFade = 2500;
-    const cameraFadeInterval = 1000;
-    this.isMovementPaused = true;
-    storeDispatch(levelThreeActions.playerDied());
-    setTimeout(() => {
-      this.cameras.main.fade(cameraFade, 0, 0, 0);
-    }, cameraFadeInterval);
-    setTimeout(() => {
-      this.scene.restart();
-      this.isMovementPaused = false;
-    }, cameraFade + cameraFadeInterval);
+    storeDispatch(levelThreeActions.levelRestarted());
+    this._restartLevel();
   };
 
   private _initializeEnemyCharacters = () => {
@@ -569,9 +569,10 @@ export class LevelThree extends LevelScene {
     enemiesDefinition: LevelThreeEnemiesDefinition,
   ) => {
     const { options, startingSpeed, locations } = enemiesDefinition;
-    const { enemy } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
       store.getState(),
     );
+    const { enemy } = levelThreeDifficultySettingsMap[difficulty];
 
     return locations.map(l => {
       const randomCharacterNumber = Math.floor(Math.random() * options.length);
@@ -613,9 +614,10 @@ export class LevelThree extends LevelScene {
         this._isCharacterAdjacent(playerPos, enemyPos.pos),
       )
     ) {
-      const { enemy } = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
         store.getState(),
       );
+      const { enemy } = levelThreeDifficultySettingsMap[difficulty];
       let damage = 10 * enemy.damageMod;
       let isCrit = false;
       if (enemy.critsEnabled) {
@@ -641,5 +643,95 @@ export class LevelThree extends LevelScene {
     const isLeft = player.x === character.x - 1 && player.y === character.y;
     const isRight = player.x === character.x + 1 && player.y === character.y;
     return isAbove || isBelow || isLeft || isRight;
+  };
+
+  public handleLevelSkip = () => {
+    const confirmed = confirm(
+      'Are you sure? Collecting this key will skip all the fun stuff on this level and take you straight to the treasure room.',
+    );
+    if (confirmed) {
+      this.createNewDialog('You pick up the old key...');
+      this.cameras.main.flash(1500, 0, 0, 0);
+      this.gridEngine.setPosition(
+        this.playerCharacter.definition.key,
+        { x: 82, y: 86 },
+        'ground',
+      );
+    }
+  };
+
+  public handleGuideInteraction = () => {
+    let newDifficulty: LevelThreeDifficulty;
+    const currDifficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+
+    if (currDifficulty === LevelThreeDifficulty.NIGHTMARE) {
+      newDifficulty = LevelThreeDifficulty.EASY;
+    } else {
+      newDifficulty = currDifficulty + 1;
+    }
+
+    const confirmed = confirm(
+      'This will increase the level difficulty and restart the level',
+    );
+
+    if (confirmed) {
+      const callback = () => {
+        this.hud.updateCenterText(
+          `${levelThreeDifficultySettingsMap[newDifficulty].friendlyName} difficulty selected`,
+        );
+        storeDispatch(levelThreeActions.difficultyChanged(newDifficulty));
+        this._restartLevel();
+      };
+      this.createNewDialog(
+        levelThreeDifficultySettingsMap[newDifficulty].message,
+        callback,
+      );
+    }
+  };
+
+  private _restartLevel = () => {
+    const cameraFade = 2500;
+    const cameraFadeInterval = 1000;
+    this.isMovementPaused = true;
+    setTimeout(() => {
+      this.cameras.main.fade(cameraFade, 0, 0, 0);
+    }, cameraFadeInterval);
+    setTimeout(() => {
+      this.scene.restart();
+      this.isMovementPaused = false;
+    }, cameraFade + cameraFadeInterval);
+  };
+
+  private _showDifficultyText = () => {
+    const difficulty = levelThreeSelectors.selectLevelThreeDifficultySettings(
+      store.getState(),
+    );
+    const text = `${levelThreeDifficultySettingsMap[difficulty].friendlyName}`;
+    this.hud.updateTopLeftText(text);
+
+    return this;
+  };
+
+  private _updateOrbText = () => {
+    const orbs = levelThreeSelectors.selectLevelThreeOrbs(store.getState());
+
+    const count = Object.keys(orbs).reduce(
+      (prevValue, currKey) => (orbs[currKey] ? prevValue + 1 : prevValue),
+      0,
+    );
+    this.hud.updateTopCenterText(`${count}/3 orbs`);
+
+    return this;
+  };
+
+  private _showStarterDialog = () => {
+    if (this.isDev) return;
+    const content = `Welcome to the Creepy Catacombs. Your goal here is simple: survive. To escape you will need to collect the three orbs scattered throughout this cursed place. But beware: there are rumors of skeletons who cause harm just by being in their presence...`;
+
+    this.createNewDialog(content);
+
+    return this;
   };
 }

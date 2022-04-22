@@ -32,6 +32,8 @@ export interface OrbMap {
 }
 
 export interface LevelThreeDifficultySettings {
+  friendlyName: string;
+  message: string;
   healthPotions: {
     mini: number;
     normal: number;

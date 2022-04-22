@@ -23,9 +23,11 @@ export const playerCharacterOptions: SpriteDefinition[] = [
   createPlayerSpriteDefinition('irabel'),
   createPlayerSpriteDefinition('zaya'),
   createPlayerSpriteDefinition('orryn'),
+  createPlayerSpriteDefinition('happy_cat'),
+  createPlayerSpriteDefinition('wizard_cat'),
 ];
 
-const randomCharacterNumber = Math.floor(Math.random() * 4);
+const randomCharacterNumber = Math.floor(Math.random() * 6);
 
 export const gregSpriteDefinition: SpriteDefinition = {
   key: 'greg',
@@ -78,6 +80,15 @@ export const skeletonTwoSpriteDefinition: SpriteDefinition = {
 export const goblinSpriteDefinition: SpriteDefinition = {
   key: 'goblin',
   source: getSpriteSource('goblin_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
+export const soldierSpriteDefinition: SpriteDefinition = {
+  key: 'soldier',
+  source: getSpriteSource('soldier_spritesheet'),
   frameWidth: 32,
   frameHeight: 32,
   walkingAnimationMapping: 0,

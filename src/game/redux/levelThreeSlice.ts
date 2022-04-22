@@ -16,7 +16,7 @@ export type LevelThreeState = {
     3: boolean;
   };
   health: number;
-  difficultySettings: LevelThreeDifficultySettings;
+  difficulty: LevelThreeDifficulty;
   activeFires: {
     [LevelThreeFireType.COLUMN]: boolean;
     [LevelThreeFireType.EXPLOSION]: boolean;
@@ -34,9 +34,7 @@ const initialState: LevelThreeState = {
     3: false,
   },
   health: 100,
-  difficultySettings: {
-    ...levelThreeDifficultySettingsMap[LevelThreeDifficulty.NIGHTMARE],
-  },
+  difficulty: LevelThreeDifficulty.EASY,
   activeFires: {
     [LevelThreeFireType.COLUMN]: false,
     [LevelThreeFireType.EXPLOSION]: false,
@@ -83,12 +81,17 @@ export const levelThreeSlice = createSlice({
           }
         : undefined,
     }),
-    playerDied: () => ({
+    levelRestarted: state => ({
       ...initialState,
+      difficulty: state.difficulty,
     }),
     enemiesChanged: (state, action: PayloadAction<string[]>) => ({
       ...state,
       enemies: action.payload,
+    }),
+    difficultyChanged: (_, action: PayloadAction<LevelThreeDifficulty>) => ({
+      ...initialState,
+      difficulty: action.payload,
     }),
   },
 });
@@ -99,8 +102,8 @@ const selectLevelThreeState: StateSelector<LevelThreeState> = state =>
   state.levelThree;
 const selectLevelThreeHealth: StateSelector<LevelThreeState['health']> = state =>
   selectLevelThreeState(state).health;
-const selectLevelThreeDifficultySettings: StateSelector<LevelThreeState['difficultySettings']> = state =>
-  selectLevelThreeState(state).difficultySettings;
+const selectLevelThreeDifficultySettings: StateSelector<LevelThreeState['difficulty']> = state =>
+  selectLevelThreeState(state).difficulty;
 const selectLevelThreeOrbs: StateSelector<LevelThreeState['orbs']> = state =>
   selectLevelThreeState(state).orbs;
 const selectLevelThreeStandingInFire: StateSelector<LevelThreeState['standingInFire']> = state =>
