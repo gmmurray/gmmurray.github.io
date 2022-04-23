@@ -110,8 +110,8 @@ const TechTalentTree = () => {
             <Icon path={mdiArrowRightThick} size={1} />
           </button>
         </div>
-        {talentTrees[selectedTreeIndex].map((row: TechnologyTree[]) => (
-          <div className={row_cn}>
+        {talentTrees[selectedTreeIndex].map((row: TechnologyTree[], index) => (
+          <div className={row_cn} key={index}>
             {row.map(item => {
               const selected = selectedNode && selectedNode.id === item.id;
 

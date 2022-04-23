@@ -1,13 +1,11 @@
 import {
   LEVEL_THREE_BACKGROUND_COLOR,
   LEVEL_THREE_BUFF_DEBUFF_DURATION,
-  LEVEL_THREE_ENEMY_FOLLOW_RANGE,
   LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY,
   LEVEL_THREE_FIRE_BASE_DAMAGE,
   LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
   LEVEL_THREE_SCENE_KEY,
   ORB_LAYER_NAME,
-  PLAYER_MOVED_EVENT,
   POTION_LAYER_NAME,
 } from '../constants';
 import {
@@ -39,8 +37,8 @@ import { store, storeDispatch } from '../redux/store';
 import { CharacterData } from 'grid-engine';
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
-import { SpriteDefinition } from '../types/assetDefinitions';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
+import { showConfirm } from '../helpers/sweetAlerts';
 import { v4 as uuidv4 } from 'uuid';
 
 export class LevelThree extends LevelScene {
@@ -646,18 +644,21 @@ export class LevelThree extends LevelScene {
   };
 
   public handleLevelSkip = () => {
-    const confirmed = confirm(
-      'Are you sure? Collecting this key will skip all the fun stuff on this level and take you straight to the treasure room.',
+    this.scene.pause();
+    showConfirm(
+      'Collecting this key will skip all the fun stuff on this level and take you straight to the treasure room.',
+      this._onConfirmSkip,
+    ).then(() => this.scene.resume());
+  };
+
+  private _onConfirmSkip = () => {
+    this.createNewDialog('You pick up the old key...');
+    this.cameras.main.flash(2500, 0, 0, 0);
+    this.gridEngine.setPosition(
+      this.playerCharacter.definition.key,
+      { x: 82, y: 86 },
+      'ground',
     );
-    if (confirmed) {
-      this.createNewDialog('You pick up the old key...');
-      this.cameras.main.flash(1500, 0, 0, 0);
-      this.gridEngine.setPosition(
-        this.playerCharacter.definition.key,
-        { x: 82, y: 86 },
-        'ground',
-      );
-    }
   };
 
   public handleGuideInteraction = () => {
@@ -672,23 +673,25 @@ export class LevelThree extends LevelScene {
       newDifficulty = currDifficulty + 1;
     }
 
-    const confirmed = confirm(
+    this.scene.pause();
+    showConfirm(
       'This will increase the level difficulty and restart the level',
-    );
+      () => this._onDifficultyChangeConfirmed(newDifficulty),
+    ).then(() => this.scene.resume());
+  };
 
-    if (confirmed) {
-      const callback = () => {
-        this.hud.updateCenterText(
-          `${levelThreeDifficultySettingsMap[newDifficulty].friendlyName} difficulty selected`,
-        );
-        storeDispatch(levelThreeActions.difficultyChanged(newDifficulty));
-        this._restartLevel();
-      };
-      this.createNewDialog(
-        levelThreeDifficultySettingsMap[newDifficulty].message,
-        callback,
+  private _onDifficultyChangeConfirmed = (difficulty: LevelThreeDifficulty) => {
+    const callback = () => {
+      this.hud.updateCenterText(
+        `${levelThreeDifficultySettingsMap[difficulty].friendlyName} difficulty selected`,
       );
-    }
+      storeDispatch(levelThreeActions.difficultyChanged(difficulty));
+      this._restartLevel();
+    };
+    this.createNewDialog(
+      levelThreeDifficultySettingsMap[difficulty].message,
+      callback,
+    );
   };
 
   private _restartLevel = () => {

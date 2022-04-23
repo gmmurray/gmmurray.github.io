@@ -262,3 +262,24 @@
     }
   }
 }
+
+@import 'sweetalert2/src/variables';
+
+$swal2-border: 1px solid $theme-yellow;
+$swal2-border-radius: 0;
+$swal2-background: $theme-dark-blue;
+$swal2-font: monospace;
+$swal2-color: $theme-yellow;
+$swal2-confirm-button-border: 0;
+$swal2-confirm-button-border-radius: 0;
+$swal2-confirm-button-background-color: $theme-yellow;
+$swal2-confirm-button-color: $theme-dark-blue;
+$swal2-confirm-button-focus-box-shadow: 0 0 0 0.125em rgb(235 170 2 / 25%);
+
+$swal2-cancel-button-border: 1px solid $theme-yellow;
+$swal2-cancel-button-border-radius: 0;
+$swal2-cancel-button-background-color: $theme-dark-blue;
+$swal2-cancel-button-color: $theme-yellow;
+$swal2-cancel-button-focus-box-shadow: 0 0 0 0.125em rgb(235 170 2 / 25%);
+
+@import 'sweetalert2/src/sweetalert2';

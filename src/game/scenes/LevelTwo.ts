@@ -31,6 +31,7 @@ import {
   gregSpriteDefinition,
 } from '../assetDefinitions/sprites';
 import { getRandomSolution, shuffleArray } from '../helpers/solutions';
+import { showAlert, showConfirm } from '../helpers/sweetAlerts';
 
 import { LevelScene } from './LevelScene';
 import { LevelTwoSavedData } from '../types/savedData';
@@ -361,7 +362,10 @@ export class LevelTwo extends LevelScene {
     if (!skipped) {
       const isRecord = this._saveTime();
       if (isRecord) {
-        alert('Your time is a new record!');
+        showAlert(
+          'New record',
+          'Good job, this is your fastest clear of this level',
+        );
         this._displayRecord(this._timerElapsed);
       }
     } else {
@@ -511,12 +515,21 @@ export class LevelTwo extends LevelScene {
   };
 
   public handleSkipButton = () => {
-    const confirmed = confirm(
-      'Are you sure? Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
+    // const confirmed = confirm(
+    //   'Are you sure? Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
+    // );
+    // if (confirmed) {
+    //   this.createNewDialog('You press the strange button...');
+    //   this._completeLevel(true);
+    // }
+    showConfirm(
+      'Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
+      this._onSkip,
     );
-    if (confirmed) {
-      this.createNewDialog('You press the strange button...');
-      this._completeLevel(true);
-    }
+  };
+
+  private _onSkip = () => {
+    this.createNewDialog('You press the strange button...');
+    this._completeLevel(true);
   };
 }
