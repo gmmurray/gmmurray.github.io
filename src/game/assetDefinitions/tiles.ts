@@ -153,7 +153,7 @@ export const levelTwoMapDefinition: TileMapDefinition = {
 export const levelThreeMapDefinition: TileMapDefinition = {
   key: 'level-three-map',
   source: getTileMapSource('level_three'),
-  animatedLayer: ['orbs', 'animated'],
+  animatedLayer: ['orbs', 'animated', 'potions'],
   tilesets: [
     {
       name: 'catacomb_base_tileset',
@@ -199,6 +199,21 @@ export const levelThreeMapDefinition: TileMapDefinition = {
       name: 'treasure_shine_tileset',
       key: 'treasure-shine-tiles',
       source: getTileSetSource('treasure_shine_tileset'),
+    },
+    {
+      name: 'half_potion_tileset',
+      key: 'half-potion-tiles',
+      source: getTileSetSource('half_potion_tileset'),
+    },
+    {
+      name: 'full_potion_tileset',
+      key: 'full-potion-tiles',
+      source: getTileSetSource('full_potion_tileset'),
+    },
+    {
+      name: 'speed_potion_tileset',
+      key: 'speed-potion-tiles',
+      source: getTileSetSource('speed_potion_tileset'),
     },
   ],
   characterLayer: {
