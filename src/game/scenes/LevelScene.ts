@@ -11,12 +11,15 @@ import {
 import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   ENTER_EVENT_KEY,
+  INVENTORY_PHASER_EVENT_KEY,
   LOCAL_STORAGE_KEY,
   PLAYER_MOVED_EVENT,
+  QUESTS_PHASER_EVENT_KEY,
   RANDOM_MOVEMENT_DELAY,
   SCALE,
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
+  TALENTS_PHASER_EVENT_KEY,
 } from '../constants';
 import { Geom, Scene, Tilemaps } from 'phaser';
 
@@ -24,8 +27,13 @@ import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
 import HudPlugin from '../hud/plugin';
+import { OverlayContentKey } from '../types/overlayContent';
+import PhaserTooltip from '../PhaserTooltip/phaserTooltip';
 import { TileMapDefinition } from '../types/assetDefinitions';
+import { UnlockedFeatures } from '../types/savedData';
+import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
+import { store } from '../redux/store';
 
 export class LevelScene extends Scene {
   // plugins
@@ -33,6 +41,7 @@ export class LevelScene extends Scene {
   public dialog: DialogPlugin;
   public dialogDisabled = false;
   public hud: HudPlugin;
+  public phaserTooltip: PhaserTooltip;
 
   // characters
   public playerCharacter?: PlayerCharacter = null;
@@ -60,6 +69,9 @@ export class LevelScene extends Scene {
   // movement
   public isMovementPaused: boolean = false;
   public speedModifier: number = 1;
+
+  // unlocked features
+  public unlockedFeatures: UnlockedFeatures;
 
   /**
    * sets player character and combines with npc characters to set characters
@@ -343,7 +355,13 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public attachKeyboardListener = () => {
-    this.input.keyboard.on('keydown', this.handleInteraction, this);
+    this.input.keyboard.on(
+      'keydown',
+      event => {
+        this.handleInteraction(event).handleUIKeybinds(event);
+      },
+      this,
+    );
 
     return this;
   };
@@ -370,6 +388,28 @@ export class LevelScene extends Scene {
     } else {
       // dialog interaction
       this.handleCloseDialog();
+    }
+
+    return this;
+  };
+
+  /**
+   * handler for keydown ui keybind events
+   * @param event keyboard down event
+   * @returns this scene (chainable)
+   */
+  public handleUIKeybinds = event => {
+    const { inventory, questLog, talentTree } = this.unlockedFeatures;
+    if (event.key === INVENTORY_PHASER_EVENT_KEY && inventory) {
+      this.createOverlay(OverlayContentKey.PROJECTS);
+    }
+
+    if (event.key === QUESTS_PHASER_EVENT_KEY && questLog) {
+      this.createOverlay(OverlayContentKey.EXPERIENCES);
+    }
+
+    if (event.key === TALENTS_PHASER_EVENT_KEY && talentTree) {
+      this.createOverlay(OverlayContentKey.SKILLS);
     }
 
     return this;
@@ -805,6 +845,56 @@ export class LevelScene extends Scene {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
   }
 
+  public updateUnlockedFeatures = (
+    key: keyof UnlockedFeatures,
+    value: boolean,
+  ) => {
+    const current = this.loadAllSavedData() ?? {};
+
+    this.unlockedFeatures = {
+      ...this.unlockedFeatures,
+      [key]: value,
+    };
+
+    const newValue = {
+      ...current,
+      unlockedFeatures: {
+        ...this.unlockedFeatures,
+      },
+    };
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue));
+
+    this.updateHudUnlockedFeatures();
+
+    return this;
+  };
+
+  public loadUnlockedFeatures = () => {
+    const current = this.loadAllSavedData() ?? {};
+    if (current && current.unlockedFeatures) {
+      this.unlockedFeatures = {
+        ...(current.unlockedFeatures as UnlockedFeatures),
+      };
+
+      this.updateHudUnlockedFeatures();
+    }
+
+    return this;
+  };
+
+  public updateHudUnlockedFeatures = () => {
+    if (this.hud._isInitialized) {
+      this.hud.updateUnlockedFeatures(this.unlockedFeatures, {
+        inventory: () => this.createOverlay(OverlayContentKey.PROJECTS),
+        quests: () => this.createOverlay(OverlayContentKey.EXPERIENCES),
+        talents: () => this.createOverlay(OverlayContentKey.SKILLS),
+      });
+    }
+
+    return this;
+  };
+
   public removeItem = (coordinates: Coordinates) => {
     const removeIndex = this.items.findIndex(
       item => item.x === coordinates.x && item.y === coordinates.y,
@@ -833,5 +923,17 @@ export class LevelScene extends Scene {
 
   public resetBackgroundColor = () => {
     this.cameras.main.setBackgroundColor('#000');
+  };
+
+  public createOverlay = (contentKey: OverlayContentKey) => {
+    this.scene.pause();
+    store.dispatch(
+      overlayActions.overlayOpened({
+        contentKey,
+        pausedScene: this.scene.key,
+      }),
+    );
+
+    return this;
   };
 }

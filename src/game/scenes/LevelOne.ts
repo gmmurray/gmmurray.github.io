@@ -40,6 +40,8 @@ export class LevelOne extends LevelScene {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
     });
+
+    this.loadUnlockedFeatures();
   };
 
   public update = () => {

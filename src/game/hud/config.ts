@@ -1,4 +1,7 @@
 import {
+  INVENTORY_KEY,
+  QUESTS_KEY,
+  TALENTS_KEY,
   THEME_DANGER_EFFECT_NUMBER,
   THEME_NEGATIVE_EFFECT,
   THEME_NEGATIVE_EFFECT_NUMBER,
@@ -6,6 +9,10 @@ import {
   THEME_POSTIVE_EFFECT_NUMBER,
   THEME_WHITE,
 } from '../constants';
+
+import { fantasyIconsSpriteDefinition } from '../assetDefinitions/sprites';
+
+const BASE_DEPTH = 49;
 
 export interface BasicTextConfig {
   margin?: number;
@@ -20,7 +27,7 @@ const defaultBasicTextConfig: BasicTextConfig = {
   fontSize: 18,
   fontFamily: 'Monospace',
   fontColor: THEME_WHITE,
-  depth: 49,
+  depth: BASE_DEPTH,
 };
 
 export interface TopTextConfig extends BasicTextConfig {
@@ -42,6 +49,28 @@ export interface BuffDebuffTextConfig extends BasicTextConfig {
   paddingX: number;
   fontStyle: string;
   align: 'right' | 'left';
+}
+
+export interface FeatureTextConfig extends BasicTextConfig {
+  getPaddingX: (num: number) => number;
+  paddingY: number;
+  text: string;
+  align: string;
+}
+
+export interface SpriteConfig {
+  spriteKey: string;
+  frame: number;
+}
+
+export interface FeatureSpriteConfig extends SpriteConfig {
+  getPaddingX: (num: number) => number;
+  paddingY: number;
+  width: number;
+  height: number;
+  hoverText: string;
+  depth: number;
+  scale: number;
 }
 
 const defaultCenterTextConfig: CenterTextConfig = {
@@ -66,6 +95,27 @@ const defaultDebuffTextConfig: BuffDebuffTextConfig = {
   paddingX: -128,
   fontStyle: 'bold',
   align: 'right',
+};
+
+const defaultFeatureTextConfig: FeatureTextConfig = {
+  ...defaultBasicTextConfig,
+  getPaddingX: num => num * 48 + 48,
+  paddingY: 36,
+  text: '',
+  align: 'center',
+  fontSize: 14,
+};
+
+const defaultFeatureSpriteConfig: FeatureSpriteConfig = {
+  getPaddingX: num => num * 48 + 48,
+  paddingY: 48,
+  width: 48,
+  height: 48,
+  spriteKey: fantasyIconsSpriteDefinition.key,
+  frame: 15,
+  hoverText: '',
+  depth: BASE_DEPTH,
+  scale: 1.5,
 };
 
 export interface HpBarConfig {
@@ -100,10 +150,20 @@ export interface HudConfig {
     };
     buffs?: BuffDebuffTextConfig;
     debuffs?: BuffDebuffTextConfig;
+    inventory?: FeatureTextConfig;
+    quest?: FeatureTextConfig;
+    talents?: FeatureTextConfig;
   };
   bars: {
     hp?: HpBarConfig;
   };
+  sprites: {
+    featured: {
+      inventory: FeatureSpriteConfig;
+      quests: FeatureSpriteConfig;
+      talents: FeatureSpriteConfig;
+    };
+  } & Record<string, Record<string, SpriteConfig>>;
   maxHealth: number;
 }
 
@@ -131,9 +191,42 @@ export const DEFAULT_CONFIG: HudConfig = {
     debuffs: {
       ...defaultDebuffTextConfig,
     },
+    inventory: {
+      ...defaultFeatureTextConfig,
+      text: INVENTORY_KEY,
+    },
+    quest: {
+      ...defaultFeatureTextConfig,
+      text: QUESTS_KEY,
+    },
+    talents: {
+      ...defaultFeatureTextConfig,
+      text: TALENTS_KEY,
+    },
   },
   bars: {
     hp: { ...defaultHpBarConfig },
   },
+  sprites: {
+    featured: {
+      inventory: {
+        ...defaultFeatureSpriteConfig,
+        frame: 160,
+        hoverText: 'Inventory',
+      },
+      quests: {
+        ...defaultFeatureSpriteConfig,
+        frame: 218,
+        hoverText: 'Quests',
+      },
+      talents: {
+        ...defaultFeatureSpriteConfig,
+        frame: 53,
+        hoverText: 'Talents',
+      },
+    },
+  },
   maxHealth: 100,
 };
+
+export const INACTIVE_FEATURE_SPRITE_FRAME = 15;

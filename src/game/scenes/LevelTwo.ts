@@ -83,6 +83,7 @@ export class LevelTwo extends LevelScene {
     this._initializeCharacterMovement();
     this._addPillarTrackerHudText();
     this._initializeCurrentRecord();
+    this.loadUnlockedFeatures();
 
     this._timerInterval = this._timerInterval ?? this._addTimerInterval();
 

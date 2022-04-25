@@ -31,7 +31,6 @@ import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
 import { OverlayContentKey } from '../types/overlayContent';
-import { createOverlay } from '../helpers/createOverlay';
 
 export const orbMap: OrbMap = {
   1: {
@@ -284,7 +283,11 @@ const items: LevelThreeItem[] = [
     // featured projects
     x: 82,
     y: 83,
-    handler: params => createOverlay(OverlayContentKey.PROJECTS, params.scene),
+    handler: params => {
+      (params as LevelThree)
+        .updateUnlockedFeatures('inventory', true)
+        .createOverlay(OverlayContentKey.PROJECTS);
+    },
     friendlyName: 'Treasure',
   },
   {

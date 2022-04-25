@@ -95,6 +95,15 @@ export const soldierSpriteDefinition: SpriteDefinition = {
   scale: SCALE,
 };
 
+export const fantasyIconsSpriteDefinition: SpriteDefinition = {
+  key: 'fantasy-icons',
+  source: getSpriteSource('fantasy_icons'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: 1,
+};
+
 const createFireSprite = (color: FireColor): FireSpriteDefinition => ({
   key: `${getFireColorName(color)}-fire`,
   source: getSpriteSource(`${getFireColorName(color)}_fire_spritesheet`),

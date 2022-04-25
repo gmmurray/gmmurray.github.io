@@ -8,6 +8,7 @@ import {
   THEME_YELLOW_NUMBER,
 } from '../constants';
 import {
+  fantasyIconsSpriteDefinition,
   fireSpriteDefinitions,
   goblinSpriteDefinition,
   gregSpriteDefinition,
@@ -43,6 +44,7 @@ const spriteDefinitions = [
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
   soldierSpriteDefinition,
+  fantasyIconsSpriteDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,
@@ -175,8 +177,8 @@ export class LoadingScene extends Scene {
   private _startFirstScene = () => {
     setTimeout(
       () => {
-        //this.scene.start(LEVEL_ONE_SCENE_KEY);
-        this.scene.start(LEVEL_THREE_SCENE_KEY);
+        this.scene.start(LEVEL_ONE_SCENE_KEY);
+        //this.scene.start(LEVEL_THREE_SCENE_KEY);
       },
       this.isDev ? 0 : 2000,
     );

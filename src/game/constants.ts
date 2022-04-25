@@ -6,6 +6,15 @@ export const SPACE_EVENT_KEY = ' ';
 export const RANDOM_MOVEMENT_DELAY = 2000; // 2 seconds
 export const BASE_PLAYER_SPEED = 4;
 export const PLAYER_MOVED_EVENT = 'player_moved_event';
+export const INVENTORY_KEY = 'B';
+export const INVENTORY_PHASER_EVENT_KEY = INVENTORY_KEY.toLocaleLowerCase();
+export const INVENTORY_REACT_EVENT_KEY = `Key${INVENTORY_KEY}`;
+export const QUESTS_KEY = 'L';
+export const QUESTS_PHASER_EVENT_KEY = QUESTS_KEY.toLocaleLowerCase();
+export const QUESTS_REACT_EVENT_KEY = `Key${QUESTS_KEY}`;
+export const TALENTS_KEY = 'N';
+export const TALENTS_PHASER_EVENT_KEY = TALENTS_KEY.toLocaleLowerCase();
+export const TALENTS_REACT_EVENT_KEY = `Key${TALENTS_KEY}`;
 
 export const ASSETS_BASE_URL = 'assets/game/';
 
@@ -21,6 +30,7 @@ export const DIALOG_PLUGIN_KEY = 'dialog';
 export const ANIMATED_TILES_PLUGIN_KEY = 'animatedTiles';
 export const HUD_PLUGIN_KEY = 'hud';
 export const MC_DIALOG_PLUGIN_KEY = 'mcDialog';
+export const PHASER_TOOLTIP_PLUGIN_KEY = 'phaserTooltip';
 
 // level two
 export const DEFAULT_FIRE_ANIMATION_FPS = 10;

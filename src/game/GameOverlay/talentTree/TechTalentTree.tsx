@@ -129,25 +129,23 @@ const TechTalentTree = () => {
               }
 
               return (
-                <Fragment>
-                  <Xwrapper key={item.id}>
-                    <TalentNode {...nodeProps} />
-                    {item.parent !== undefined && (
-                      <Xarrow
-                        key={`${item.id}-${selected}`}
-                        start={item.id}
-                        end={item.parent}
-                        curveness={0}
-                        showTail={false}
-                        showHead={false}
-                        animateDrawing={false}
-                        color={arrowColor}
-                        endAnchor="bottom"
-                        startAnchor="top"
-                      />
-                    )}
-                  </Xwrapper>
-                </Fragment>
+                <Xwrapper key={item.id}>
+                  <TalentNode {...nodeProps} />
+                  {item.parent !== undefined && (
+                    <Xarrow
+                      key={`${item.id}-${selected}`}
+                      start={item.id}
+                      end={item.parent}
+                      curveness={0}
+                      showTail={false}
+                      showHead={false}
+                      animateDrawing={false}
+                      color={arrowColor}
+                      endAnchor="bottom"
+                      startAnchor="top"
+                    />
+                  )}
+                </Xwrapper>
               );
             })}
           </div>

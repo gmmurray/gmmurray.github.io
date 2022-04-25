@@ -18,7 +18,6 @@ import {
 
 import { LevelTwo } from '../scenes/LevelTwo';
 import { OverlayContentKey } from '../types/overlayContent';
-import { createOverlay } from '../helpers/createOverlay';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
@@ -178,8 +177,11 @@ const items: LevelTwoItem[] = [
     // experiences chest
     x: 19,
     y: 64,
-    handler: params =>
-      createOverlay(OverlayContentKey.EXPERIENCES, params.scene),
+    handler: params => {
+      (params as LevelTwo)
+        .updateUnlockedFeatures('questLog', true)
+        .createOverlay(OverlayContentKey.EXPERIENCES);
+    },
     friendlyName: 'Treasure',
   },
 ];

@@ -4,6 +4,7 @@ import {
   GRID_ENGINE_PLUGIN_KEY,
   HUD_PLUGIN_KEY,
   MC_DIALOG_PLUGIN_KEY,
+  PHASER_TOOLTIP_PLUGIN_KEY,
   TILE_SIZE,
 } from './constants';
 
@@ -17,6 +18,7 @@ import { LevelTwo } from './scenes/LevelTwo';
 import { LoadingScene } from './scenes/LoadingScene';
 import McDialogPlugin from './mcDialog/plugin';
 import Phaser from 'phaser';
+import PhaserTooltip from './PhaserTooltip/phaserTooltip';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
 
 const startingDimensions = getMaxSquareScreenDimension(
@@ -73,6 +75,11 @@ export const gameConfig = {
         key: MC_DIALOG_PLUGIN_KEY,
         plugin: McDialogPlugin,
         mapping: MC_DIALOG_PLUGIN_KEY,
+      },
+      {
+        key: PHASER_TOOLTIP_PLUGIN_KEY,
+        plugin: PhaserTooltip,
+        mapping: PHASER_TOOLTIP_PLUGIN_KEY,
       },
     ],
   },

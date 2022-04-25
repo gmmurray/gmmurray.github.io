@@ -22,8 +22,8 @@ import {
 } from '../assetDefinitions/sprites';
 
 import { Direction } from 'grid-engine';
+import { LevelOne } from '../scenes/LevelOne';
 import { OverlayContentKey } from '../types/overlayContent';
-import { createOverlay } from '../helpers/createOverlay';
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
@@ -76,25 +76,31 @@ const items: ItemDefinition[] = [
   {
     x: 7,
     y: 91,
-    handler: params => createOverlay(OverlayContentKey.SKILLS, params.scene),
+    handler: params => {
+      (params as LevelOne)
+        .updateUnlockedFeatures('talentTree', true)
+        .createOverlay(OverlayContentKey.SKILLS);
+    },
     friendlyName: `Greg's battlestation`,
   },
   {
     x: 10,
     y: 91,
-    handler: params => createOverlay(OverlayContentKey.UNF, params.scene),
+    handler: params =>
+      (params as LevelOne).createOverlay(OverlayContentKey.UNF),
     friendlyName: 'Framed medal',
   },
   {
     x: 12,
     y: 90,
-    handler: params => createOverlay(OverlayContentKey.UF, params.scene),
+    handler: params => (params as LevelOne).createOverlay(OverlayContentKey.UF),
     friendlyName: 'Trophy',
   },
   {
     x: 20,
     y: 92,
-    handler: params => createOverlay(OverlayContentKey.BIO, params.scene),
+    handler: params =>
+      (params as LevelOne).createOverlay(OverlayContentKey.BIO),
     friendlyName: 'Musings',
   },
   {

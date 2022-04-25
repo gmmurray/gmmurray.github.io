@@ -1,7 +1,17 @@
-import { DEFAULT_CONFIG, HudConfig } from './config';
+import { AnyCallback, noop } from '../types/callback';
+import {
+  DEFAULT_CONFIG,
+  FeatureSpriteConfig,
+  FeatureTextConfig,
+  HudConfig,
+  INACTIVE_FEATURE_SPRITE_FRAME,
+} from './config';
+import { UnlockedFeatureCallbacks, UnlockedFeatures } from '../types/savedData';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 
 import { HUD_PLUGIN_KEY } from '../constants';
+import { LevelScene } from '../scenes/LevelScene';
+import { v4 as uuidv4 } from 'uuid';
 
 export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   public config: HudConfig = { ...DEFAULT_CONFIG };
@@ -13,17 +23,38 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     center?: Phaser.GameObjects.Text;
     hpLabel?: Phaser.GameObjects.Text;
     hpValue?: Phaser.GameObjects.Text;
+    inventory?: Phaser.GameObjects.Text;
+    quests?: Phaser.GameObjects.Text;
+    talents?: Phaser.GameObjects.Text;
   } = {};
 
   private _singularGraphicsGameObjects: {
     hpBarValue?: Phaser.GameObjects.Graphics;
     hpBarBackground?: Phaser.GameObjects.Graphics;
+    inventoryActiveSprite?: Phaser.GameObjects.Sprite;
+    inventoryInactiveSprite?: Phaser.GameObjects.Sprite;
+    questsActiveSprite?: Phaser.GameObjects.Sprite;
+    questsInactiveSprite?: Phaser.GameObjects.Sprite;
+    talentsActiveSprite?: Phaser.GameObjects.Sprite;
+    talentsInactiveSprite?: Phaser.GameObjects.Sprite;
   } = {};
 
   private _multiplicativeTextGameObjects: {
     buffs?: Phaser.GameObjects.Text[];
     debuffs?: Phaser.GameObjects.Text[];
   } = {};
+
+  public _isInitialized: boolean = false;
+
+  private _callbacks: {
+    inventory: AnyCallback;
+    quests: AnyCallback;
+    talents: AnyCallback;
+  } = {
+    inventory: noop,
+    quests: noop,
+    talents: noop,
+  };
 
   constructor(
     scene: Phaser.Plugins.ScenePlugin['scene'],
@@ -55,11 +86,14 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
   public init = (config?: HudConfig, showHp: boolean = false) => {
     this._setConfig(config)
       ._setTextDisplays()
-      ._setHpBarGraphics();
+      ._setHpBarGraphics()
+      ._setFeatureSprites();
 
     if (showHp) {
       this._setHpBarBackground()._setHpTextDisplay();
     }
+
+    this._isInitialized = true;
   };
 
   public updateBottomCenterText = (value?: string) => {
@@ -116,6 +150,13 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     } else {
       this._removeHpValue();
     }
+  };
+
+  public updateUnlockedFeatures = (
+    features: UnlockedFeatures,
+    callbacks: UnlockedFeatureCallbacks,
+  ) => {
+    this._updateUnlockedFeatures(features, callbacks);
   };
 
   private _updateBasicText = (
@@ -193,7 +234,8 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     this._setBottomCenterTextDisplay()
       ._setTopLeftTextDisplay()
       ._setTopCenterTextDisplay()
-      ._setCenterTextDisplay();
+      ._setCenterTextDisplay()
+      ._setFeatureTextDisplays();
     return this;
   };
 
@@ -322,6 +364,8 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     this._singularGraphicsGameObjects.hpBarBackground = this.scene.add
       .graphics()
       .setScrollFactor(0);
+
+    return this;
   };
 
   private _setHpBarBackground = () => {
@@ -642,6 +686,208 @@ export default class HudPlugin extends Phaser.Plugins.ScenePlugin {
     const textRemoved = this._multiplicativeTextGameObjects[type].splice(
       index,
       1,
+    );
+  };
+
+  private _setFeatureSprites = () => {
+    if (!this.config?.sprites?.featured) return this;
+    const gameHeight = this._getGameHeight();
+    const gameWidth = this._getGameWidth();
+
+    Object.keys(this.config.sprites.featured).forEach((key, index) => {
+      const {
+        spriteKey,
+        getPaddingX,
+        paddingY,
+        frame,
+        hoverText,
+        depth,
+        scale,
+      } = this.config.sprites.featured[key] as FeatureSpriteConfig;
+
+      const x = gameWidth - getPaddingX(index);
+      const y = gameHeight - paddingY;
+
+      const activeSprite = this.scene.add
+        .sprite(x, y, spriteKey, frame)
+        .setScrollFactor(0)
+        .setDepth(depth)
+        .setVisible(false)
+        .setScale(scale);
+
+      const inactiveSprite = this.scene.add
+        .sprite(x, y, spriteKey, INACTIVE_FEATURE_SPRITE_FRAME)
+        .setScrollFactor(0)
+        .setDepth(depth)
+        .setVisible(true)
+        .setScale(scale);
+
+      const activeObjectKey = `${key}ActiveSprite`;
+      const inactiveObjectKey = `${key}InactiveSprite`;
+      this._singularGraphicsGameObjects[activeObjectKey] = activeSprite;
+      this._singularGraphicsGameObjects[inactiveObjectKey] = inactiveSprite;
+
+      activeSprite.on('pointerdown', () => this._callbacks[key]());
+
+      this._addTooltip(x, y, activeSprite, hoverText);
+    });
+
+    return this;
+  };
+
+  private _setFeatureTextDisplays = () => {
+    this._setFeatureTextDisplay('inventory', 'inventory', 0);
+    this._setFeatureTextDisplay('quests', 'quest', 1);
+    this._setFeatureTextDisplay('talents', 'talents', 2);
+  };
+
+  private _setFeatureTextDisplay = (
+    textKey: keyof typeof this._singularTextGameObjects,
+    configKey: keyof typeof this.config.texts,
+    position: number,
+  ) => {
+    const {
+      fontSize,
+      fontFamily,
+      fontColor,
+      depth,
+      getPaddingX,
+      paddingY,
+      align,
+      text: content,
+    } = this.config.texts[configKey] as FeatureTextConfig;
+
+    const x = this._getGameWidth() - getPaddingX(position);
+    const y = this._getGameHeight() - 16;
+
+    this._singularTextGameObjects[textKey] = this.scene.make.text({
+      x,
+      y,
+      depth,
+      text: content,
+      visible: false,
+      scrollFactor: 0,
+      origin: 0.5,
+      style: {
+        color: fontColor,
+        fontFamily,
+        fontSize: `${fontSize}px`,
+        align,
+      },
+    });
+
+    return this;
+  };
+
+  private _updateUnlockedFeatures = (
+    features: UnlockedFeatures,
+    callbacks: UnlockedFeatureCallbacks,
+  ) => {
+    const { inventory, questLog, talentTree } = features ?? {};
+
+    const {
+      inventory: inventoryCallback,
+      quests: questsCallback,
+      talents: talentsCallback,
+    } = callbacks;
+
+    let inventoryEnableDisable = inventory
+      ? this._enableFeature
+      : this._disableFeature;
+
+    let questsEnableDisable = questLog
+      ? this._enableFeature
+      : this._disableFeature;
+
+    let talentsEnableDisable = talentTree
+      ? this._enableFeature
+      : this._disableFeature;
+
+    inventoryEnableDisable(
+      'inventoryActiveSprite',
+      'inventoryInactiveSprite',
+      'inventory',
+      'inventory',
+      inventoryCallback,
+    );
+    questsEnableDisable(
+      'questsActiveSprite',
+      'questsInactiveSprite',
+      'quests',
+      'quests',
+      questsCallback,
+    );
+    talentsEnableDisable(
+      'talentsActiveSprite',
+      'talentsInactiveSprite',
+      'talents',
+      'talents',
+      talentsCallback,
+    );
+  };
+
+  private _enableFeature = (
+    activeSpriteKey: keyof typeof this._singularGraphicsGameObjects,
+    inactiveSpriteKey: keyof typeof this._singularGraphicsGameObjects,
+    textKey: keyof typeof this._singularTextGameObjects,
+    callbackKey: keyof typeof this._callbacks,
+    callback: AnyCallback,
+  ) => {
+    this._singularGraphicsGameObjects[activeSpriteKey]
+      ?.setVisible(true)
+      ?.setInteractive({ useHandCursor: true });
+    this._singularGraphicsGameObjects[inactiveSpriteKey]?.setVisible(false);
+    this._singularTextGameObjects[textKey]?.setVisible(true);
+    this._callbacks[callbackKey] = callback;
+  };
+
+  private _disableFeature = (
+    activeSpriteKey: keyof typeof this._singularGraphicsGameObjects,
+    inactiveSpriteKey: keyof typeof this._singularGraphicsGameObjects,
+    textKey: keyof typeof this._singularTextGameObjects,
+    callbackKey: keyof typeof this._callbacks,
+  ) => {
+    this._singularGraphicsGameObjects[activeSpriteKey]
+      ?.setVisible(false)
+      ?.disableInteractive();
+    this._singularGraphicsGameObjects[inactiveSpriteKey]?.setVisible(true);
+    this._singularTextGameObjects[textKey]?.setVisible(false);
+    this._callbacks[callbackKey] = noop;
+  };
+
+  private _addTooltip = (
+    x: number,
+    y: number,
+    sprite: Phaser.GameObjects.Sprite,
+    text: string,
+  ) => {
+    const id = uuidv4();
+    (this.scene as LevelScene).phaserTooltip.createTooltip({
+      x,
+      y: y - 50,
+      hasBackground: false,
+      text: {
+        text,
+        fontFamily: 'monospace',
+        fontSize: 16,
+      },
+      id,
+      target: sprite,
+    });
+
+    (this.scene as LevelScene).phaserTooltip.hideTooltip(id);
+
+    sprite.on(
+      'pointerover',
+      () => {
+        (this.scene as LevelScene).phaserTooltip.showTooltip(id, true);
+      },
+      this.scene,
+    );
+    sprite.on(
+      'pointerout',
+      () => (this.scene as LevelScene).phaserTooltip.hideTooltip(id, true),
+      this.scene,
     );
   };
 }

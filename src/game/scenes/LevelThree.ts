@@ -79,7 +79,7 @@ export class LevelThree extends LevelScene {
     });
 
     this.hud.updateHealth(100);
-
+    this.loadUnlockedFeatures();
     this._showDifficultyText()
       ._updateOrbText()
       ._showStarterDialog();

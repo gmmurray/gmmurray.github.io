@@ -1,3 +1,8 @@
+import {
+  INVENTORY_REACT_EVENT_KEY,
+  QUESTS_REACT_EVENT_KEY,
+  TALENTS_REACT_EVENT_KEY,
+} from '../constants';
 import React, { useCallback, useEffect } from 'react';
 import { overlayActions, overlaySelectors } from '../redux/overlaySlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,6 +62,9 @@ const GameOverlayComponent = () => {
         case 'Escape':
         case 'Space':
         case 'Enter':
+        case INVENTORY_REACT_EVENT_KEY:
+        case QUESTS_REACT_EVENT_KEY:
+        case TALENTS_REACT_EVENT_KEY:
           handleClose();
           break;
         default:
