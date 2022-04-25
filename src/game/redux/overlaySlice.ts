@@ -2,17 +2,24 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { OverlayContentKey } from '../types/overlayContent';
 import { StateSelector } from '../types/redux';
+import { UnlockedFeatures } from '../types/savedData';
 
 type OverlayState = {
   open: boolean;
   contentKey: OverlayContentKey | null;
   pausedScene: string;
+  unlockedFeatures: UnlockedFeatures;
 };
 
 const initialState: OverlayState = {
   open: false,
   contentKey: null,
   pausedScene: null,
+  unlockedFeatures: {
+    inventory: false,
+    questLog: false,
+    talentTree: false,
+  },
 };
 
 export const overlaySlice = createSlice({
@@ -36,6 +43,13 @@ export const overlaySlice = createSlice({
       contentKey: initialState.contentKey,
       pausedScene: initialState.pausedScene,
     }),
+    updateUnlockedFeatures: (
+      state,
+      action: PayloadAction<UnlockedFeatures>,
+    ) => ({
+      ...state,
+      unlockedFeatures: action.payload,
+    }),
   },
 });
 
@@ -55,9 +69,13 @@ const selectOverlayContentKey: StateSelector<OverlayState['contentKey']> = state
 const selectPausedScene: StateSelector<OverlayState['pausedScene']> = state =>
   selectOverlayState(state).pausedScene;
 
+const selectUnlockedFeatures: StateSelector<OverlayState['unlockedFeatures']> = state =>
+  selectOverlayState(state).unlockedFeatures;
+
 export const overlaySelectors = {
   selectOverlayState,
   selectOverlayOpen,
   selectOverlayContentKey,
   selectPausedScene,
+  selectUnlockedFeatures,
 };

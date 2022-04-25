@@ -41,6 +41,7 @@ const GameOverlayComponent = () => {
   const { pausedScene, contentKey } = useSelector(
     overlaySelectors.selectOverlayState,
   );
+  const unlockedFeatures = useSelector(overlaySelectors.selectUnlockedFeatures);
   const content = overlayContentMapping[contentKey];
 
   const handleClose = useCallback(() => {
@@ -79,6 +80,8 @@ const GameOverlayComponent = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const unlocked = unlockedFeatures && unlockedFeatures[content.unlockedKey];
+
   return (
     <div className={classNames(base_cn, container_cn)}>
       <div
@@ -99,7 +102,7 @@ const GameOverlayComponent = () => {
               </button>
             </div>
             <div className={message_content_container_cn}>
-              {content.lead && (
+              {content.lead && !unlocked && (
                 <div>
                   <Typewriter words={[content.lead]} typeSpeed={30} />
                 </div>

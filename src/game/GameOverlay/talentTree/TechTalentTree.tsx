@@ -22,6 +22,7 @@ import TalentNode from './TalentNode';
 import { TechnologyTree } from '../../types/cmsContent';
 import classNames from 'classnames';
 import { combineCss } from '../../helpers/combineCss';
+import { overlaySelectors } from '../../redux/overlaySlice';
 import { useVisibleTimeout } from '../../helpers/customHooks';
 
 const overlay_cn = 'game-overlay-message-component-container';
@@ -48,10 +49,11 @@ const TechTalentTree = () => {
   const selectedTreeIndex = useSelector(
     gameCmsSelectors.selectSelectedTalentTree,
   );
+  const { talentTree } = useSelector(overlaySelectors.selectUnlockedFeatures);
 
   const [selectedNode, setSelectedNode] = useState<TechnologyTree | null>(null);
 
-  const treeIsVisible = useVisibleTimeout(2000);
+  const treeIsVisible = useVisibleTimeout(talentTree ? 0 : 2000);
 
   const [infoIsVisible, setInfoIsVisible] = useState(false);
 

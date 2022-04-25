@@ -22,6 +22,7 @@ import {
   TALENTS_PHASER_EVENT_KEY,
 } from '../constants';
 import { Geom, Scene, Tilemaps } from 'phaser';
+import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import { Coordinates } from '../types/position';
@@ -33,7 +34,6 @@ import { TileMapDefinition } from '../types/assetDefinitions';
 import { UnlockedFeatures } from '../types/savedData';
 import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
-import { store } from '../redux/store';
 
 export class LevelScene extends Scene {
   // plugins
@@ -856,6 +856,8 @@ export class LevelScene extends Scene {
       [key]: value,
     };
 
+    storeDispatch(overlayActions.updateUnlockedFeatures(this.unlockedFeatures));
+
     const newValue = {
       ...current,
       unlockedFeatures: {
@@ -876,6 +878,10 @@ export class LevelScene extends Scene {
       this.unlockedFeatures = {
         ...(current.unlockedFeatures as UnlockedFeatures),
       };
+
+      storeDispatch(
+        overlayActions.updateUnlockedFeatures(this.unlockedFeatures),
+      );
 
       this.updateHudUnlockedFeatures();
     }

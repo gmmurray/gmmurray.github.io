@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { UnlockedFeatures } from './savedData';
 
 export enum OverlayContentKey {
   SKILLS,
@@ -12,6 +13,7 @@ export enum OverlayContentKey {
 export interface OverlayContent {
   lead: string;
   component?: JSX.Element;
+  unlockedKey?: keyof UnlockedFeatures;
 }
 
 export interface OverlayContentMap {
