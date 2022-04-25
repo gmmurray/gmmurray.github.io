@@ -177,10 +177,15 @@ export class LevelThree extends LevelScene {
 
     this.setSpeedModifier(speedMod);
     this._displayBuff(`${speedMod}x speed for ${speedDuration / 1000} seconds`);
-    setTimeout(() => {
-      this.setSpeedModifier(baseModifier);
-      this._displayDebuff('-speed buff');
-    }, speedDuration);
+    this.time.delayedCall(
+      speedDuration,
+      () => {
+        this.setSpeedModifier(baseModifier);
+        this._displayDebuff('-speed buff');
+      },
+      [],
+      this,
+    );
     return true;
   };
 
@@ -356,7 +361,12 @@ export class LevelThree extends LevelScene {
   ) => {
     sprite.setVisible(true);
     storeDispatch(levelThreeActions.activeFiresChanged({ type, active: true }));
-    setTimeout(() => sprite.setVisible(false), animationLength);
+    this.time.delayedCall(
+      animationLength,
+      () => sprite.setVisible(false),
+      [],
+      this,
+    );
   };
 
   private _onFireAnimationRepeat = (
@@ -374,19 +384,30 @@ export class LevelThree extends LevelScene {
 
     // do damage to the player if they are in it,
     // but only once per LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD
-    const interval = setInterval(() => {
-      if (this._isStandingInActiveFire(position, type)) {
-        this._dealFireDamage();
-      }
-    }, LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD);
+    const loop = this.time.addEvent({
+      loop: true,
+      delay: LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
+      callbackScope: this,
+      callback: () => {
+        if (this._isStandingInActiveFire(position, type)) {
+          this._dealFireDamage();
+        }
+      },
+    });
 
-    setTimeout(() => {
-      clearInterval(interval);
-      storeDispatch(
-        levelThreeActions.activeFiresChanged({ type, active: false }),
-      );
-      sprite.setVisible(false);
-    }, animationLength);
+    this.time.delayedCall(
+      animationLength,
+      () => {
+        loop.remove();
+        //clearInterval(interval);
+        storeDispatch(
+          levelThreeActions.activeFiresChanged({ type, active: false }),
+        );
+        sprite.setVisible(false);
+      },
+      [],
+      this,
+    );
   };
 
   private _createDamagingFireAnimation = (
@@ -461,9 +482,11 @@ export class LevelThree extends LevelScene {
     if (currentHealth <= 0) {
       this._handleDeath();
     }
-    setTimeout(
-      () => (this._justHitByEnemy = false),
+    this.time.delayedCall(
       LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD,
+      () => (this._justHitByEnemy = false),
+      [],
+      this,
     );
   };
 
@@ -648,7 +671,8 @@ export class LevelThree extends LevelScene {
     showConfirm(
       'Collecting this key will skip all the fun stuff on this level and take you straight to the treasure room.',
       this._onConfirmSkip,
-    ).then(() => this.scene.resume());
+      () => this.scene.resume(),
+    );
   };
 
   private _onConfirmSkip = () => {
@@ -677,7 +701,8 @@ export class LevelThree extends LevelScene {
     showConfirm(
       'This will increase the level difficulty and restart the level',
       () => this._onDifficultyChangeConfirmed(newDifficulty),
-    ).then(() => this.scene.resume());
+      () => this.scene.resume(),
+    );
   };
 
   private _onDifficultyChangeConfirmed = (difficulty: LevelThreeDifficulty) => {

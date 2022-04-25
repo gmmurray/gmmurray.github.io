@@ -1,3 +1,4 @@
+import { AnyCallback } from '../types/callback';
 import Swal from 'sweetalert2/src/sweetalert2';
 
 const default_settings = {
@@ -6,14 +7,26 @@ const default_settings = {
   allowEnterKey: false,
 };
 
-export const showAlert = (title: string, text: string) =>
+export const showAlert = (
+  title: string,
+  text: string,
+  callback: AnyCallback = undefined,
+) =>
   Swal.fire({
     title,
     text,
     ...default_settings,
+  }).then(() => {
+    if (callback) {
+      callback();
+    }
   });
 
-export const showConfirm = (text: string, callback: () => any) =>
+export const showConfirm = (
+  text: string,
+  confirmCallback: () => any,
+  postCallback: AnyCallback = undefined,
+) =>
   Swal.fire({
     title: 'Are you sure?',
     text,
@@ -22,7 +35,11 @@ export const showConfirm = (text: string, callback: () => any) =>
     cancelButtonText: 'No',
     ...default_settings,
   }).then((result: { isConfirmed: boolean }) => {
+    if (postCallback) {
+      postCallback();
+    }
+
     if (result.isConfirmed) {
-      callback();
+      confirmCallback();
     }
   });

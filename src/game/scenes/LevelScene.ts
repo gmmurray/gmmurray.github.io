@@ -446,11 +446,16 @@ export class LevelScene extends Scene {
       radius,
     } = character;
     if (radius !== undefined && !this.gridEngine.isMoving(key)) {
-      setTimeout(() => {
-        if (!this.dialog.visible) {
-          this.gridEngine.moveRandomly(key, RANDOM_MOVEMENT_DELAY, radius);
-        }
-      }, seconds * 1000);
+      this.time.delayedCall(
+        seconds * 1000,
+        () => {
+          if (!this.dialog.visible) {
+            this.gridEngine.moveRandomly(key, RANDOM_MOVEMENT_DELAY, radius);
+          }
+        },
+        [],
+        this,
+      );
     }
 
     return this;
@@ -489,7 +494,12 @@ export class LevelScene extends Scene {
     if (this.gridEngine.isMoving(key)) {
       // sometimes the movement doesn't stop fast enough and we can't turn the character
       // this helps with that so we keep trying to turn the character without blowing up the stack
-      return setTimeout(() => this.turnCharacterTowardsPlayer(character), 50);
+      return this.time.delayedCall(
+        50,
+        () => this.turnCharacterTowardsPlayer(character),
+        [],
+        this,
+      );
     }
     let newDir: Direction;
     const playerDir = this.gridEngine.getFacingDirection(
@@ -756,9 +766,14 @@ export class LevelScene extends Scene {
 
       if (match.type === PortalType.SCENE && typeof match.to === 'string') {
         this.dialogDisabled = true;
-        setTimeout(() => {
-          this.cameras.main.fade(2500, 0, 0, 0);
-        }, 1000);
+        this.time.delayedCall(
+          1000,
+          () => {
+            this.cameras.main.fade(2500, 0, 0, 0);
+          },
+          [],
+          this,
+        );
 
         setTimeout(() => {
           this.handleCloseDialog(true);

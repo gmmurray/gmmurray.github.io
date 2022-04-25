@@ -46,7 +46,7 @@ export class LevelTwo extends LevelScene {
   private pillarOneState: IPillarOneState;
   private pillarTwoState: IPillarTwoState;
   private puzzleFireState: IPillarThreeState;
-  private _timerInterval: NodeJS.Timeout;
+  private _timerInterval: Phaser.Time.TimerEvent;
   private _timerElapsed: number = 0;
 
   public mcDialog: McDialogPlugin;
@@ -279,11 +279,14 @@ export class LevelTwo extends LevelScene {
     ) as Phaser.Tilemaps.TilemapLayer[];
     const activeLayer = layers.find(l => l.layer.name === layerName);
     if (activeLayer) {
-      let interval = setInterval(() => {
-        activeLayer.setAlpha(activeLayer.alpha + 0.1);
-
-        if (activeLayer.alpha === 1) clearInterval(interval);
-      }, 200);
+      this.time.addEvent({
+        delay: 200,
+        callbackScope: this,
+        repeat: 10,
+        callback: () => {
+          activeLayer.setAlpha(activeLayer.alpha + 0.1);
+        },
+      });
     }
 
     return this;
@@ -359,15 +362,19 @@ export class LevelTwo extends LevelScene {
     ].filter(p => !!p).length;
 
   private _completeLevel = (skipped = false) => {
-    clearInterval(this._timerInterval);
+    this._timerInterval.remove();
     if (!skipped) {
       const isRecord = this._saveTime();
       if (isRecord) {
+        this.scene.pause();
         showAlert(
           'New record',
           'Good job, this is your fastest clear of this level',
+          () => {
+            this.scene.resume();
+            this._displayRecord(this._timerElapsed);
+          },
         );
-        this._displayRecord(this._timerElapsed);
       }
     } else {
       this._timerElapsed = 0;
@@ -471,11 +478,16 @@ export class LevelTwo extends LevelScene {
   };
 
   private _addTimerInterval = () =>
-    setInterval(() => {
-      const newTime = this._timerElapsed + 1;
-      this._addPillarTrackerHudText(this._getNumCompletedPillars(), newTime);
-      this._timerElapsed = newTime;
-    }, 1000);
+    this.time.addEvent({
+      loop: true,
+      delay: 1000,
+      callbackScope: this,
+      callback: () => {
+        const newTime = this._timerElapsed + 1;
+        this._addPillarTrackerHudText(this._getNumCompletedPillars(), newTime);
+        this._timerElapsed = newTime;
+      },
+    });
 
   private _saveTime = () => {
     const { time } = this.loadLevelSavedData<LevelTwoSavedData>() ?? {};
@@ -504,11 +516,14 @@ export class LevelTwo extends LevelScene {
     ) as Phaser.Tilemaps.TilemapLayer[];
     const activeLayer = layers.find(l => l.layer.name === PORTAL_ACTIVE_NAME);
     if (activeLayer) {
-      let interval = setInterval(() => {
-        activeLayer.setAlpha(activeLayer.alpha + 0.1);
-
-        if (activeLayer.alpha === 1) clearInterval(interval);
-      }, 200);
+      this.time.addEvent({
+        repeat: 10,
+        delay: 200,
+        callbackScope: this,
+        callback: () => {
+          activeLayer.setAlpha(activeLayer.alpha + 0.1);
+        },
+      });
     }
 
     this.setPortals();
@@ -516,16 +531,11 @@ export class LevelTwo extends LevelScene {
   };
 
   public handleSkipButton = () => {
-    // const confirmed = confirm(
-    //   'Are you sure? Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
-    // );
-    // if (confirmed) {
-    //   this.createNewDialog('You press the strange button...');
-    //   this._completeLevel(true);
-    // }
+    this.scene.pause();
     showConfirm(
       'Pressing this button will skip all the fun stuff on this level and grant you access to the rewards and ability to leave this level',
       this._onSkip,
+      () => this.scene.resume(),
     );
   };
 
