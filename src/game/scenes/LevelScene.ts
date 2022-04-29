@@ -20,6 +20,7 @@ import {
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
   TALENTS_PHASER_EVENT_KEY,
+  WASD_KEY_STRING,
 } from '../constants';
 import { Geom, Scene, Tilemaps } from 'phaser';
 import { store, storeDispatch } from '../redux/store';
@@ -233,7 +234,7 @@ export class LevelScene extends Scene {
       return this;
     }
     const cursors = this.input.keyboard.createCursorKeys();
-    const wasd = this.input.keyboard.addKeys('W,A,S,D');
+    const wasd = this.input.keyboard.addKeys(WASD_KEY_STRING);
     const {
       definition: { key },
     } = this.playerCharacter;

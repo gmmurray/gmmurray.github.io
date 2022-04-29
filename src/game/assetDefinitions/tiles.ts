@@ -222,3 +222,61 @@ export const levelThreeMapDefinition: TileMapDefinition = {
     transitions: [],
   },
 };
+
+export const levelFourMapDefinition: TileMapDefinition = {
+  key: 'level-four-map',
+  source: getTileMapSource('level_four'),
+  animatedLayer: ['lava'],
+  tilesets: [
+    {
+      name: 'simple_tileset',
+      key: 'simple-tiles',
+      source: getTileSetSource('simple_tileset'),
+    },
+    {
+      name: 'lava_tileset',
+      key: 'lava-tiles',
+      source: getTileSetSource('lava_tileset'),
+    },
+    {
+      name: 'brick_bg_tileset',
+      key: 'brick-bg-tiles',
+      source: getTileSetSource('brick_bg_tileset'),
+    },
+    {
+      name: 'hill_one_bg_tileset',
+      key: 'hill-one-bg-tiles',
+      source: getTileSetSource('hill_one_bg_tileset'),
+    },
+    {
+      name: 'hill_two_bg_tileset',
+      key: 'hill-two-bg-tiles',
+      source: getTileSetSource('hill_two_bg_tileset'),
+    },
+    {
+      name: 'sky_bg_tileset',
+      key: 'sky-bg-tiles',
+      source: getTileSetSource('sky_bg_tileset'),
+    },
+    {
+      name: 'space_bg_tileset',
+      key: 'space-bg-tiles',
+      source: getTileSetSource('space_bg_tileset'),
+    },
+    {
+      name: 'cloud_bg_tileset',
+      key: 'cloud-bg-tiles',
+      source: getTileSetSource('cloud_bg_tileset'),
+    },
+    {
+      name: 'trees_tileset',
+      key: 'trees-tiles',
+      source: getTileSetSource('trees_tileset'),
+    },
+    {
+      name: 'water_tileset',
+      key: 'water-tiles',
+      source: getTileSetSource('water_tileset'),
+    },
+  ],
+};

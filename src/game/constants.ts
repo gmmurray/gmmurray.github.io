@@ -15,6 +15,7 @@ export const QUESTS_REACT_EVENT_KEY = `Key${QUESTS_KEY}`;
 export const TALENTS_KEY = 'N';
 export const TALENTS_PHASER_EVENT_KEY = TALENTS_KEY.toLocaleLowerCase();
 export const TALENTS_REACT_EVENT_KEY = `Key${TALENTS_KEY}`;
+export const WASD_KEY_STRING = 'W,A,S,D';
 
 export const ASSETS_BASE_URL = 'assets/game/';
 
@@ -23,6 +24,7 @@ export const LOADING_SCENE_KEY = 'loading-scene';
 export const LEVEL_ONE_SCENE_KEY = 'level-one';
 export const LEVEL_TWO_SCENE_KEY = 'level-two';
 export const LEVEL_THREE_SCENE_KEY = 'level-three';
+export const LEVEL_FOUR_SCENE_KEY = 'level-four';
 
 // plugin keys
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';
@@ -49,6 +51,11 @@ export const LEVEL_THREE_FIRE_BASE_DAMAGE = 10;
 export const LEVEL_THREE_BUFF_DEBUFF_DELAY = 1000;
 export const LEVEL_THREE_BUFF_DEBUFF_DURATION = 3000;
 export const LEVEL_THREE_ENEMY_FOLLOW_RANGE = 3;
+
+// level four
+export const LEVEL_FOUR_PLAYER_DEPTH = 15;
+export const LEVEL_FOUR_WALK_VELOCITY = 100;
+export const LEVEL_FOUR_JUMP_VELOCITY = 300;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';

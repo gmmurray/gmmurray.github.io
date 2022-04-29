@@ -12,6 +12,7 @@ import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
 import HudPlugin from './hud/plugin';
+import { LevelFour } from './scenes/LevelFour';
 import { LevelOne } from './scenes/LevelOne';
 import { LevelThree } from './scenes/LevelThree';
 import { LevelTwo } from './scenes/LevelTwo';
@@ -35,6 +36,7 @@ export const gameConfig = {
     default: 'arcade',
     arcade: {
       debug: process.env.NODE_ENV === 'development',
+      gravity: { y: 750 },
     },
   },
   render: {
@@ -48,7 +50,7 @@ export const gameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree],
+  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree, LevelFour],
   plugins: {
     scene: [
       {

@@ -1,5 +1,6 @@
 import {
   ASSETS_BASE_URL,
+  LEVEL_FOUR_SCENE_KEY,
   LEVEL_ONE_SCENE_KEY,
   LEVEL_THREE_SCENE_KEY,
   LEVEL_TWO_SCENE_KEY,
@@ -25,6 +26,7 @@ import {
 } from '../assetDefinitions/sprites';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 import {
+  levelFourMapDefinition,
   levelOneMapDefinition,
   levelThreeMapDefinition,
   levelTwoMapDefinition,
@@ -51,6 +53,7 @@ const tileDefinitions = [
   levelOneMapDefinition,
   levelTwoMapDefinition,
   levelThreeMapDefinition,
+  levelFourMapDefinition,
 ];
 
 export class LoadingScene extends Scene {
@@ -178,7 +181,7 @@ export class LoadingScene extends Scene {
   private _startFirstScene = () => {
     this.time.delayedCall(
       this.isDev ? 0 : 2000,
-      () => this.scene.start(LEVEL_TWO_SCENE_KEY),
+      () => this.scene.start(LEVEL_FOUR_SCENE_KEY),
       [],
       this,
     );

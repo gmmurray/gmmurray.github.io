@@ -1,5 +1,7 @@
 import { Coordinates } from './position';
 import { FireColor } from './levelTwo';
+import { LevelFour } from '../scenes/LevelFour';
+import { Tilemaps } from 'phaser';
 
 export interface SpriteDefinition {
   key: string;
@@ -38,4 +40,11 @@ export interface CharacterLayerDefinition {
 
 export interface FireSpriteDefinition extends SpriteDefinition {
   color: FireColor;
+}
+
+export interface LayerDefinition {
+  [name: string]: {
+    depth?: number;
+    configure?: (layer: Tilemaps.TilemapLayer, level: LevelFour) => any;
+  };
 }
