@@ -20,6 +20,7 @@ import { LoadingScene } from './scenes/LoadingScene';
 import McDialogPlugin from './mcDialog/plugin';
 import Phaser from 'phaser';
 import PhaserTooltip from './PhaserTooltip/phaserTooltip';
+import { UIScene } from './scenes/UIScene';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
 
 const startingDimensions = getMaxSquareScreenDimension(
@@ -50,7 +51,7 @@ export const gameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree, LevelFour],
+  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree, LevelFour, UIScene],
   plugins: {
     scene: [
       {

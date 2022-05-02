@@ -20,9 +20,17 @@ import {
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
   TALENTS_PHASER_EVENT_KEY,
+  UI_SCENE_KEY,
   WASD_KEY_STRING,
 } from '../constants';
 import { Geom, Scene, Tilemaps } from 'phaser';
+import {
+  loadAllSavedData,
+  loadLevelSavedData,
+  loadUnlockedFeatures,
+  saveLevelData,
+  updateUnlockedFeatures,
+} from '../helpers/localStorage';
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
@@ -32,11 +40,15 @@ import HudPlugin from '../hud/plugin';
 import { OverlayContentKey } from '../types/overlayContent';
 import PhaserTooltip from '../PhaserTooltip/phaserTooltip';
 import { TileMapDefinition } from '../types/assetDefinitions';
+import { UIEventEmitter } from '../ui/eventEmitter';
 import { UnlockedFeatures } from '../types/savedData';
 import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export class LevelScene extends Scene {
+  // UI
+  public uiEventEmitter: UIEventEmitter;
+
   // plugins
   public gridEngine: GridEngine;
   public dialog: DialogPlugin;
@@ -833,15 +845,13 @@ export class LevelScene extends Scene {
     this.isMovementPaused = !this.isMovementPaused;
   };
 
-  public loadAllSavedData = (): Record<string, any> | null =>
-    JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) ?? null;
+  public loadAllSavedData = () => loadAllSavedData();
 
   /**
    * Retrieves saved data if it exists for this level
    */
   public loadLevelSavedData<T>(): T | null {
-    const save = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    return save && save[this.scene.key] ? (save[this.scene.key] as T) : null;
+    return loadLevelSavedData();
   }
 
   /**
@@ -850,23 +860,13 @@ export class LevelScene extends Scene {
    * @param data
    */
   public saveLevelData<T>(data: T) {
-    const current = this.loadAllSavedData() ?? {};
-    const value = {
-      ...current,
-      [this.scene.key]: {
-        ...current[this.scene.key],
-        ...data,
-      },
-    };
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
+    return saveLevelData(data, this.scene.key);
   }
 
   public updateUnlockedFeatures = (
     key: keyof UnlockedFeatures,
     value: boolean,
   ) => {
-    const current = this.loadAllSavedData() ?? {};
-
     this.unlockedFeatures = {
       ...this.unlockedFeatures,
       [key]: value,
@@ -874,14 +874,7 @@ export class LevelScene extends Scene {
 
     storeDispatch(overlayActions.updateUnlockedFeatures(this.unlockedFeatures));
 
-    const newValue = {
-      ...current,
-      unlockedFeatures: {
-        ...this.unlockedFeatures,
-      },
-    };
-
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newValue));
+    updateUnlockedFeatures(this.unlockedFeatures);
 
     this.updateHudUnlockedFeatures();
 
@@ -889,10 +882,10 @@ export class LevelScene extends Scene {
   };
 
   public loadUnlockedFeatures = () => {
-    const current = this.loadAllSavedData() ?? {};
-    if (current && current.unlockedFeatures) {
+    const unlockedFeatures = loadUnlockedFeatures();
+    if (unlockedFeatures) {
       this.unlockedFeatures = {
-        ...(current.unlockedFeatures as UnlockedFeatures),
+        ...(unlockedFeatures as UnlockedFeatures),
       };
 
       storeDispatch(

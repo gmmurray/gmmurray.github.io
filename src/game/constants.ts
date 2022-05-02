@@ -16,6 +16,7 @@ export const TALENTS_KEY = 'N';
 export const TALENTS_PHASER_EVENT_KEY = TALENTS_KEY.toLocaleLowerCase();
 export const TALENTS_REACT_EVENT_KEY = `Key${TALENTS_KEY}`;
 export const WASD_KEY_STRING = 'W,A,S,D';
+export const UI_DEPTH = 30;
 
 export const ASSETS_BASE_URL = 'assets/game/';
 
@@ -25,6 +26,7 @@ export const LEVEL_ONE_SCENE_KEY = 'level-one';
 export const LEVEL_TWO_SCENE_KEY = 'level-two';
 export const LEVEL_THREE_SCENE_KEY = 'level-three';
 export const LEVEL_FOUR_SCENE_KEY = 'level-four';
+export const UI_SCENE_KEY = 'ui-scene';
 
 // plugin keys
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';

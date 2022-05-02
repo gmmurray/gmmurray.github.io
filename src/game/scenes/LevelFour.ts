@@ -1,19 +1,28 @@
 import {
+  HUD_INITIALIZED_EVENT,
+  UPDATE_HEALTH_EVENT,
+  UPDATE_UNLOCKED_FEATURES_EVENT,
+} from '../ui/events';
+import {
   LEVEL_FOUR_JUMP_VELOCITY,
   LEVEL_FOUR_PLAYER_DEPTH,
   LEVEL_FOUR_SCENE_KEY,
   LEVEL_FOUR_WALK_VELOCITY,
-  SCALE,
   TILE_SIZE,
   WASD_KEY_STRING,
 } from '../constants';
 import { Scene, Tilemaps } from 'phaser';
 import { levelFourAnimations, levelFourLayers } from '../cast/levelFour';
+import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { OverlayContentKey } from '../types/overlayContent';
 import { TileMapDefinition } from '../types/assetDefinitions';
+import { UIEventEmitter } from '../ui/eventEmitter';
 import { createAnimation } from '../helpers/createAnimation';
 import { levelFourMapDefinition } from '../assetDefinitions/tiles';
+import { loadUnlockedFeatures } from '../helpers/localStorage';
+import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 const START_X = 0;
@@ -24,6 +33,7 @@ const START_Y = 34;
 // const START_Y = 51;
 
 export class LevelFour extends Scene {
+  public uiEventEmitter: UIEventEmitter;
   public animatedTiles: AnimatedTilesPlugin;
   public player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
@@ -37,7 +47,7 @@ export class LevelFour extends Scene {
     this._mapDefinition = levelFourMapDefinition;
   }
 
-  public create = () => {
+  public create = (uiEventEmitter: UIEventEmitter) => {
     // set map and player character
     this._setMap()._setPlayer();
 
@@ -54,10 +64,41 @@ export class LevelFour extends Scene {
 
     // create animations
     this._createAnimations();
+
+    this.uiEventEmitter = uiEventEmitter;
+    this._initializeHUD();
   };
 
   public update = () => {
     this._handlePlayerMovement();
+  };
+
+  private _initializeHUD = () => {
+    this.time.delayedCall(
+      100,
+      () => {
+        const unlockedFeatures = this._loadUnlockedFeatures();
+        this.uiEventEmitter.emit(
+          HUD_INITIALIZED_EVENT,
+          true,
+          true,
+          true,
+          false,
+        );
+        this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, 100);
+        this.uiEventEmitter.emit(
+          UPDATE_UNLOCKED_FEATURES_EVENT,
+          unlockedFeatures,
+          {
+            inventory: () => this.createOverlay(OverlayContentKey.PROJECTS),
+            quests: () => this.createOverlay(OverlayContentKey.EXPERIENCES),
+            talents: () => this.createOverlay(OverlayContentKey.SKILLS),
+          },
+        );
+      },
+      [],
+      this,
+    );
   };
 
   private _setMap = () => {
@@ -187,5 +228,26 @@ export class LevelFour extends Scene {
 
   public handleLavaCollision = () => {
     this.player.body.setVelocityY(-LEVEL_FOUR_JUMP_VELOCITY);
+  };
+
+  private _loadUnlockedFeatures = () => {
+    const unlockedFeatures = loadUnlockedFeatures();
+    if (unlockedFeatures) {
+      storeDispatch(overlayActions.updateUnlockedFeatures(unlockedFeatures));
+    }
+
+    return unlockedFeatures;
+  };
+
+  public createOverlay = (contentKey: OverlayContentKey) => {
+    this.scene.pause();
+    store.dispatch(
+      overlayActions.overlayOpened({
+        contentKey,
+        pausedScene: this.scene.key,
+      }),
+    );
+
+    return this;
   };
 }

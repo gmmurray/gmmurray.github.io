@@ -8,6 +8,7 @@ import {
   THEME_DARK_YELLOW_NUMBER,
   THEME_WHITE,
   THEME_YELLOW_NUMBER,
+  UI_SCENE_KEY,
 } from '../constants';
 import {
   fantasyIconsSpriteDefinition,
@@ -33,6 +34,7 @@ import {
 } from '../assetDefinitions/tiles';
 
 import { Scene } from 'phaser';
+import { UIEventEmitter } from '../ui/eventEmitter';
 
 const spriteDefinitions = [
   playerSpriteDefinition,
@@ -61,8 +63,10 @@ export class LoadingScene extends Scene {
   public progressBox?: Phaser.GameObjects.Graphics;
   public progressText?: Phaser.GameObjects.Text;
   public progressBar?: Phaser.GameObjects.Graphics;
+  public uiEmitter: UIEventEmitter;
   constructor() {
     super(LOADING_SCENE_KEY);
+    this.uiEmitter = UIEventEmitter.getInstance();
   }
 
   public preload = () => {
@@ -181,7 +185,10 @@ export class LoadingScene extends Scene {
   private _startFirstScene = () => {
     this.time.delayedCall(
       this.isDev ? 0 : 2000,
-      () => this.scene.start(LEVEL_FOUR_SCENE_KEY),
+      () => {
+        this.scene.launch(UI_SCENE_KEY, this.uiEmitter);
+        this.scene.start(LEVEL_FOUR_SCENE_KEY, this.uiEmitter);
+      },
       [],
       this,
     );
