@@ -170,7 +170,7 @@ export class LevelTwo extends LevelScene {
 
     const newPuzzleFire = fire.fires[newColor];
 
-    if (currColor) {
+    if (currColor !== undefined) {
       // remove old grid character and turn off visibility
       currPuzzleFire.sprite.setVisible(false);
       this.gridEngine.removeCharacter(currPuzzleFire.characterId);
@@ -209,7 +209,7 @@ export class LevelTwo extends LevelScene {
         break;
     }
 
-    if (nextColor) {
+    if (nextColor !== undefined) {
       this._changeActiveFire(number, nextColor);
     }
 

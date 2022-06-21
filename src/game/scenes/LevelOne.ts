@@ -92,7 +92,7 @@ export class LevelOne extends LevelScene {
       () => {
         this.uiEventEmitter.emit(
           HUD_INITIALIZED_EVENT,
-          false,
+          true,
           false,
           true,
           false,

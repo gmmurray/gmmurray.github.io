@@ -28,11 +28,11 @@ const InventoryItemDisplay = () => {
     [],
   );
 
-  const isEpic = project.type === 'featured';
+  const isEpic = project?.type === 'featured';
   return (
     <div className={container_cn} onClick={e => e.stopPropagation()}>
       <div className={title_container_cn}>
-        <h1 className={title_text_cn}>{project.title}</h1>
+        <h1 className={title_text_cn}>{project?.title}</h1>
         <span
           className={classNames(icon_cn, title_button_cn)}
           onClick={handleClose}
@@ -54,14 +54,14 @@ const InventoryItemDisplay = () => {
         </h2>
       </div>
       <div className={tags_cn}>
-        {project.techTags.map(tt => (
-          <span>
+        {(project?.techTags ?? []).map((tt, key) => (
+          <span key={key}>
             {isEpic ? '+10' : '+5'} {tt}
           </span>
         ))}
       </div>
       <div className={content_cn}>
-        <ReactMarkdown>{project.content}</ReactMarkdown>
+        <ReactMarkdown>{project!.content}</ReactMarkdown>
       </div>
     </div>
   );

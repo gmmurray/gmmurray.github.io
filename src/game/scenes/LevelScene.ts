@@ -549,7 +549,9 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public addHudBottomCenterText = (text: string) => {
-    this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT, text);
+    if (this.uiEventEmitter) {
+      this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT, text);
+    }
     return this;
   };
 
@@ -559,7 +561,9 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public removeHudBottomCenterText = () => {
-    this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT);
+    if (this.uiEventEmitter) {
+      this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT);
+    }
     return this;
   };
 

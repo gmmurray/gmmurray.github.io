@@ -2,7 +2,6 @@ import {
   ANIMATED_TILES_PLUGIN_KEY,
   DIALOG_PLUGIN_KEY,
   GRID_ENGINE_PLUGIN_KEY,
-  HUD_PLUGIN_KEY,
   MC_DIALOG_PLUGIN_KEY,
   PHASER_TOOLTIP_PLUGIN_KEY,
   TILE_SIZE,
@@ -11,7 +10,6 @@ import {
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
-import HudPlugin from './hud/plugin';
 import { LevelFour } from './scenes/LevelFour';
 import { LevelOne } from './scenes/LevelOne';
 import { LevelThree } from './scenes/LevelThree';
@@ -68,11 +66,6 @@ export const gameConfig = {
         key: ANIMATED_TILES_PLUGIN_KEY,
         plugin: AnimatedTilesPlugin,
         mapping: ANIMATED_TILES_PLUGIN_KEY,
-      },
-      {
-        key: HUD_PLUGIN_KEY,
-        plugin: HudPlugin,
-        mapping: HUD_PLUGIN_KEY,
       },
       {
         key: MC_DIALOG_PLUGIN_KEY,

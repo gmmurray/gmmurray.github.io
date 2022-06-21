@@ -32,7 +32,6 @@ export const UI_SCENE_KEY = 'ui-scene';
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';
 export const DIALOG_PLUGIN_KEY = 'dialog';
 export const ANIMATED_TILES_PLUGIN_KEY = 'animatedTiles';
-export const HUD_PLUGIN_KEY = 'hud';
 export const MC_DIALOG_PLUGIN_KEY = 'mcDialog';
 export const PHASER_TOOLTIP_PLUGIN_KEY = 'phaserTooltip';
 

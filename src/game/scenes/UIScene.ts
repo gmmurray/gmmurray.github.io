@@ -19,7 +19,7 @@ import { UIEventEmitter } from '../ui/eventEmitter';
 import { UI_SCENE_KEY } from '../constants';
 
 export class UIScene extends Scene {
-  public hud: HUD;
+  public hud?: HUD;
   public phaserTooltip: PhaserTooltip;
   private _uiEventEmitter: UIEventEmitter;
 
@@ -65,42 +65,42 @@ export class UIScene extends Scene {
   };
 
   private _shutdownHandler = () => {
-    this.hud.shutdown();
+    this.hud?.shutdown();
   };
 
   private _updateTopLeftText = (primary?: string, secondary?: string) => {
-    this.hud.updateTopLeftText(primary, secondary);
+    this.hud?.updateTopLeftText(primary, secondary);
   };
 
   private _updateTopCenterText = (value?: string) => {
-    this.hud.updateTopCenterText(value);
+    this.hud?.updateTopCenterText(value);
   };
 
   private _updateUnlockedFeaturesHandler = (
     features: UnlockedFeatures,
     callbacks: UnlockedFeatureCallbacks,
   ) => {
-    this.hud.updateUnlockedFeatures(features, callbacks);
+    this.hud?.updateUnlockedFeatures(features, callbacks);
   };
 
   private _updateHealth = (value?: number) => {
-    this.hud.updateHealth(value);
+    this.hud?.updateHealth(value);
   };
 
   private _addBuffText = (value: string, duration: number) => {
-    this.hud.addBuffText(value, duration);
+    this.hud?.addBuffText(value, duration);
   };
 
   private _addDebuffText = (value: string, duration: number) => {
-    this.hud.addDebuffText(value, duration);
+    this.hud?.addDebuffText(value, duration);
   };
 
   private _updateCenterText = (value?: string) => {
-    this.hud.updateCenterText(value);
+    this.hud?.updateCenterText(value);
   };
 
   private _updateBottomCenterText = (value?: string) => {
-    this.hud.updateBottomCenterText(value);
+    this.hud?.updateBottomCenterText(value);
   };
 
   private _registerEvents = () => {

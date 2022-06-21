@@ -1,8 +1,13 @@
 import { LOCAL_STORAGE_KEY } from '../constants';
 import { UnlockedFeatures } from '../types/savedData';
 
-export const loadAllSavedData = (): Record<string, any> | null =>
-  JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? '') ?? null;
+export const loadAllSavedData = (): Record<string, any> | null => {
+  const item = localStorage.getItem(LOCAL_STORAGE_KEY);
+
+  if (!item) return null;
+
+  return JSON.parse(item);
+};
 
 export function loadLevelSavedData<T>(sceneKey: string): T | null {
   const save = loadAllSavedData();
