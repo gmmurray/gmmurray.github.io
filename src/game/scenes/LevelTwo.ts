@@ -21,6 +21,11 @@ import {
   PuzzleFires,
 } from '../types/levelTwo';
 import {
+  HUD_INITIALIZED_EVENT,
+  UPDATE_TOP_CENTER_TEXT_EVENT,
+  UPDATE_TOP_LEFT_TEXT_EVENT,
+} from '../ui/events';
+import {
   angelMessages,
   fireStartLocations,
   levelTwoCast,
@@ -36,6 +41,7 @@ import { showAlert, showConfirm } from '../helpers/sweetAlerts';
 import { LevelScene } from './LevelScene';
 import { LevelTwoSavedData } from '../types/savedData';
 import McDialogPlugin from '../mcDialog/plugin';
+import { UIEventEmitter } from '../ui/eventEmitter';
 import { convertSecondsToTimeString } from '../helpers/time';
 import { getFireColorName } from '../helpers/fireColor';
 import { levelTwoMapDefinition } from '../assetDefinitions/tiles';
@@ -60,7 +66,7 @@ export class LevelTwo extends LevelScene {
     this.progress = new LevelTwoProgress();
   }
 
-  public create = () => {
+  public create = (eventEmitter: UIEventEmitter) => {
     this.setCharacters()
       .setItems()
       .setPortals()
@@ -74,21 +80,19 @@ export class LevelTwo extends LevelScene {
       ._createPillarTwoSolution()
       ._createPillarThreeSolution();
 
+    this.uiEventEmitter = eventEmitter;
+    this._initializeHUD();
+
     this.dialog.init();
-    this.hud.init();
     this.mcDialog.init();
 
     this.handleCloseDialog();
 
     this._initializeCharacterMovement();
-    this._addPillarTrackerHudText();
-    this._initializeCurrentRecord();
-    this.loadUnlockedFeatures();
 
     this._timerInterval = this._timerInterval ?? this._addTimerInterval();
 
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
-      this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
       this.mcDialog.updateDimensions(gameSize);
     });
@@ -471,7 +475,8 @@ export class LevelTwo extends LevelScene {
   };
 
   private _addPillarTrackerHudText = (count: number = 0, time = 0) => {
-    this.hud.updateTopLeftText(
+    this.uiEventEmitter.emit(
+      UPDATE_TOP_LEFT_TEXT_EVENT,
       `Pillars unlocked: ${count}/3`,
       `Time: ${convertSecondsToTimeString(time)}`,
     );
@@ -506,7 +511,8 @@ export class LevelTwo extends LevelScene {
   };
 
   private _displayRecord = (seconds: number) =>
-    this.hud.updateTopCenterText(
+    this.uiEventEmitter.emit(
+      UPDATE_TOP_CENTER_TEXT_EVENT,
       `Record: ${convertSecondsToTimeString(seconds)}`,
     );
 
@@ -542,5 +548,25 @@ export class LevelTwo extends LevelScene {
   private _onSkip = () => {
     this.createNewDialog('You press the strange button...');
     this._completeLevel(true);
+  };
+
+  private _initializeHUD = () => {
+    this.time.delayedCall(
+      100,
+      () => {
+        this.uiEventEmitter.emit(
+          HUD_INITIALIZED_EVENT,
+          true,
+          false,
+          true,
+          false,
+        );
+        this._initializeCurrentRecord();
+        this.loadUnlockedFeatures();
+        this._addPillarTrackerHudText();
+      },
+      [],
+      this,
+    );
   };
 }

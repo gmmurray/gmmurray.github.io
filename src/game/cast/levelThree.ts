@@ -139,10 +139,10 @@ export const orbMap: OrbMap = {
 
 const player: PlayerCharacter = {
   definition: playerSpriteDefinition,
-  // startingX: 4,
-  // startingY: 47,
-  startingX: 47,
-  startingY: 68,
+  startingX: 4,
+  startingY: 47,
+  // startingX: 47,
+  // startingY: 68,
   startingSpeed: BASE_PLAYER_SPEED,
 };
 

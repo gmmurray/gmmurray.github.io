@@ -20,10 +20,14 @@ import {
   SCALED_TILE_SIZE,
   SPACE_EVENT_KEY,
   TALENTS_PHASER_EVENT_KEY,
-  UI_SCENE_KEY,
   WASD_KEY_STRING,
 } from '../constants';
 import { Geom, Scene, Tilemaps } from 'phaser';
+import {
+  HUD_SHUTDOWN_EVENT,
+  UPDATE_BOTTOM_CENTER_TEXT_EVENT,
+  UPDATE_UNLOCKED_FEATURES_EVENT,
+} from '../ui/events';
 import {
   loadAllSavedData,
   loadLevelSavedData,
@@ -355,7 +359,7 @@ export class LevelScene extends Scene {
 
     if (bottomCenterTextValue && !this.dialog.visible) {
       this.addHudBottomCenterText(bottomCenterTextValue);
-    } else if (this.hud.textIsDisplayed('bottomCenter')) {
+    } else {
       this.removeHudBottomCenterText();
     }
 
@@ -545,7 +549,8 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public addHudBottomCenterText = (text: string) => {
-    this.hud.updateBottomCenterText(text);
+    //this.hud.updateBottomCenterText(text);
+    this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT, text);
     return this;
   };
 
@@ -555,7 +560,8 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public removeHudBottomCenterText = () => {
-    this.hud.updateBottomCenterText();
+    //this.hud.updateBottomCenterText();
+    this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT);
     return this;
   };
 
@@ -791,7 +797,8 @@ export class LevelScene extends Scene {
         setTimeout(() => {
           this.handleCloseDialog(true);
           this.scene.sleep(this.scene.key);
-          this.scene.run(match.to as string);
+          this.scene.run(match.to as string, this.uiEventEmitter);
+          this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
           this.cameras.main.resetFX();
           this.gridEngine.setPosition(this.playerCharacter.definition.key, {
             x: this.playerCharacter.startingX,
@@ -851,7 +858,7 @@ export class LevelScene extends Scene {
    * Retrieves saved data if it exists for this level
    */
   public loadLevelSavedData<T>(): T | null {
-    return loadLevelSavedData();
+    return loadLevelSavedData(this.scene.key);
   }
 
   /**
@@ -899,13 +906,15 @@ export class LevelScene extends Scene {
   };
 
   public updateHudUnlockedFeatures = () => {
-    if (this.hud._isInitialized) {
-      this.hud.updateUnlockedFeatures(this.unlockedFeatures, {
+    this.uiEventEmitter.emit(
+      UPDATE_UNLOCKED_FEATURES_EVENT,
+      this.unlockedFeatures,
+      {
         inventory: () => this.createOverlay(OverlayContentKey.PROJECTS),
         quests: () => this.createOverlay(OverlayContentKey.EXPERIENCES),
         talents: () => this.createOverlay(OverlayContentKey.SKILLS),
-      });
-    }
+      },
+    );
 
     return this;
   };

@@ -1,4 +1,14 @@
 import {
+  ADD_BUFF_EVENT,
+  ADD_DEBUFF_EVENT,
+  HUD_INITIALIZED_EVENT,
+  HUD_SHUTDOWN_EVENT,
+  UPDATE_CENTER_TEXT_EVENT,
+  UPDATE_HEALTH_EVENT,
+  UPDATE_TOP_CENTER_TEXT_EVENT,
+  UPDATE_TOP_LEFT_TEXT_EVENT,
+} from '../ui/events';
+import {
   LEVEL_THREE_BACKGROUND_COLOR,
   LEVEL_THREE_BUFF_DEBUFF_DURATION,
   LEVEL_THREE_FIRE_ANIMATION_REPEAT_DELAY,
@@ -37,6 +47,7 @@ import { store, storeDispatch } from '../redux/store';
 import { CharacterData } from 'grid-engine';
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
+import { UIEventEmitter } from '../ui/eventEmitter';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
 import { showConfirm } from '../helpers/sweetAlerts';
 import { v4 as uuidv4 } from 'uuid';
@@ -51,44 +62,48 @@ export class LevelThree extends LevelScene {
     this.cast = levelThreeCast;
   }
 
-  public create = () => {
-    this.setCharacters()
-      .setItems()
-      .setPortals()
-      .setDoors()
-      .setCamera()
-      .setMap()
-      .setPortals()
-      .setCharacterLayerTransitions()
-      ._setBackground()
-      ._setFireBarriers()
-      ._setFireColumns()
-      ._setFireExplosions()
-      ._setFireCollisionListeners()
-      ._initializeEnemyCharacters()
+  public create = (eventEmitter: UIEventEmitter) => {
+    this.setCharacters()!
+      .setItems()!
+      .setPortals()!
+      .setDoors()!
+      .setCamera()!
+      .setMap()!
+      .setPortals()!
+      .setCharacterLayerTransitions()!
+      ._setBackground()!
+      ._setFireBarriers()!
+      ._setFireColumns()!
+      ._setFireExplosions()!
+      ._setFireCollisionListeners()!
+      ._initializeEnemyCharacters()!
       .attachKeyboardListener();
 
+    this.uiEventEmitter = eventEmitter;
+    this._initializeHUD();
+
     this.dialog.init();
-    this.hud.init(undefined, true);
+    //this.hud.init(undefined, true);
 
     this.handleCloseDialog();
 
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
-      this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
     });
 
-    this.hud.updateHealth(100);
-    this.loadUnlockedFeatures();
-    this._showDifficultyText()
-      ._updateOrbText()
-      ._showStarterDialog();
+    // this.hud.updateHealth(100); moved to initalizeHUD()
+    //this.loadUnlockedFeatures();
+    this._showStarterDialog();
   };
 
   public update = () => {
     this.useGridPlayerControls()
-      .setFacing()
-      ._handlePlayerEnemyMovement();
+      ?.setFacing()
+      ?._handlePlayerEnemyMovement();
+  };
+
+  public shutdown = () => {
+    this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
   };
 
   public handlePotionConsume = (type: PotionType, coordinates: Coordinates) => {
@@ -107,7 +122,7 @@ export class LevelThree extends LevelScene {
       return;
     }
 
-    this.map.removeTileAt(
+    this.map?.removeTileAt(
       coordinates.x,
       coordinates.y,
       true,
@@ -125,7 +140,7 @@ export class LevelThree extends LevelScene {
     } = orbMap[orb];
 
     all.forEach(tile =>
-      this.map.removeTileAt(tile.x, tile.y, true, true, ORB_LAYER_NAME),
+      this.map?.removeTileAt(tile.x, tile.y, true, true, ORB_LAYER_NAME),
     );
 
     this.removeItem(primary);
@@ -146,8 +161,16 @@ export class LevelThree extends LevelScene {
     const { healthPotions } = levelThreeDifficultySettingsMap[difficulty];
     const health = levelThreeSelectors.selectLevelThreeHealth(store.getState());
     if (health === 100) {
-      this.hud.updateCenterText('You already have full health!');
-      this.time.delayedCall(2000, () => this.hud.updateCenterText(), [], this);
+      this.uiEventEmitter.emit(
+        UPDATE_TOP_CENTER_TEXT_EVENT,
+        'You already have full health!',
+      );
+      this.time.delayedCall(
+        2000,
+        () => this.uiEventEmitter.emit(UPDATE_TOP_CENTER_TEXT_EVENT),
+        [],
+        this,
+      );
       return false;
     }
 
@@ -161,7 +184,8 @@ export class LevelThree extends LevelScene {
     const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
       store.getState(),
     );
-    this.hud.updateHealth(currentHealth);
+    this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, currentHealth);
+    //this.hud.updateHealth(currentHealth);
     return true;
   };
 
@@ -190,11 +214,21 @@ export class LevelThree extends LevelScene {
   };
 
   private _displayBuff = (value: string) => {
-    this.hud.addBuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
+    this.uiEventEmitter.emit(
+      ADD_BUFF_EVENT,
+      value,
+      LEVEL_THREE_BUFF_DEBUFF_DURATION,
+    );
+    //this.hud.addBuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
   };
 
   private _displayDebuff = (value: string) => {
-    this.hud.addDebuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
+    this.uiEventEmitter.emit(
+      ADD_DEBUFF_EVENT,
+      value,
+      LEVEL_THREE_BUFF_DEBUFF_DURATION,
+    );
+    //this.hud.addDebuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
   };
 
   private _unlockStairs = () => {
@@ -467,7 +501,7 @@ export class LevelThree extends LevelScene {
     const prevTime = levelThreeSelectors.selectLevelThreeLastDamageTimestamp(
       store.getState(),
     );
-    const difference = currTime.getTime() - new Date(prevTime).getTime(); // be fair and only damage at most every 1 second
+    const difference = currTime.getTime() - new Date(prevTime!).getTime(); // be fair and only damage at most every 1 second
 
     if (difference < LEVEL_THREE_FIRE_INVULNERABILITY_PERIOD) {
       return;
@@ -478,7 +512,8 @@ export class LevelThree extends LevelScene {
     const currentHealth = levelThreeSelectors.selectLevelThreeHealth(
       store.getState(),
     );
-    this.hud.updateHealth(currentHealth);
+    this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, currentHealth);
+    //this.hud.updateHealth(currentHealth);
     if (currentHealth <= 0) {
       this._handleDeath();
     }
@@ -491,6 +526,8 @@ export class LevelThree extends LevelScene {
   };
 
   private _setFireCollisionListeners = () => {
+    if (!this.playerCharacter) return;
+
     this.gridEngine
       .steppedOn(
         [this.playerCharacter.definition.key],
@@ -530,6 +567,7 @@ export class LevelThree extends LevelScene {
       });
 
     this.gridEngine.positionChangeStarted().subscribe(({ charId }) => {
+      if (!this.playerCharacter) return;
       if (charId === this.playerCharacter.definition.key) {
         storeDispatch(levelThreeActions.standingInFireChanged(undefined));
       }
@@ -558,7 +596,8 @@ export class LevelThree extends LevelScene {
   };
 
   private _handleDeath = () => {
-    this.hud.updateCenterText('You died!');
+    //this.hud.updateCenterText('You died!');
+    this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You died!');
 
     const playerIsDead = levelThreeSelectors.selectLevelThreePlayerIsDead(
       store.getState(),
@@ -616,7 +655,8 @@ export class LevelThree extends LevelScene {
   };
 
   private _handlePlayerEnemyMovement = () => {
-    if (this._justHitByEnemy) return;
+    if (this._justHitByEnemy || !this.playerCharacter) return;
+
     const { definition } = this.playerCharacter;
     const enemyIds = levelThreeSelectors.selectLevelThreeEnemies(
       store.getState(),
@@ -676,6 +716,8 @@ export class LevelThree extends LevelScene {
   };
 
   private _onConfirmSkip = () => {
+    if (!this.playerCharacter) return;
+
     this.createNewDialog('You pick up the old key...');
     this.cameras.main.flash(2500, 0, 0, 0);
     this.gridEngine.setPosition(
@@ -707,7 +749,11 @@ export class LevelThree extends LevelScene {
 
   private _onDifficultyChangeConfirmed = (difficulty: LevelThreeDifficulty) => {
     const callback = () => {
-      this.hud.updateCenterText(
+      // this.hud.updateCenterText(
+      //   `${levelThreeDifficultySettingsMap[difficulty].friendlyName} difficulty selected`,
+      // );
+      this.uiEventEmitter.emit(
+        UPDATE_CENTER_TEXT_EVENT,
         `${levelThreeDifficultySettingsMap[difficulty].friendlyName} difficulty selected`,
       );
       storeDispatch(levelThreeActions.difficultyChanged(difficulty));
@@ -728,6 +774,7 @@ export class LevelThree extends LevelScene {
     }, cameraFadeInterval);
     setTimeout(() => {
       this.scene.restart();
+      this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
       this.isMovementPaused = false;
     }, cameraFade + cameraFadeInterval);
   };
@@ -737,7 +784,8 @@ export class LevelThree extends LevelScene {
       store.getState(),
     );
     const text = `${levelThreeDifficultySettingsMap[difficulty].friendlyName}`;
-    this.hud.updateTopLeftText(text);
+    //this.hud.updateTopLeftText(text);
+    this.uiEventEmitter.emit(UPDATE_TOP_LEFT_TEXT_EVENT, text);
 
     return this;
   };
@@ -749,7 +797,8 @@ export class LevelThree extends LevelScene {
       (prevValue, currKey) => (orbs[currKey] ? prevValue + 1 : prevValue),
       0,
     );
-    this.hud.updateTopCenterText(`${count}/3 orbs`);
+    //this.hud.updateTopCenterText(`${count}/3 orbs`);
+    this.uiEventEmitter.emit(UPDATE_TOP_CENTER_TEXT_EVENT, `${count}/3 orbs`);
 
     return this;
   };
@@ -761,5 +810,19 @@ export class LevelThree extends LevelScene {
     this.createNewDialog(content);
 
     return this;
+  };
+
+  private _initializeHUD = () => {
+    this.time.delayedCall(
+      100,
+      () => {
+        this.uiEventEmitter.emit(HUD_INITIALIZED_EVENT, true, true, true, true);
+        this.loadUnlockedFeatures();
+        this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, 100);
+        this._showDifficultyText()._updateOrbText();
+      },
+      [],
+      this,
+    );
   };
 }

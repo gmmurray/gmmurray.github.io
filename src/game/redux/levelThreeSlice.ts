@@ -72,7 +72,10 @@ export const levelThreeSlice = createSlice({
         [action.payload.type]: action.payload.active,
       },
     }),
-    standingInFireChanged: (state, action: PayloadAction<Coordinates>) => ({
+    standingInFireChanged: (
+      state,
+      action: PayloadAction<Coordinates | undefined>,
+    ) => ({
       ...state,
       standingInFire: action.payload
         ? {

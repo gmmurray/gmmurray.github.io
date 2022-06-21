@@ -4,11 +4,13 @@ import { defaultBasicTextUIConfig } from './config';
 import { mergeWithDefault } from '../../../helpers/mergeWithDefault';
 
 export default class BasicTextUI {
-  private _bottomCenter: Phaser.GameObjects.Text;
-  private _topLeftPrimary: Phaser.GameObjects.Text;
-  private _topLeftSecondary: Phaser.GameObjects.Text;
-  private _topCenter: Phaser.GameObjects.Text;
-  private _center: Phaser.GameObjects.Text;
+  private _texts: {
+    bottomCenter?: Phaser.GameObjects.Text;
+    topLeftPrimary?: Phaser.GameObjects.Text;
+    topLeftSecondary?: Phaser.GameObjects.Text;
+    topCenter?: Phaser.GameObjects.Text;
+    center?: Phaser.GameObjects.Text;
+  } = {};
 
   private _scene: Scene;
   private _config: BasicTextUIConfig;
@@ -22,30 +24,44 @@ export default class BasicTextUI {
   }
 
   public shutdown = () => {
-    if (this._bottomCenter) this._bottomCenter.destroy();
-    if (this._topLeftPrimary) this._topLeftPrimary.destroy();
-    if (this._topLeftSecondary) this._topLeftSecondary.destroy();
-    if (this._topCenter) this._topCenter.destroy();
-    if (this._center) this._center.destroy();
+    if (this._texts.bottomCenter) {
+      this._texts.bottomCenter.destroy();
+      this._texts.bottomCenter = undefined;
+    }
+    if (this._texts.topLeftPrimary) {
+      this._texts.topLeftPrimary.destroy();
+      this._texts.topLeftPrimary = undefined;
+    }
+    if (this._texts.topLeftSecondary) {
+      this._texts.topLeftSecondary.destroy();
+      this._texts.topLeftSecondary = undefined;
+    }
+    if (this._texts.topCenter) {
+      this._texts.topCenter.destroy();
+      this._texts.topCenter = undefined;
+    }
+    if (this._texts.center) {
+      this._texts.center.destroy();
+      this._texts.center = undefined;
+    }
   };
 
   public updateBottomCenterText = (value?: string) => {
-    this._updateText(this._bottomCenter, value);
+    this._updateText('bottomCenter', value);
   };
 
   public updateTopCenterText = (value?: string) => {
-    this._updateText(this._topCenter, value);
+    this._updateText('topCenter', value);
   };
 
   public updateCenterText = (value?: string) => {
-    this._updateText(this._center, value);
+    this._updateText('center', value);
   };
 
   public updateTopLeftText = (primary?: string, secondary?: string) => {
-    if (!this._topLeftPrimary.text) return;
-
+    if (!this._texts.topLeftPrimary) return;
     if (primary) {
-      this._updateText(this._topLeftPrimary, primary);
+      this._updateText('topLeftPrimary', primary);
 
       if (secondary) {
         this._setTopLeftSecondaryText(secondary);
@@ -76,14 +92,14 @@ export default class BasicTextUI {
   private _setBottomCenterTextDisplay = (
     config: BasicTextUIConfig['bottomCenter'],
   ) => {
-    if (this._bottomCenter) this._bottomCenter.destroy();
+    if (this._texts.bottomCenter) this._texts.bottomCenter.destroy();
 
     const { fontSize, fontFamily, fontColor, depth, margin } = config;
 
     const x = this._getGameWidth() / 2;
     const y = this._getGameHeight() - margin;
 
-    this._bottomCenter = this._scene.make.text({
+    this._texts.bottomCenter = this._scene.make.text({
       x,
       y,
       depth,
@@ -102,9 +118,7 @@ export default class BasicTextUI {
   };
 
   private _setCenterTextDisplay = (config: BasicTextUIConfig['center']) => {
-    const text = this._center;
-
-    if (text) text.destroy();
+    if (this._texts.center) this._texts.center.destroy();
 
     const {
       fontSize,
@@ -121,7 +135,7 @@ export default class BasicTextUI {
     const x = centerXY + paddingX;
     const y = centerXY - paddingY;
 
-    this._center = this._scene.make.text({
+    this._texts.center = this._scene.make.text({
       x,
       y,
       depth,
@@ -143,14 +157,14 @@ export default class BasicTextUI {
   private _setTopCenterTextDisplay = (
     config: BasicTextUIConfig['topCenter'],
   ) => {
-    if (this._topCenter) this._topCenter.destroy();
+    if (this._texts.topCenter) this._texts.topCenter.destroy();
 
     const { fontSize, fontFamily, fontColor, depth, padding } = config;
 
     const x = this._getGameWidth() / 2;
     const y = padding;
 
-    this._topCenter = this._scene.make.text({
+    this._texts.topCenter = this._scene.make.text({
       x,
       y,
       depth,
@@ -169,15 +183,15 @@ export default class BasicTextUI {
   };
 
   private _setTopLeftTextDisplay = (config: BasicTextUIConfig['topLeft']) => {
-    if (this._topLeftPrimary) this._topLeftPrimary.destroy();
-    if (this._topLeftSecondary) this._topLeftSecondary.destroy();
+    if (this._texts.topLeftPrimary) this._texts.topLeftPrimary.destroy();
+    if (this._texts.topLeftSecondary) this._texts.topLeftSecondary.destroy();
 
     const { fontSize, fontFamily, fontColor, depth, padding } = config;
 
     const xPrimary = padding;
     const yPrimary = padding;
 
-    this._topLeftPrimary = this._scene.make.text({
+    this._texts.topLeftPrimary = this._scene.make.text({
       x: xPrimary,
       y: yPrimary,
       depth,
@@ -191,7 +205,7 @@ export default class BasicTextUI {
       scrollFactor: 0,
     });
 
-    this._topLeftSecondary = this._scene.make.text({
+    this._texts.topLeftSecondary = this._scene.make.text({
       x: xPrimary,
       y: yPrimary + fontSize + 10,
       depth,
@@ -208,38 +222,38 @@ export default class BasicTextUI {
     return this;
   };
 
-  private _updateText = (text: Phaser.GameObjects.Text, value?: string) => {
-    if (!text) return;
+  private _updateText = (textKey: keyof typeof this._texts, value?: string) => {
+    if (!this._texts[textKey]) return;
     if (value !== undefined) {
-      this._setText(text, value);
+      this._setText(textKey, value);
     } else {
-      this._removeText(text);
+      this._removeText(textKey);
     }
   };
 
-  private _setText = (text: Phaser.GameObjects.Text, value: string) => {
-    text.setText(value).setVisible(true);
+  private _setText = (textKey: keyof typeof this._texts, value: string) => {
+    this._texts[textKey].setText(value).setVisible(true);
   };
 
-  private _removeText = (text: Phaser.GameObjects.Text) => {
-    text.setText('').setVisible(false);
+  private _removeText = (textKey: keyof typeof this._texts) => {
+    this._texts[textKey].setText('').setVisible(false);
   };
 
   private _setTopLeftSecondaryText = (value: string) => {
-    if (!(this._topLeftPrimary.text && this._topLeftSecondary.text)) return;
-    this._topLeftSecondary.setText(value).setVisible(true);
+    if (!(this._texts.topLeftPrimary && this._texts.topLeftSecondary)) return;
+    this._texts.topLeftSecondary.setText(value).setVisible(true);
   };
 
   private _removeTopLeftPrimaryText = () => {
-    if (!this._topLeftPrimary.text) return;
-    this._topLeftPrimary.setVisible(false).setText('');
+    if (!this._texts.topLeftPrimary) return;
+    this._texts.topLeftPrimary.setVisible(false).setText('');
 
     this._removeTopLeftSecondaryText();
   };
 
   private _removeTopLeftSecondaryText = () => {
-    if (!(this._topLeftPrimary.text && this._topLeftSecondary.text)) return;
-    this._topLeftSecondary.setVisible(false).setText('');
+    if (!(this._texts.topLeftPrimary && this._texts.topLeftSecondary)) return;
+    this._texts.topLeftSecondary.setVisible(false).setText('');
   };
 
   private _getGameWidth = () => this._scene.cameras.main.worldView.width;

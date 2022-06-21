@@ -1,3 +1,4 @@
+import { HUD_INITIALIZED_EVENT, HUD_SHUTDOWN_EVENT } from '../ui/events';
 import { LEVEL_ONE_SCENE_KEY, RANDOM_MOVEMENT_DELAY } from '../constants';
 import {
   gregSpriteDefinition,
@@ -6,6 +7,7 @@ import {
 } from '../assetDefinitions/sprites';
 
 import { LevelScene } from './LevelScene';
+import { UIEventEmitter } from '../ui/eventEmitter';
 import { levelOneCast } from '../cast/levelOne';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
@@ -17,7 +19,7 @@ export class LevelOne extends LevelScene {
     this.cast = levelOneCast;
   }
 
-  public create = () => {
+  public create = (eventEmitter: UIEventEmitter) => {
     this.setCharacters()
       .setItems()
       .setPortals()
@@ -25,6 +27,9 @@ export class LevelOne extends LevelScene {
       .setCamera()
       .setMap()
       .attachKeyboardListener();
+
+    this.uiEventEmitter = eventEmitter;
+    this._initializeHUD();
 
     this.dialog.init();
     this.hud.init();
@@ -40,12 +45,14 @@ export class LevelOne extends LevelScene {
       this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
     });
-
-    this.loadUnlockedFeatures();
   };
 
   public update = () => {
     this.useGridPlayerControls().setFacing();
+  };
+
+  public shutdown = () => {
+    this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
   };
 
   public initialCharacterMovement = () => {
@@ -73,6 +80,24 @@ export class LevelOne extends LevelScene {
       dre.definition.key,
       RANDOM_MOVEMENT_DELAY + 200,
       dre.startingSpeed,
+    );
+  };
+
+  private _initializeHUD = () => {
+    this.time.delayedCall(
+      100,
+      () => {
+        this.uiEventEmitter.emit(
+          HUD_INITIALIZED_EVENT,
+          false,
+          false,
+          true,
+          false,
+        );
+        this.loadUnlockedFeatures();
+      },
+      [],
+      this,
     );
   };
 }

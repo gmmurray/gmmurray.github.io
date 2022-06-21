@@ -23,8 +23,10 @@ export default class HealthBarUI {
   }
 
   public shutdown = () => {
-    if (this._label) this._label.destroy();
-    if (this._value) this._label.destroy();
+    if (this._label) {
+      this._label.destroy();
+    }
+    if (this._value) this._value.destroy();
     if (this._barValue) this._barValue.destroy();
     if (this._barBackground) this._barBackground.destroy();
   };
