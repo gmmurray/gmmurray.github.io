@@ -30,8 +30,8 @@ export const constructTechTree = (input: TechnologyTreeFlattened) => {
 
   let result = map['0'];
   const assemble = (tree: TechnologyTree) => {
-    if (map[tree.id].children && map[tree.id].children.length > 0) {
-      map[tree.id].children.forEach(child => assemble(child));
+    if (map[tree.id].children && (map[tree.id].children ?? []).length > 0) {
+      (map[tree.id].children ?? []).forEach(child => assemble(child));
     }
     return tree;
   };
@@ -45,9 +45,9 @@ export const createRows = (data: TechnologyTree) => {
 
   const createNodes = (node: TechnologyTree, rowNum: number) => {
     if (rows[rowNum]) {
-      rows[rowNum].push(node);
+      (rows[rowNum] as TechnologyTree[]).push(node);
     } else {
-      rows[rowNum] = [node];
+      (rows[rowNum] as TechnologyTree[]) = [node];
     }
 
     if (node.children) {

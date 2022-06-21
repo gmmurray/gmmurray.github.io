@@ -43,14 +43,14 @@ export const GameContextProvider: FC = ({ children }) => {
 
   // handle window/game resizing
   const handleResizeEvent = useCallback(() => {
-    if (!game) return;
+    if (!game || !windowWidth || !windowHeight) return;
     const sizeDimension = getMaxSquareScreenDimension(
       windowWidth,
       windowHeight,
       TILE_SIZE,
     );
     game.scale.resize(sizeDimension, sizeDimension);
-    const canvasEl = (gameRef.current as HTMLDivElement)
+    const canvasEl = ((gameRef.current as unknown) as HTMLDivElement)
       .children[0] as HTMLCanvasElement;
     if (canvasEl) {
       canvasEl.style.width = `${sizeDimension}px`;

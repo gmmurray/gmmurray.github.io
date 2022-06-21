@@ -50,7 +50,7 @@ export default class HealthBarUI {
 
   public updateHealth = (value?: number) => {
     if (value !== undefined) {
-      this.updateBar(value).updateValueText(value);
+      this.updateBar(value)?.updateValueText(value);
     } else {
       this.updateValueText();
     }
@@ -75,9 +75,9 @@ export default class HealthBarUI {
   ) => {
     if (this._label) this._label.destroy();
 
-    const { fontSize, fontFamily, fontColor, depth } = labelConfig;
+    const { fontSize, fontFamily, fontColor, depth } = labelConfig!;
 
-    const { paddingX, paddingY, barHeight } = barConfig;
+    const { paddingX, paddingY, barHeight } = barConfig!;
 
     const gameWidth = this._getGameWidth();
 
@@ -109,9 +109,9 @@ export default class HealthBarUI {
   ) => {
     if (this._value) this._value.destroy();
 
-    const { fontSize, fontFamily, fontColor, depth } = valueConfig;
+    const { fontSize, fontFamily, fontColor, depth } = valueConfig!;
 
-    const { paddingX, paddingY, barHeight } = barConfig;
+    const { paddingX, paddingY, barHeight } = barConfig!;
 
     const gameWidth = this._getGameWidth();
     const x = gameWidth - paddingX;
@@ -151,7 +151,7 @@ export default class HealthBarUI {
   private _setBarBackground = (config: HealthBarUIConfig['bar']) => {
     if (!this._barBackground) return;
 
-    const { paddingX, paddingY, barHeight, backgroundColor } = config;
+    const { paddingX, paddingY, barHeight, backgroundColor } = config!;
 
     const gameWidth = this._getGameWidth();
 
@@ -175,9 +175,8 @@ export default class HealthBarUI {
       lowColor,
       mediumColor,
       highColor,
-    } = this._config.bar;
-
-    const { maxHealth } = this._config.bar;
+      maxHealth,
+    } = this._config.bar!;
 
     const gameWidth = this._getGameWidth();
 
@@ -209,7 +208,7 @@ export default class HealthBarUI {
   private _setValueText = (value: number) => {
     if (!this._value) return;
 
-    const { maxHealth } = this._config.bar;
+    const { maxHealth } = this._config.bar!;
     this._value.setText(`${value}/${maxHealth}`).setVisible(true);
   };
 

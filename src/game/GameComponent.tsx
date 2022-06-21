@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 const GameComponent = () => {
   const isOverlayOpen = useSelector(overlaySelectors.selectOverlayOpen);
-  const { gameRef } = useGameContext();
+  const { gameRef } = useGameContext() ?? {};
 
   return (
     <div id="game" className="game-container" ref={gameRef}>

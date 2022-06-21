@@ -10,7 +10,7 @@ const default_settings = {
 export const showAlert = (
   title: string,
   text: string,
-  callback: AnyCallback = undefined,
+  callback: AnyCallback | undefined = undefined,
 ) =>
   Swal.fire({
     title,
@@ -25,7 +25,7 @@ export const showAlert = (
 export const showConfirm = (
   text: string,
   confirmCallback: () => any,
-  postCallback: AnyCallback = undefined,
+  postCallback: AnyCallback | undefined = undefined,
 ) =>
   Swal.fire({
     title: 'Are you sure?',

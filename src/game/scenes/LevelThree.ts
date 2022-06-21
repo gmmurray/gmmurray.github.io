@@ -63,21 +63,21 @@ export class LevelThree extends LevelScene {
   }
 
   public create = (eventEmitter: UIEventEmitter) => {
-    this.setCharacters()!
-      .setItems()!
-      .setPortals()!
-      .setDoors()!
-      .setCamera()!
-      .setMap()!
-      .setPortals()!
-      .setCharacterLayerTransitions()!
-      ._setBackground()!
-      ._setFireBarriers()!
-      ._setFireColumns()!
-      ._setFireExplosions()!
-      ._setFireCollisionListeners()!
-      ._initializeEnemyCharacters()!
-      .attachKeyboardListener();
+    this.setCharacters()
+      ?.setItems()
+      ?.setPortals()
+      ?.setDoors()
+      ?.setCamera()
+      ?.setMap()
+      ?.setPortals()
+      ?.setCharacterLayerTransitions()
+      ?._setBackground()
+      ?._setFireBarriers()
+      ?._setFireColumns()
+      ?._setFireExplosions()
+      ?._setFireCollisionListeners()
+      ?._initializeEnemyCharacters()
+      ?.attachKeyboardListener();
 
     this.uiEventEmitter = eventEmitter;
     this._initializeHUD();

@@ -17,7 +17,7 @@ export const levelFourLayers: LayerDefinition = {
         layer,
         level.player,
         level.handleLavaCollision,
-        null,
+        undefined,
         this,
       );
     },

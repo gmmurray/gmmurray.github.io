@@ -7,7 +7,7 @@ import { UnlockedFeatures } from '../types/savedData';
 type OverlayState = {
   open: boolean;
   contentKey: OverlayContentKey | null;
-  pausedScene: string;
+  pausedScene: string | null;
   unlockedFeatures: UnlockedFeatures;
 };
 

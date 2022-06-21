@@ -21,12 +21,12 @@ export class LevelOne extends LevelScene {
 
   public create = (eventEmitter: UIEventEmitter) => {
     this.setCharacters()
-      .setItems()
-      .setPortals()
-      .setDoors()
-      .setCamera()
-      .setMap()
-      .attachKeyboardListener();
+      ?.setItems()
+      ?.setPortals()
+      ?.setDoors()
+      ?.setCamera()
+      ?.setMap()
+      ?.attachKeyboardListener();
 
     this.uiEventEmitter = eventEmitter;
     this._initializeHUD();
@@ -67,20 +67,25 @@ export class LevelOne extends LevelScene {
     );
 
     // start with greg off screen and running towards player. then go to walking speed
-    this.gridEngine.moveTo(greg.definition.key, { x: 24, y: 50 });
-    this.gridEngine.setSpeed(greg.definition.key, 2);
-
+    if (greg) {
+      this.gridEngine.moveTo(greg.definition.key, { x: 24, y: 50 });
+      this.gridEngine.setSpeed(greg.definition.key, 2);
+    }
     // start the cats mving around randomly with delay so they aren't synchronized
-    this.gridEngine.moveRandomly(
-      khufu.definition.key,
-      RANDOM_MOVEMENT_DELAY,
-      khufu.startingSpeed,
-    );
-    this.gridEngine.moveRandomly(
-      dre.definition.key,
-      RANDOM_MOVEMENT_DELAY + 200,
-      dre.startingSpeed,
-    );
+    if (khufu) {
+      this.gridEngine.moveRandomly(
+        khufu.definition.key,
+        RANDOM_MOVEMENT_DELAY,
+        khufu.startingSpeed,
+      );
+    }
+    if (dre) {
+      this.gridEngine.moveRandomly(
+        dre.definition.key,
+        RANDOM_MOVEMENT_DELAY + 200,
+        dre.startingSpeed,
+      );
+    }
   };
 
   private _initializeHUD = () => {

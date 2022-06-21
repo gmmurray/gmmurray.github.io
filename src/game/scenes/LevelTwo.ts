@@ -68,17 +68,17 @@ export class LevelTwo extends LevelScene {
 
   public create = (eventEmitter: UIEventEmitter) => {
     this.setCharacters()
-      .setItems()
-      .setPortals()
-      .setDoors()
-      .setCamera()
-      .setMap()
-      .setCharacterLayerTransitions()
-      .attachKeyboardListener()
-      ._initializeFireState()
-      ._createPillarOneSolution()
-      ._createPillarTwoSolution()
-      ._createPillarThreeSolution();
+      ?.setItems()
+      ?.setPortals()
+      ?.setDoors()
+      ?.setCamera()
+      ?.setMap()
+      ?.setCharacterLayerTransitions()
+      ?.attachKeyboardListener()
+      ?._initializeFireState()
+      ?._createPillarOneSolution()
+      ?._createPillarTwoSolution()
+      ?._createPillarThreeSolution();
 
     this.uiEventEmitter = eventEmitter;
     this._initializeHUD();
@@ -100,8 +100,8 @@ export class LevelTwo extends LevelScene {
 
   public update = () => {
     this.useGridPlayerControls()
-      .setFacing()
-      ._handleMcDialogStatus();
+      ?.setFacing()
+      ?._handleMcDialogStatus();
   };
 
   private _initializeFireState = () => {
@@ -122,12 +122,12 @@ export class LevelTwo extends LevelScene {
 
   private _makeFires = (number: FireNumber): PuzzleFires => {
     const result: PuzzleFires = {
-      active: null,
+      active: undefined,
       fires: {
-        [FireColor.BLUE]: null,
-        [FireColor.WHITE]: null,
-        [FireColor.GREEN]: null,
-        [FireColor.PURPLE]: null,
+        [FireColor.BLUE]: undefined,
+        [FireColor.WHITE]: undefined,
+        [FireColor.GREEN]: undefined,
+        [FireColor.PURPLE]: undefined,
       },
     };
 
@@ -166,22 +166,22 @@ export class LevelTwo extends LevelScene {
   private _changeActiveFire = (number: FireNumber, newColor: FireColor) => {
     const fire = this.puzzleFireState[number];
     const currColor = fire.active;
-    const currPuzzleFire = fire.fires[currColor];
+    const currPuzzleFire = fire.fires[currColor ?? ''];
 
     const newPuzzleFire = fire.fires[newColor];
 
-    if (currColor !== null) {
+    if (currColor) {
       // remove old grid character and turn off visibility
       currPuzzleFire.sprite.setVisible(false);
       this.gridEngine.removeCharacter(currPuzzleFire.characterId);
     }
 
     // add new grid character and turn on visibility
-    newPuzzleFire.sprite.setVisible(true);
+    newPuzzleFire!.sprite!.setVisible(true);
     this.gridEngine.addCharacter({
-      id: newPuzzleFire.characterId,
+      id: newPuzzleFire!.characterId!,
       startPosition: fireStartLocations[number],
-      sprite: newPuzzleFire.sprite,
+      sprite: newPuzzleFire!.sprite!,
     });
     fire.active = newColor;
 
@@ -193,7 +193,7 @@ export class LevelTwo extends LevelScene {
       return this;
     }
 
-    let nextColor: FireColor;
+    let nextColor: FireColor | undefined = undefined;
     switch (this.puzzleFireState[number].active) {
       case FireColor.WHITE:
         nextColor = FireColor.BLUE;
@@ -209,7 +209,9 @@ export class LevelTwo extends LevelScene {
         break;
     }
 
-    this._changeActiveFire(number, nextColor);
+    if (nextColor) {
+      this._changeActiveFire(number, nextColor);
+    }
 
     return this;
   };
@@ -297,7 +299,7 @@ export class LevelTwo extends LevelScene {
   };
 
   private _createPillarOneSolution = () => {
-    const options = (this.cast.items as LevelTwoItem[]).filter(
+    const options = (this.cast!.items as LevelTwoItem[]).filter(
       i => i.pillar === 1 && i.hint !== undefined,
     );
     const solution = getRandomSolution(options);
@@ -309,8 +311,8 @@ export class LevelTwo extends LevelScene {
 
     this.pillarOneState = {
       solution: {
-        itemName,
-        hint,
+        itemName: itemName!,
+        hint: hint!,
       },
       isFound: false,
     };
@@ -413,8 +415,8 @@ export class LevelTwo extends LevelScene {
 
     this.pillarTwoState = {
       solution: {
-        ...solution,
-        options: shuffleArray(solution.options),
+        ...solution!,
+        options: shuffleArray(solution!.options),
       },
       isComplete: false,
     };
@@ -463,11 +465,13 @@ export class LevelTwo extends LevelScene {
     const greg = this.characters.find(
       c => c.definition.key === gregSpriteDefinition.key,
     );
-    this.gridEngine.moveRandomly(
-      greg.definition.key,
-      RANDOM_MOVEMENT_DELAY,
-      greg.startingSpeed + 1,
-    );
+    if (greg) {
+      this.gridEngine.moveRandomly(
+        greg.definition.key,
+        RANDOM_MOVEMENT_DELAY,
+        greg.startingSpeed + 1,
+      );
+    }
   };
 
   private _handleMcDialogStatus = () => {

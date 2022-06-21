@@ -48,7 +48,6 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
 
   public destroy = () => {
     this.shutdown();
-    this.scene = undefined;
   };
 
   public init = (config?: McDialogConfig) => {
@@ -61,7 +60,7 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
 
   public setConfig = (config?: McDialogConfig) => {
     Object.keys(this.config).forEach(key => {
-      this.config[key] = config[key] ?? this.config[key];
+      this.config[key] = (config ?? {})[key] ?? this.config[key];
     });
 
     return this;
@@ -82,7 +81,7 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     if (animate) {
       this.timedEvent = this.scene.time.addEvent({
-        delay: 150 - this.config.speed * 30,
+        delay: 150 - this.config.speed! * 30,
         callback: this._animateText,
         callbackScope: this,
         loop: true,
@@ -110,14 +109,14 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
     } else {
       factor = 1;
     }
-    this._scaledTextSize = this.config.fontSize * factor;
+    this._scaledTextSize = this.config.fontSize! * factor;
   };
 
   private _setQuestionText = (text: string) => {
     if (this.questionText) this.questionText.destroy();
 
-    const x = this.config.padding + 10;
-    const y = this._getWindowYPosition() - this.config.padding + 10;
+    const x = this.config.padding! + 10;
+    const y = this._getWindowYPosition() - this.config.padding! + 10;
 
     this.questionText = this.scene.make.text({
       x,
@@ -125,7 +124,7 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
       text,
       style: {
         wordWrap: {
-          width: this._getGameWidth() - this.config.padding * 2 - 50,
+          width: this._getGameWidth() - this.config.padding! * 2 - 50,
           useAdvancedWrap: true,
         },
         color: THEME_WHITE,
@@ -182,7 +181,7 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     this.graphics = this.scene.add
       .graphics()
-      .setDepth(this.config.depth)
+      .setDepth(this.config.depth!)
       .setScrollFactor(0);
 
     this._createOuterWindow(windowDimensions)
@@ -218,8 +217,8 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
   private _createOuterWindow = ({ x, y, width, height }: WindowConfig) => {
     this.graphics
       .lineStyle(
-        this.config.borderThickness,
-        this.config.borderColor,
+        this.config.borderThickness!,
+        this.config.borderColor!,
         this.config.borderAlpha,
       )
       .strokeRect(x, y, width, height);
@@ -273,8 +272,8 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
   private _createOptionWindow = ({ x, y, width, height }: WindowConfig) => {
     this.graphics
       .lineStyle(
-        this.config.borderThickness,
-        this.config.borderColor,
+        this.config.borderThickness!,
+        this.config.borderColor!,
         this.config.borderAlpha,
       )
       .strokeRect(x, y, width, height);
@@ -284,15 +283,15 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
     const closeButton = this.scene.make.text({
       x:
         this._getGameWidth() -
-        this.config.padding -
-        this.config.closeBtnFontSize,
-      y: this._getWindowYPosition() - this.config.padding + 3,
+        this.config.padding! -
+        this.config.closeBtnFontSize!,
+      y: this._getWindowYPosition() - this.config.padding! + 3,
       text: 'X',
       style: {
         font: `bold ${this.config.closeBtnFontSize}px Monospace`,
         color: this.config.closeBtnColor,
       },
-      depth: this.config.depth + 1,
+      depth: this.config.depth! + 1,
       scrollFactor: 0,
     });
 
@@ -300,7 +299,7 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     closeButton.on('pointerover', () => closeButton.setColor(THEME_WHITE));
     closeButton.on('pointerout', () =>
-      closeButton.setColor(this.config.closeBtnColor),
+      closeButton.setColor(this.config.closeBtnColor!),
     );
     closeButton.on('pointerdown', () => {
       this.toggleWindow();
@@ -312,9 +311,9 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   private _createCloseModalButtonBorder = () => {
-    const width = this.config.closeBtnFontSize + 8;
-    const x = this._getGameWidth() - this.config.padding - width;
-    const y = this._getWindowYPosition() - this.config.padding;
+    const width = this.config.closeBtnFontSize! + 8;
+    const x = this._getGameWidth() - this.config.padding! - width;
+    const y = this._getWindowYPosition() - this.config.padding!;
     this.graphics.strokeRect(x, y, width, width);
     return this;
   };
@@ -342,8 +341,8 @@ export default class McDialogPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   private _getOptionWidth = () =>
-    this._getGameWidth() / 2 - this.config.padding * 3;
+    this._getGameWidth() / 2 - this.config.padding! * 3;
 
   private _getOptionHeight = () =>
-    this._getGameHeight() / 4 - this.config.padding * 2;
+    this._getGameHeight() / 4 - this.config.padding! * 2;
 }

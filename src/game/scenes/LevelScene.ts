@@ -61,7 +61,7 @@ export class LevelScene extends Scene {
   public phaserTooltip: PhaserTooltip;
 
   // characters
-  public playerCharacter?: PlayerCharacter = null;
+  public playerCharacter?: PlayerCharacter = undefined;
   public characters: Character[] = [];
   public facingCharacter?: NpcCharacter = undefined;
   public cast?: LevelCast = undefined;
@@ -131,7 +131,7 @@ export class LevelScene extends Scene {
    *
    * @returns this scene (chainable)
    */
-  public setItems = () => {
+  public setItems = (): this => {
     if (!this.cast) return this;
 
     const createdItems = this._createItems(this.cast.items);
@@ -179,7 +179,7 @@ export class LevelScene extends Scene {
     const addedMap = this.make.tilemap({
       key: this.mapDefinition.key,
     });
-    const tilesetNames = [];
+    const tilesetNames: string[] = [];
 
     this.mapDefinition.tilesets.forEach(ts => {
       addedMap.addTilesetImage(ts.name, ts.key);
@@ -193,7 +193,7 @@ export class LevelScene extends Scene {
 
     if (
       addedMap.layers.some(l =>
-        this.mapDefinition.animatedLayer.includes(l.name),
+        this.mapDefinition?.animatedLayer.includes(l.name),
       )
     ) {
       this.animatedTiles.init(addedMap);
@@ -318,16 +318,16 @@ export class LevelScene extends Scene {
     const tileRect = this._createTileRectangle(x, y);
     let bottomCenterTextValue: string | undefined = undefined;
     this.facingItem = this.items.find(item =>
-      Geom.Intersects.RectangleToRectangle(item.sprite.getBounds(), tileRect),
+      Geom.Intersects.RectangleToRectangle(item.sprite!.getBounds(), tileRect),
     );
 
     if (this.facingItem) {
       bottomCenterTextValue = this.facingItem.friendlyName;
     } else {
       this.facingCharacter = this.characters
-        .filter(c => c.definition.key !== this.playerCharacter.definition.key)
+        .filter(c => c.definition.key !== this.playerCharacter?.definition.key)
         .find(o =>
-          Geom.Intersects.RectangleToRectangle(o.sprite.getBounds(), tileRect),
+          Geom.Intersects.RectangleToRectangle(o.sprite!.getBounds(), tileRect),
         );
     }
 
@@ -437,7 +437,7 @@ export class LevelScene extends Scene {
    *
    * @param text
    */
-  public createNewDialog = (text: string, callback: () => any = undefined) => {
+  public createNewDialog = (text: string, callback?: () => any) => {
     this.dialog.setText(text);
     this.dialog.toggleWindow(true, callback);
     this.removeHudBottomCenterText(); // the hud bottom text should always be removed so it doesnt overlap with dialog
@@ -518,7 +518,7 @@ export class LevelScene extends Scene {
         this,
       );
     }
-    let newDir: Direction;
+    let newDir: Direction | undefined;
     const playerDir = this.gridEngine.getFacingDirection(
       this.playerCharacter.definition.key,
     );
@@ -537,7 +537,9 @@ export class LevelScene extends Scene {
         break;
     }
 
-    this.gridEngine.turnTowards(key, newDir);
+    if (newDir) {
+      this.gridEngine.turnTowards(key, newDir);
+    }
 
     return this;
   };
@@ -651,7 +653,7 @@ export class LevelScene extends Scene {
             y: startingY,
           },
           speed: startingSpeed,
-          sprite,
+          sprite: sprite!,
           walkingAnimationMapping,
           facingDirection,
         }),
@@ -669,7 +671,7 @@ export class LevelScene extends Scene {
         id: this._getItemId(x, y),
         collides: true,
         startPosition: { x, y },
-        sprite,
+        sprite: sprite!,
       }));
   };
 
@@ -726,6 +728,8 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   private _handleDoorCollision = () => {
+    if (!this.playerCharacter) return;
+
     const pos = this.gridEngine.getPosition(
       this.playerCharacter.definition.key,
     );
@@ -771,6 +775,8 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   private _handlePortalCollision = () => {
+    if (!this.playerCharacter) return;
+
     const pos = this.gridEngine.getPosition(
       this.playerCharacter.definition.key,
     );
@@ -795,6 +801,8 @@ export class LevelScene extends Scene {
         );
 
         setTimeout(() => {
+          if (!this.playerCharacter) return;
+
           this.handleCloseDialog(true);
           this.scene.sleep(this.scene.key);
           this.scene.run(match.to as string, this.uiEventEmitter);
@@ -933,7 +941,9 @@ export class LevelScene extends Scene {
       this._getItemId(itemToRemove.x, itemToRemove.y),
     );
 
-    itemToRemove.sprite.destroy();
+    if (itemToRemove.sprite) {
+      itemToRemove.sprite.destroy();
+    }
 
     this.items = this.items.filter((_, index) => index !== removeIndex);
   };

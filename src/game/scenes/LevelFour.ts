@@ -131,7 +131,7 @@ export class LevelFour extends Scene {
     const tilesets: string[] = [];
 
     this._mapDefinition.tilesets.forEach(ts => {
-      this._map.addTilesetImage(ts.name, ts.key);
+      this._map?.addTilesetImage(ts.name, ts.key);
       tilesets.push(ts.name);
     });
 
@@ -142,9 +142,9 @@ export class LevelFour extends Scene {
     if (!this._map || !this.player) return;
 
     this._map.layers.forEach((l, i) => {
-      const layer = this._map.createLayer(i, tilesets, 0, 0).setDepth(10);
+      const layer = this._map?.createLayer(i, tilesets, 0, 0).setDepth(10);
       const definedLayer = levelFourLayers[l.name];
-      if (definedLayer) {
+      if (definedLayer && layer) {
         const { depth, configure } = definedLayer;
         if (depth) {
           layer.setDepth(depth);

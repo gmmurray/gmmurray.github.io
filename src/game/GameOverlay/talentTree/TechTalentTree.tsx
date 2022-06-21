@@ -58,7 +58,7 @@ const TechTalentTree = () => {
   const [infoIsVisible, setInfoIsVisible] = useState(false);
 
   const tree = useMemo(() => constructTechTree({ ...data }), [data]);
-  const talentTrees = tree?.children.map(c => createRows(c));
+  const talentTrees = (tree?.children ?? []).map(c => createRows(c));
 
   const handleNextTree = useCallback(() => {
     if (selectedTreeIndex === talentTrees.length - 1) {
@@ -119,7 +119,7 @@ const TechTalentTree = () => {
 
               const nodeProps = {
                 ...item,
-                selected,
+                selected: selected === true,
                 onClick: () => handleSelectNode(selected ? null : item),
               };
 

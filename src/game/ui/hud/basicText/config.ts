@@ -5,7 +5,7 @@ import { CenterTextConfig } from '../../../hud/config';
 
 export const defaultCenterTextConfig: CenterTextConfig = {
   ...defaultBasicTextConfig,
-  fontSize: defaultBasicTextConfig.fontSize * 2,
+  fontSize: defaultBasicTextConfig.fontSize! * 2,
   fontStyle: 'bold',
   paddingX: 16,
   paddingY: 64,

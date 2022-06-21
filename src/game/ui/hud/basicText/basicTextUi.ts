@@ -94,10 +94,10 @@ export default class BasicTextUI {
   ) => {
     if (this._texts.bottomCenter) this._texts.bottomCenter.destroy();
 
-    const { fontSize, fontFamily, fontColor, depth, margin } = config;
+    const { fontSize, fontFamily, fontColor, depth, margin } = config!;
 
     const x = this._getGameWidth() / 2;
-    const y = this._getGameHeight() - margin;
+    const y = this._getGameHeight() - margin!;
 
     this._texts.bottomCenter = this._scene.make.text({
       x,
@@ -128,7 +128,7 @@ export default class BasicTextUI {
       fontStyle,
       paddingX,
       paddingY,
-    } = config;
+    } = config!;
 
     const centerXY = this._getGameHeight() / 2;
 
@@ -159,7 +159,7 @@ export default class BasicTextUI {
   ) => {
     if (this._texts.topCenter) this._texts.topCenter.destroy();
 
-    const { fontSize, fontFamily, fontColor, depth, padding } = config;
+    const { fontSize, fontFamily, fontColor, depth, padding } = config!;
 
     const x = this._getGameWidth() / 2;
     const y = padding;
@@ -186,7 +186,7 @@ export default class BasicTextUI {
     if (this._texts.topLeftPrimary) this._texts.topLeftPrimary.destroy();
     if (this._texts.topLeftSecondary) this._texts.topLeftSecondary.destroy();
 
-    const { fontSize, fontFamily, fontColor, depth, padding } = config;
+    const { fontSize, fontFamily, fontColor, depth, padding } = config!;
 
     const xPrimary = padding;
     const yPrimary = padding;
@@ -207,7 +207,7 @@ export default class BasicTextUI {
 
     this._texts.topLeftSecondary = this._scene.make.text({
       x: xPrimary,
-      y: yPrimary + fontSize + 10,
+      y: yPrimary! + fontSize! + 10,
       depth,
       text: '',
       style: {
@@ -232,11 +232,11 @@ export default class BasicTextUI {
   };
 
   private _setText = (textKey: keyof typeof this._texts, value: string) => {
-    this._texts[textKey].setText(value).setVisible(true);
+    this._texts[textKey]?.setText(value).setVisible(true);
   };
 
   private _removeText = (textKey: keyof typeof this._texts) => {
-    this._texts[textKey].setText('').setVisible(false);
+    this._texts[textKey]?.setText('').setVisible(false);
   };
 
   private _setTopLeftSecondaryText = (value: string) => {

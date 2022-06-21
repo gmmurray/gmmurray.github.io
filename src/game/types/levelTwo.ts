@@ -70,27 +70,27 @@ export enum FireNumber {
 }
 
 export interface PuzzleFires {
-  active: FireColor;
+  active?: FireColor;
   fires: {
-    [FireColor.GREEN]: {
-      sprite: Phaser.GameObjects.Sprite;
-      animation: Phaser.Animations.Animation;
-      characterId: string;
+    [FireColor.GREEN]?: {
+      sprite: Phaser.GameObjects.Sprite | null;
+      animation: Phaser.Animations.Animation | null;
+      characterId: string | null;
     };
-    [FireColor.BLUE]: {
-      sprite: Phaser.GameObjects.Sprite;
-      animation: Phaser.Animations.Animation;
-      characterId: string;
+    [FireColor.BLUE]?: {
+      sprite: Phaser.GameObjects.Sprite | null;
+      animation: Phaser.Animations.Animation | null;
+      characterId: string | null;
     };
-    [FireColor.WHITE]: {
-      sprite: Phaser.GameObjects.Sprite;
-      animation: Phaser.Animations.Animation;
-      characterId: string;
+    [FireColor.WHITE]?: {
+      sprite: Phaser.GameObjects.Sprite | null;
+      animation: Phaser.Animations.Animation | null;
+      characterId: string | null;
     };
-    [FireColor.PURPLE]: {
-      sprite: Phaser.GameObjects.Sprite;
-      animation: Phaser.Animations.Animation;
-      characterId: string;
+    [FireColor.PURPLE]?: {
+      sprite: Phaser.GameObjects.Sprite | null;
+      animation: Phaser.Animations.Animation | null;
+      characterId: string | null;
     };
   };
 }
@@ -117,8 +117,8 @@ export class PillarThreeState implements IPillarThreeState {
     this[FireNumber.FOUR] = this._createFire();
   }
 
-  private _createFire = () => ({
-    active: null,
+  private _createFire = (): PuzzleFires => ({
+    active: undefined,
     fires: {
       [FireColor.GREEN]: {
         sprite: null,

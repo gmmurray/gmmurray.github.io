@@ -60,7 +60,7 @@ export default class BattleTextUI {
 
     const config = type === 'buffs' ? this._config.buffs : this._config.debuffs;
 
-    const newText = this._createBuffDebuffTextDisplay(config, value);
+    const newText = this._createBuffDebuffTextDisplay(config!, value);
 
     const newTextIndex = texts.length;
 

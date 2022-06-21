@@ -73,14 +73,14 @@ export default class UnlockedFeaturesUI {
     config: UnlockedFeatureUIConfig,
   ) => {
     if (key === 'inventoryText') {
-      this._setTextDisplay(config.inventoryText, 0, 'inventory');
+      this._setTextDisplay(config.inventoryText!, 0, 'inventory');
     } else if (key === 'questsText') {
-      this._setTextDisplay(config.questsText, 1, 'quests');
+      this._setTextDisplay(config.questsText!, 1, 'quests');
     } else if (key === 'talentsText') {
-      this._setTextDisplay(config.talentsText, 2, 'talents');
+      this._setTextDisplay(config.talentsText!, 2, 'talents');
     } else if (key === 'inventorySprite') {
       this._setSpriteDisplay(
-        config.inventorySprite,
+        config.inventorySprite!,
         0,
         'inventory',
         'inventoryActive',
@@ -88,7 +88,7 @@ export default class UnlockedFeaturesUI {
       );
     } else if (key === 'questsSprite') {
       this._setSpriteDisplay(
-        config.questsSprite,
+        config.questsSprite!,
         1,
         'quests',
         'questsActive',
@@ -96,7 +96,7 @@ export default class UnlockedFeaturesUI {
       );
     } else if (key === 'talentsSprite') {
       this._setSpriteDisplay(
-        config.talentsSprite,
+        config.talentsSprite!,
         2,
         'talents',
         'talentsActive',
@@ -110,7 +110,7 @@ export default class UnlockedFeaturesUI {
     position: number,
     textKey: keyof typeof this._texts,
   ) => {
-    if (this._texts[textKey]) this._texts[textKey].destroy();
+    if (this._texts[textKey]) this._texts[textKey]!.destroy();
 
     const {
       fontSize,
@@ -148,11 +148,11 @@ export default class UnlockedFeaturesUI {
     config: FeatureSpriteConfig,
     position: number,
     callbackKey: keyof typeof this._callbacks,
-    activeKey?: keyof typeof this._sprites,
-    inactiveKey?: keyof typeof this._sprites,
+    activeKey: keyof typeof this._sprites,
+    inactiveKey: keyof typeof this._sprites,
   ) => {
-    if (this._sprites[activeKey]) this._sprites[activeKey].destroy();
-    if (this._sprites[inactiveKey]) this._sprites[inactiveKey].destroy();
+    if (this._sprites[activeKey]) this._sprites[activeKey]!.destroy();
+    if (this._sprites[inactiveKey]) this._sprites[inactiveKey]!.destroy();
 
     const {
       spriteKey,
@@ -181,7 +181,7 @@ export default class UnlockedFeaturesUI {
       .setVisible(true)
       .setScale(scale);
 
-    this._sprites[activeKey].on('pointerdown', () =>
+    this._sprites[activeKey]!.on('pointerdown', () =>
       this._callbacks[callbackKey](),
     );
 
@@ -212,18 +212,20 @@ export default class UnlockedFeaturesUI {
 
     (this._scene as UIScene).phaserTooltip.hideTooltip(id);
 
-    this._sprites[spriteKey].on(
-      'pointerover',
-      () => {
-        (this._scene as UIScene).phaserTooltip.showTooltip(id, true);
-      },
-      this._scene,
-    );
-    this._sprites[spriteKey].on(
-      'pointerout',
-      () => (this._scene as UIScene).phaserTooltip.hideTooltip(id, true),
-      this._scene,
-    );
+    if (this._sprites[spriteKey]) {
+      this._sprites[spriteKey]!.on(
+        'pointerover',
+        () => {
+          (this._scene as UIScene).phaserTooltip.showTooltip(id, true);
+        },
+        this._scene,
+      );
+      this._sprites[spriteKey]!.on(
+        'pointerout',
+        () => (this._scene as UIScene).phaserTooltip.hideTooltip(id, true),
+        this._scene,
+      );
+    }
   };
 
   private _update = (

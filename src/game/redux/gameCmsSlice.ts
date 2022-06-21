@@ -5,11 +5,11 @@ import { StateSelector } from '../types/redux';
 import cloneDeep from 'lodash.clonedeep';
 
 type GameCmsState = {
-  data: GameCmsContent;
+  data: GameCmsContent | null;
   selectedTalentTree: number;
   selectedQuestTab: 0 | 1 | 2;
   selectedQuest: number;
-  selectedProject: InventoryProject;
+  selectedProject: InventoryProject | null;
 };
 
 const initialState: GameCmsState = {
@@ -63,20 +63,30 @@ const selectGameCmsState: StateSelector<GameCmsState> = state => state.gameCms;
 const selectGameCmsData: StateSelector<GameCmsState['data']> = state =>
   selectGameCmsState(state).data;
 
-const selectGameCmsAboutContent: StateSelector<GameCmsState['data']['aboutContent']> = state =>
-  selectGameCmsData(state).aboutContent;
+const selectGameCmsAboutContent: StateSelector<Exclude<
+  GameCmsState['data'],
+  null
+>['aboutContent']> = state => selectGameCmsData(state)!.aboutContent;
 
 const selectSelectedTalentTree: StateSelector<GameCmsState['selectedTalentTree']> = state =>
   selectGameCmsState(state).selectedTalentTree;
 
-const selectGameCmsExperiencesContent: StateSelector<GameCmsState['data']['experiencesContent']> = state =>
-  selectGameCmsState(state).data.experiencesContent;
+const selectGameCmsExperiencesContent: StateSelector<Exclude<
+  GameCmsState['data'],
+  null
+>['experiencesContent']> = state =>
+  selectGameCmsState(state).data!.experiencesContent;
 
-const selectGameCmsFeaturedContent: StateSelector<GameCmsState['data']['featuredContent']> = state =>
-  selectGameCmsState(state).data.featuredContent;
+const selectGameCmsFeaturedContent: StateSelector<Exclude<
+  GameCmsState['data'],
+  null
+>['featuredContent']> = state =>
+  selectGameCmsState(state).data!.featuredContent;
 
-const selectGameCmsOtherContent: StateSelector<GameCmsState['data']['otherContent']> = state =>
-  selectGameCmsState(state).data.otherContent;
+const selectGameCmsOtherContent: StateSelector<Exclude<
+  GameCmsState['data'],
+  null
+>['otherContent']> = state => selectGameCmsState(state).data!.otherContent;
 
 const selectGameCmsSelectedQuestTab: StateSelector<GameCmsState['selectedQuestTab']> = state =>
   selectGameCmsState(state).selectedQuestTab;

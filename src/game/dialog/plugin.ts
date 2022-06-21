@@ -33,7 +33,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   public graphics: Phaser.GameObjects.Graphics;
   public closeBtn: Phaser.GameObjects.Text;
   public timedEvent: Phaser.Time.TimerEvent;
-  private _onClose: () => any;
+  private _onClose?: () => any;
 
   private scaledTextSize = this.config.fontSize;
 
@@ -59,7 +59,6 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
 
   destroy() {
     this.shutdown();
-    this.scene = undefined;
   }
 
   init = (options?: DialogConfig) => {
@@ -72,16 +71,13 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
 
   setOptions = (options?: DialogConfig) => {
     Object.keys(this.config).forEach(key => {
-      this.config[key] = options[key] ?? this.config[key];
+      this.config[key] = (options ?? {})[key] ?? this.config[key];
     });
 
     return this;
   };
 
-  toggleWindow = (
-    newValue: boolean = !this.visible,
-    callback: () => any = undefined,
-  ) => {
+  toggleWindow = (newValue: boolean = !this.visible, callback?: () => any) => {
     this.visible = newValue;
     if (this.text) this.text.setVisible(this.visible);
     if (this.graphics) this.graphics.setVisible(this.visible);
@@ -105,7 +101,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     if (animate) {
       this.timedEvent = this.scene.time.addEvent({
-        delay: 150 - this.config.speed * 30,
+        delay: 150 - (this.config.speed ?? 1) * 30,
         callback: this._animateText,
         callbackScope: this,
         loop: true,
@@ -126,7 +122,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     } else {
       factor = 1;
     }
-    this.scaledTextSize = this.config.fontSize * factor;
+    this.scaledTextSize = this.config.fontSize! * factor;
   };
 
   private _getGameWidth = () => getGameWidth(this.scene);
@@ -161,8 +157,8 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   ) => {
     this.graphics
       .lineStyle(
-        this.config.borderThickness,
-        this.config.borderColor,
+        this.config.borderThickness!,
+        this.config.borderColor!,
         this.config.borderAlpha,
       )
       .strokeRect(x, y, width, height);
@@ -173,26 +169,26 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
     const closeButton = this.scene.make.text({
       x:
         this._getGameWidth() -
-        this.config.padding -
-        this.config.closeBtnFontSize,
+        this.config.padding! -
+        this.config.closeBtnFontSize!,
       y:
         this._getGameHeight() -
-        this.config.windowHeight -
-        this.config.padding +
+        this.config.windowHeight! -
+        this.config.padding! +
         3,
       text: 'X',
       style: {
         font: `bold ${this.config.closeBtnFontSize}px Monospace`,
         color: this.config.closeBtnColor,
       },
-      depth: this.config.depth + 1,
+      depth: this.config.depth! + 1,
       scrollFactor: 0,
     });
 
     closeButton.setInteractive();
     closeButton.on('pointerover', () => closeButton.setColor('#fff'));
     closeButton.on('pointerout', () =>
-      closeButton.setColor(this.config.closeBtnColor),
+      closeButton.setColor(this.config.closeBtnColor!),
     );
     closeButton.on('pointerdown', () => {
       this.toggleWindow();
@@ -205,21 +201,21 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
   };
 
   private _createCloseModalButtonBorder = () => {
-    const width = this.config.closeBtnFontSize + 8;
-    const x = this._getGameWidth() - this.config.padding - width;
+    const width = this.config.closeBtnFontSize! + 8;
+    const x = this._getGameWidth() - this.config.padding! - width;
     const y =
-      this._getGameHeight() - this.config.windowHeight - this.config.padding;
+      this._getGameHeight() - this.config.windowHeight! - this.config.padding!;
     this.graphics.strokeRect(x, y, width, width);
   };
 
   private _setText = (text: string) => {
     if (this.text) this.text.destroy();
 
-    const x = this.config.padding + 10;
+    const x = this.config.padding! + 10;
     const y =
       this._getGameHeight() -
-      this.config.windowHeight -
-      this.config.padding +
+      this.config.windowHeight! -
+      this.config.padding! +
       10;
 
     this.text = this.scene.make.text({
@@ -228,7 +224,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
       text,
       style: {
         wordWrap: {
-          width: this._getGameWidth() - this.config.padding * 2 - 50,
+          width: this._getGameWidth() - this.config.padding! * 2 - 50,
           useAdvancedWrap: true,
         },
         color: THEME_WHITE,
@@ -260,7 +256,7 @@ export default class DialogPlugin extends Phaser.Plugins.ScenePlugin {
 
     this.graphics = this.scene.add
       .graphics()
-      .setDepth(this.config.depth)
+      .setDepth(this.config.depth!)
       .setScrollFactor(0);
 
     this._createOuterWindow(x, y, rectWidth, rectHeight)

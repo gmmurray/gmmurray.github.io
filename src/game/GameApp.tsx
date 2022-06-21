@@ -28,6 +28,7 @@ const GameApp: FC<GameAppProps> = ({ cmsContent }) => {
   }, []);
 
   return (
+    // @ts-ignore
     <Provider store={store}>
       <GameContextProvider>
         <GameComponent />

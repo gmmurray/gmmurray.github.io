@@ -20,10 +20,11 @@ const content_cn = combineCss(base_cn, 'content');
 
 const SimpleText = () => {
   const contentIsVisible = useVisibleTimeout(2000);
-  const currentContentKey = useSelector(
-    overlaySelectors.selectOverlayContentKey,
-  );
-  const content = useSelector(selectorByKey[currentContentKey]);
+  const currentContentKey =
+    useSelector(overlaySelectors.selectOverlayContentKey) ?? '';
+  const content = useSelector(
+    selectorByKey[currentContentKey],
+  ) as React.ReactFragment;
 
   return (
     <div

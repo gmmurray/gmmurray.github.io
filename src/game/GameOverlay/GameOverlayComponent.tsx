@@ -37,14 +37,16 @@ const message_content_container_cn = combineCss(
 
 const GameOverlayComponent = () => {
   const dispatch = useDispatch();
-  const { dimension, game } = useGameContext();
+  const { dimension, game } = useGameContext() ?? {};
   const { pausedScene, contentKey } = useSelector(
     overlaySelectors.selectOverlayState,
   );
   const unlockedFeatures = useSelector(overlaySelectors.selectUnlockedFeatures);
-  const content = overlayContentMapping[contentKey];
+  const content = overlayContentMapping[contentKey ?? ''];
 
   const handleClose = useCallback(() => {
+    if (!game) return;
+
     game.scene.resume(pausedScene);
     dispatch(overlayActions.overlayClosed());
     dispatch(gameCmsActions.reset());

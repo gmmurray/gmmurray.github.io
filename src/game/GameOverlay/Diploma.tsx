@@ -37,7 +37,7 @@ const year_content_cn = combineCss(content_cn, 'year');
 const Diploma = () => {
   const contentIsVisible = useVisibleTimeout(2000);
   const key = useSelector(overlaySelectors.selectOverlayContentKey);
-  const { type, school, degree, year } = diplomaContent[key];
+  const { type, school, degree, year } = diplomaContent[key ?? ''];
 
   return (
     <div

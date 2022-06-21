@@ -133,7 +133,9 @@ export class LoadingScene extends Scene {
         30,
       );
 
-    this.progressText.setText(`${parseInt((value * 100).toString())}%`);
+    if (this.progressText) {
+      this.progressText.setText(`${parseInt((value * 100).toString())}%`);
+    }
 
     return;
   };
