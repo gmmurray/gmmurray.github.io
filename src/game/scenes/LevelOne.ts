@@ -32,7 +32,6 @@ export class LevelOne extends LevelScene {
     this._initializeHUD();
 
     this.dialog.init();
-    this.hud.init();
 
     if (!this.isDev) {
       this.createNewDialog(
@@ -42,7 +41,6 @@ export class LevelOne extends LevelScene {
 
     this.initialCharacterMovement();
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
-      this.hud.updateDimensions(gameSize);
       this.dialog.updateDimensions(gameSize);
     });
   };

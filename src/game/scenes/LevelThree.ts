@@ -83,7 +83,6 @@ export class LevelThree extends LevelScene {
     this._initializeHUD();
 
     this.dialog.init();
-    //this.hud.init(undefined, true);
 
     this.handleCloseDialog();
 
@@ -91,8 +90,6 @@ export class LevelThree extends LevelScene {
       this.dialog.updateDimensions(gameSize);
     });
 
-    // this.hud.updateHealth(100); moved to initalizeHUD()
-    //this.loadUnlockedFeatures();
     this._showStarterDialog();
   };
 
@@ -185,7 +182,6 @@ export class LevelThree extends LevelScene {
       store.getState(),
     );
     this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, currentHealth);
-    //this.hud.updateHealth(currentHealth);
     return true;
   };
 
@@ -219,7 +215,6 @@ export class LevelThree extends LevelScene {
       value,
       LEVEL_THREE_BUFF_DEBUFF_DURATION,
     );
-    //this.hud.addBuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
   };
 
   private _displayDebuff = (value: string) => {
@@ -228,7 +223,6 @@ export class LevelThree extends LevelScene {
       value,
       LEVEL_THREE_BUFF_DEBUFF_DURATION,
     );
-    //this.hud.addDebuffText(value, LEVEL_THREE_BUFF_DEBUFF_DURATION);
   };
 
   private _unlockStairs = () => {
@@ -513,7 +507,6 @@ export class LevelThree extends LevelScene {
       store.getState(),
     );
     this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, currentHealth);
-    //this.hud.updateHealth(currentHealth);
     if (currentHealth <= 0) {
       this._handleDeath();
     }
@@ -596,7 +589,6 @@ export class LevelThree extends LevelScene {
   };
 
   private _handleDeath = () => {
-    //this.hud.updateCenterText('You died!');
     this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You died!');
 
     const playerIsDead = levelThreeSelectors.selectLevelThreePlayerIsDead(
@@ -749,9 +741,6 @@ export class LevelThree extends LevelScene {
 
   private _onDifficultyChangeConfirmed = (difficulty: LevelThreeDifficulty) => {
     const callback = () => {
-      // this.hud.updateCenterText(
-      //   `${levelThreeDifficultySettingsMap[difficulty].friendlyName} difficulty selected`,
-      // );
       this.uiEventEmitter.emit(
         UPDATE_CENTER_TEXT_EVENT,
         `${levelThreeDifficultySettingsMap[difficulty].friendlyName} difficulty selected`,
@@ -784,7 +773,6 @@ export class LevelThree extends LevelScene {
       store.getState(),
     );
     const text = `${levelThreeDifficultySettingsMap[difficulty].friendlyName}`;
-    //this.hud.updateTopLeftText(text);
     this.uiEventEmitter.emit(UPDATE_TOP_LEFT_TEXT_EVENT, text);
 
     return this;
@@ -797,7 +785,6 @@ export class LevelThree extends LevelScene {
       (prevValue, currKey) => (orbs[currKey] ? prevValue + 1 : prevValue),
       0,
     );
-    //this.hud.updateTopCenterText(`${count}/3 orbs`);
     this.uiEventEmitter.emit(UPDATE_TOP_CENTER_TEXT_EVENT, `${count}/3 orbs`);
 
     return this;

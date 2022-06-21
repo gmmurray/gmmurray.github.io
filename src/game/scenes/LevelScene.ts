@@ -40,7 +40,6 @@ import { store, storeDispatch } from '../redux/store';
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
-import HudPlugin from '../hud/plugin';
 import { OverlayContentKey } from '../types/overlayContent';
 import PhaserTooltip from '../PhaserTooltip/phaserTooltip';
 import { TileMapDefinition } from '../types/assetDefinitions';
@@ -57,7 +56,6 @@ export class LevelScene extends Scene {
   public gridEngine: GridEngine;
   public dialog: DialogPlugin;
   public dialogDisabled = false;
-  public hud: HudPlugin;
   public phaserTooltip: PhaserTooltip;
 
   // characters
@@ -551,7 +549,6 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public addHudBottomCenterText = (text: string) => {
-    //this.hud.updateBottomCenterText(text);
     this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT, text);
     return this;
   };
@@ -562,7 +559,6 @@ export class LevelScene extends Scene {
    * @returns this scene (chainable)
    */
   public removeHudBottomCenterText = () => {
-    //this.hud.updateBottomCenterText();
     this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT);
     return this;
   };
