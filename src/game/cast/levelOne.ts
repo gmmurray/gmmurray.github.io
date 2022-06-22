@@ -1,6 +1,7 @@
 import {
   BASE_PLAYER_SPEED,
   DEFAULT_PORTAL_TEXT,
+  LEVEL_FOUR_SCENE_KEY,
   LEVEL_THREE_SCENE_KEY,
   LEVEL_TWO_SCENE_KEY,
 } from '../constants';
@@ -166,7 +167,7 @@ const portals: PortalDefinition[] = [
       y: 9,
     },
     type: PortalType.SCENE,
-    to: '', // TODO: scene 4,
+    to: LEVEL_FOUR_SCENE_KEY,
     dialog: DEFAULT_PORTAL_TEXT,
     friendlyName: 'rightmost portal',
   },

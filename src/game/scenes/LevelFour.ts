@@ -1,9 +1,13 @@
 import {
+  ADD_DEBUFF_EVENT,
   HUD_INITIALIZED_EVENT,
+  HUD_SHUTDOWN_EVENT,
+  UPDATE_CENTER_TEXT_EVENT,
   UPDATE_HEALTH_EVENT,
   UPDATE_UNLOCKED_FEATURES_EVENT,
 } from '../ui/events';
 import {
+  LEVEL_FOUR_BATTLE_TEXT_DURATION,
   LEVEL_FOUR_JUMP_VELOCITY,
   LEVEL_FOUR_PLAYER_DEPTH,
   LEVEL_FOUR_SCENE_KEY,
@@ -42,6 +46,9 @@ export class LevelFour extends Scene {
   private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private _wasd: object;
 
+  // state
+  private _playerHealth = 100;
+
   constructor() {
     super(LEVEL_FOUR_SCENE_KEY);
     this._mapDefinition = levelFourMapDefinition;
@@ -78,13 +85,7 @@ export class LevelFour extends Scene {
       100,
       () => {
         const unlockedFeatures = this._loadUnlockedFeatures();
-        this.uiEventEmitter.emit(
-          HUD_INITIALIZED_EVENT,
-          true,
-          true,
-          true,
-          false,
-        );
+        this.uiEventEmitter.emit(HUD_INITIALIZED_EVENT, true, true, true, true);
         this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, 100);
         this.uiEventEmitter.emit(
           UPDATE_UNLOCKED_FEATURES_EVENT,
@@ -228,6 +229,7 @@ export class LevelFour extends Scene {
 
   public handleLavaCollision = () => {
     this.player.body.setVelocityY(-LEVEL_FOUR_JUMP_VELOCITY);
+    this._dealDamage(10);
   };
 
   private _loadUnlockedFeatures = () => {
@@ -249,5 +251,42 @@ export class LevelFour extends Scene {
     );
 
     return this;
+  };
+
+  private _dealDamage = (value: number) => {
+    this.uiEventEmitter.emit(
+      ADD_DEBUFF_EVENT,
+      `-${value} hp`,
+      LEVEL_FOUR_BATTLE_TEXT_DURATION,
+    );
+    this._changeHealth(-value);
+  };
+
+  private _changeHealth = (value: number) => {
+    let newHealth = this._playerHealth + value;
+    if (newHealth < 0) {
+      newHealth = 0;
+    }
+
+    if (newHealth > 100) {
+      newHealth = 100;
+    }
+
+    this._playerHealth = newHealth;
+    this.uiEventEmitter.emit(UPDATE_HEALTH_EVENT, this._playerHealth);
+
+    if (this._playerHealth <= 0) {
+      this._handleDeath();
+    }
+  };
+
+  private _handleDeath = () => {
+    this.cameras.main.setAlpha(0.5);
+    this.scene.pause();
+    this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You died!');
+    setTimeout(() => {
+      this.scene.restart();
+      this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
+    }, 2500);
   };
 }

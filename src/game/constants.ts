@@ -57,6 +57,7 @@ export const LEVEL_THREE_ENEMY_FOLLOW_RANGE = 3;
 export const LEVEL_FOUR_PLAYER_DEPTH = 15;
 export const LEVEL_FOUR_WALK_VELOCITY = 100;
 export const LEVEL_FOUR_JUMP_VELOCITY = 300;
+export const LEVEL_FOUR_BATTLE_TEXT_DURATION = 2000;
 
 // misc
 export const TILEMAPLAYER_TYPE = 'TilemapLayer';
