@@ -47,7 +47,7 @@ const GameOverlayComponent = () => {
   const handleClose = useCallback(() => {
     if (!game) return;
 
-    game.scene.resume(pausedScene);
+    game.scene.resume(pausedScene!);
     dispatch(overlayActions.overlayClosed());
     dispatch(gameCmsActions.reset());
   }, []);

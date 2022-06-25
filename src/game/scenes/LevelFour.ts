@@ -7,11 +7,14 @@ import {
   UPDATE_UNLOCKED_FEATURES_EVENT,
 } from '../ui/events';
 import {
+  INVENTORY_PHASER_EVENT_KEY,
   LEVEL_FOUR_BATTLE_TEXT_DURATION,
   LEVEL_FOUR_JUMP_VELOCITY,
   LEVEL_FOUR_PLAYER_DEPTH,
   LEVEL_FOUR_SCENE_KEY,
   LEVEL_FOUR_WALK_VELOCITY,
+  QUESTS_PHASER_EVENT_KEY,
+  TALENTS_PHASER_EVENT_KEY,
   TILE_SIZE,
   WASD_KEY_STRING,
 } from '../constants';
@@ -23,6 +26,7 @@ import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
 import { OverlayContentKey } from '../types/overlayContent';
 import { TileMapDefinition } from '../types/assetDefinitions';
 import { UIEventEmitter } from '../ui/eventEmitter';
+import { UnlockedFeatures } from '../types/savedData';
 import { createAnimation } from '../helpers/createAnimation';
 import { levelFourMapDefinition } from '../assetDefinitions/tiles';
 import { loadUnlockedFeatures } from '../helpers/localStorage';
@@ -45,6 +49,7 @@ export class LevelFour extends Scene {
   private _mapDefinition: TileMapDefinition;
   private _cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private _wasd: object;
+  private _unlockedFeatures: UnlockedFeatures;
 
   // state
   private _playerHealth = 100;
@@ -65,6 +70,7 @@ export class LevelFour extends Scene {
     // set cursors
     this._setCursors();
     this._setWasd();
+    this._setUIKeybinds();
 
     // set camera
     this._setCamera();
@@ -170,6 +176,26 @@ export class LevelFour extends Scene {
     return this;
   };
 
+  private _setUIKeybinds = () => {
+    const callback = (event: any) => {
+      const { inventory, questLog, talentTree } = this._unlockedFeatures ?? {};
+      if (event.key === INVENTORY_PHASER_EVENT_KEY && inventory) {
+        this.createOverlay(OverlayContentKey.PROJECTS);
+      }
+
+      if (event.key === QUESTS_PHASER_EVENT_KEY && questLog) {
+        this.createOverlay(OverlayContentKey.EXPERIENCES);
+      }
+
+      if (event.key === TALENTS_PHASER_EVENT_KEY && talentTree) {
+        this.createOverlay(OverlayContentKey.SKILLS);
+      }
+    };
+
+    this.input.keyboard.on('keydown', callback, this);
+    return this;
+  };
+
   private _setCamera = () => {
     if (!this._map || !this.player) return;
 
@@ -235,10 +261,13 @@ export class LevelFour extends Scene {
   private _loadUnlockedFeatures = () => {
     const unlockedFeatures = loadUnlockedFeatures();
     if (unlockedFeatures) {
+      this._unlockedFeatures = {
+        ...(unlockedFeatures as UnlockedFeatures),
+      };
       storeDispatch(overlayActions.updateUnlockedFeatures(unlockedFeatures));
     }
 
-    return unlockedFeatures;
+    return this._unlockedFeatures;
   };
 
   public createOverlay = (contentKey: OverlayContentKey) => {
