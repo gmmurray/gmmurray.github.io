@@ -6,5 +6,5 @@ export interface AnimationDefinition {
 }
 
 export interface AnimationDefinitionMap {
-  [key: string]: AnimationDefinition;
+  [spriteKey: string]: { [key: string]: AnimationDefinition };
 }

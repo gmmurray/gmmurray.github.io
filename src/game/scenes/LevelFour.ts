@@ -9,6 +9,8 @@ import {
 import {
   INVENTORY_PHASER_EVENT_KEY,
   LEVEL_FOUR_BATTLE_TEXT_DURATION,
+  LEVEL_FOUR_DAMAGE_DELAY_MS,
+  LEVEL_FOUR_ENEMY_WALK_VELOCITY,
   LEVEL_FOUR_JUMP_VELOCITY,
   LEVEL_FOUR_PLAYER_DEPTH,
   LEVEL_FOUR_SCENE_KEY,
@@ -18,8 +20,13 @@ import {
   TILE_SIZE,
   WASD_KEY_STRING,
 } from '../constants';
+import { LevelFourEnemy, LevelFourEnemyDefinition } from '../types/levelFour';
 import { Scene, Tilemaps } from 'phaser';
-import { levelFourAnimations, levelFourLayers } from '../cast/levelFour';
+import {
+  levelFourAnimations,
+  levelFourEnemies,
+  levelFourLayers,
+} from '../cast/levelFour';
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
@@ -44,6 +51,7 @@ export class LevelFour extends Scene {
   public uiEventEmitter: UIEventEmitter;
   public animatedTiles: AnimatedTilesPlugin;
   public player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  public enemies: Record<string, LevelFourEnemy>;
 
   private _map: Tilemaps.Tilemap | null = null;
   private _mapDefinition: TileMapDefinition;
@@ -53,6 +61,7 @@ export class LevelFour extends Scene {
 
   // state
   private _playerHealth = 100;
+  private _invulnerable = false;
 
   constructor() {
     super(LEVEL_FOUR_SCENE_KEY);
@@ -62,6 +71,8 @@ export class LevelFour extends Scene {
   public create = (uiEventEmitter: UIEventEmitter) => {
     // set map and player character
     this._setMap()._setPlayer();
+
+    this._setEnemies();
 
     // set map layers
     const tilesets = this._addMapTilesets();
@@ -84,6 +95,7 @@ export class LevelFour extends Scene {
 
   public update = () => {
     this._handlePlayerMovement();
+    this._moveEnemy('enemy-1');
   };
 
   private _initializeHUD = () => {
@@ -132,6 +144,44 @@ export class LevelFour extends Scene {
     this.player.body.setSize(this.player.width * 0.8, this.player.height, true);
 
     return this;
+  };
+
+  private _setEnemies = () => {
+    if (!this._map) return;
+
+    if (!this.enemies) {
+      this.enemies = {};
+    }
+
+    levelFourEnemies.forEach(lfe => {
+      const startPosition = this._map!.tileToWorldXY(
+        lfe.startPos.x,
+        lfe.startPos.y,
+      );
+
+      this.enemies[lfe.id] = {
+        sprite: this.physics.add
+          .sprite(startPosition.x, startPosition.y, lfe.textureKey)
+          .setCollideWorldBounds(true)
+          .setDepth(LEVEL_FOUR_PLAYER_DEPTH)
+          .setImmovable(true),
+        definition: lfe,
+        mapBounds: {
+          left: this._map!.tileToWorldX(lfe.bounds.left),
+          right: this._map!.tileToWorldX(lfe.bounds.right),
+        },
+      };
+
+      this.enemies[lfe.id].sprite.body.setSize(
+        this.enemies[lfe.id].sprite.width * 0.8,
+        this.enemies[lfe.id].sprite.height * 0.8,
+        true,
+      );
+
+      this.physics.add.collider(this.enemies[lfe.id].sprite, this.player, () =>
+        this.dealDamage(lfe.damage),
+      );
+    });
   };
 
   private _addMapTilesets = () => {
@@ -208,38 +258,47 @@ export class LevelFour extends Scene {
   };
 
   private _createAnimations = () => {
-    this._createPlayerAnimations();
+    //this._createPlayerAnimations();
+    Object.keys(levelFourAnimations).forEach(spriteKey => {
+      Object.keys(levelFourAnimations[spriteKey]).forEach(animationKey => {
+        createAnimation(
+          this,
+          levelFourAnimations[spriteKey][animationKey],
+          spriteKey,
+        );
+      });
+    });
 
     return this;
   };
 
-  private _createPlayerAnimations = () => {
-    createAnimation(
-      this,
-      levelFourAnimations['walk'],
-      playerSpriteDefinition.key,
-    );
-    createAnimation(
-      this,
-      levelFourAnimations['idle'],
-      playerSpriteDefinition.key,
-    );
-  };
+  // private _createPlayerAnimations = () => {
+  //   createAnimation(
+  //     this,
+  //     levelFourAnimations['walk'],
+  //     playerSpriteDefinition.key,
+  //   );
+  //   createAnimation(
+  //     this,
+  //     levelFourAnimations['idle'],
+  //     playerSpriteDefinition.key,
+  //   );
+  // };
 
   private _handlePlayerMovement = () => {
     if (!this.player) return;
 
     if (this._cursors.left.isDown || this._wasd['A'].isDown) {
       this.player.body.setVelocityX(-LEVEL_FOUR_WALK_VELOCITY);
-      this.player.anims.play(levelFourAnimations['walk'].key, true);
+      this.player.anims.play(levelFourAnimations['player']['walk'].key, true);
       this.player.flipX = true;
     } else if (this._cursors.right.isDown || this._wasd['D'].isDown) {
       this.player.body.setVelocityX(LEVEL_FOUR_WALK_VELOCITY);
-      this.player.anims.play(levelFourAnimations['walk'].key, true);
+      this.player.anims.play(levelFourAnimations['player']['walk'].key, true);
       this.player.flipX = false;
     } else {
       this.player.body.setVelocityX(0);
-      this.player.anims.play(levelFourAnimations['idle'].key);
+      this.player.anims.play(levelFourAnimations['player']['idle'].key);
     }
     if (
       (this._cursors.up.isDown || this._wasd['W'].isDown) &&
@@ -253,9 +312,23 @@ export class LevelFour extends Scene {
     }
   };
 
+  private _moveEnemy = (id: string) => {
+    if (!this._map || !this.enemies[id]) return;
+
+    // if enemy is at left bound, move right
+    if (this.enemies[id].sprite.x <= this.enemies[id].mapBounds.left) {
+      this.enemies[id].sprite.body.setVelocityX(LEVEL_FOUR_ENEMY_WALK_VELOCITY);
+    } else if (this.enemies[id].sprite.x >= this.enemies[id].mapBounds.right) {
+      // if enemy is at right bound, move left
+      this.enemies[id].sprite.body.setVelocityX(
+        -LEVEL_FOUR_ENEMY_WALK_VELOCITY,
+      );
+    }
+  };
+
   public handleLavaCollision = () => {
     this.player.body.setVelocityY(-LEVEL_FOUR_JUMP_VELOCITY);
-    this._dealDamage(10);
+    this.dealDamage(10);
   };
 
   private _loadUnlockedFeatures = () => {
@@ -282,13 +355,23 @@ export class LevelFour extends Scene {
     return this;
   };
 
-  private _dealDamage = (value: number) => {
+  public dealDamage = (value: number) => {
+    if (this._invulnerable) return;
     this.uiEventEmitter.emit(
       ADD_DEBUFF_EVENT,
       `-${value} hp`,
       LEVEL_FOUR_BATTLE_TEXT_DURATION,
     );
     this._changeHealth(-value);
+    this._invulnerable = true;
+    this.time.delayedCall(
+      LEVEL_FOUR_DAMAGE_DELAY_MS,
+      () => {
+        this._invulnerable = false;
+      },
+      [],
+      this,
+    );
   };
 
   private _changeHealth = (value: number) => {
@@ -315,6 +398,7 @@ export class LevelFour extends Scene {
     this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You died!');
     setTimeout(() => {
       this.scene.restart();
+      this._playerHealth = 100;
       this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
     }, 2500);
   };

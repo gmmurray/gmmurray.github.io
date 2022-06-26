@@ -1,5 +1,6 @@
 import { AnimationDefinitionMap } from '../types/animations';
 import { LayerDefinition } from '../types/assetDefinitions';
+import { LevelFourEnemyDefinition } from '../types/levelFour';
 
 export const levelFourLayers: LayerDefinition = {
   ['ground']: {
@@ -8,6 +9,11 @@ export const levelFourLayers: LayerDefinition = {
       level.physics.world.bounds.width = layer.width;
       level.physics.world.bounds.height = layer.height;
       level.physics.add.collider(layer, level.player);
+      Object.keys(level.enemies).forEach(key => {
+        if (level.enemies[key] && level.enemies[key].sprite) {
+          level.physics.add.collider(layer, level.enemies[key].sprite);
+        }
+      });
     },
   },
   ['lava']: {
@@ -37,14 +43,32 @@ export const levelFourLayers: LayerDefinition = {
 };
 
 export const levelFourAnimations: AnimationDefinitionMap = {
-  walk: {
-    key: 'walk',
-    frames: [6, 7, 8],
-    frameRate: 6,
-    repeat: -1,
-  },
-  idle: {
-    key: 'idle',
-    frames: [7],
+  player: {
+    walk: {
+      key: 'walk',
+      frames: [6, 7, 8],
+      frameRate: 6,
+      repeat: -1,
+    },
+    idle: {
+      key: 'idle',
+      frames: [7],
+    },
   },
 };
+
+export const levelFourEnemies: LevelFourEnemyDefinition[] = [
+  {
+    id: 'enemy-1',
+    textureKey: 'soldier',
+    startPos: {
+      x: 3,
+      y: 34,
+    },
+    bounds: {
+      left: 3,
+      right: 5,
+    },
+    damage: 10,
+  },
+];
