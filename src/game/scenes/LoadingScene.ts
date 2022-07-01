@@ -11,6 +11,8 @@ import {
   UI_SCENE_KEY,
 } from '../constants';
 import {
+  acidBlobSpriteDefinition,
+  beetleSpriteDefinition,
   fantasyIconsSpriteDefinition,
   fireSpriteDefinitions,
   goblinSpriteDefinition,
@@ -22,9 +24,16 @@ import {
   playerSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
+  slimeSpriteDefinition,
   soldierSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
+import {
+  coffeeCupImageDefinition,
+  javascriptPixelImageDefinition,
+  pizzaPartyImageDefinition,
+  tunaRollImageDefinition,
+} from '../assetDefinitions/images';
 import { getGameHeight, getGameWidth } from '../helpers/gameDimensions';
 import {
   levelFourMapDefinition,
@@ -50,12 +59,22 @@ const spriteDefinitions = [
   skeletonTwoSpriteDefinition,
   soldierSpriteDefinition,
   fantasyIconsSpriteDefinition,
+  beetleSpriteDefinition,
+  acidBlobSpriteDefinition,
+  slimeSpriteDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,
   levelTwoMapDefinition,
   levelThreeMapDefinition,
   levelFourMapDefinition,
+];
+
+const imageDefinitions = [
+  coffeeCupImageDefinition,
+  tunaRollImageDefinition,
+  pizzaPartyImageDefinition,
+  javascriptPixelImageDefinition,
 ];
 
 export class LoadingScene extends Scene {
@@ -173,6 +192,10 @@ export class LoadingScene extends Scene {
 
   private _loadImages = () => {
     this.load.image('logo', 'images/logo_transparent.png');
+
+    imageDefinitions.forEach(({ key, source }) => {
+      this.load.image(key, source);
+    });
 
     return this;
   };

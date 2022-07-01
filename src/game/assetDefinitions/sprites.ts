@@ -95,6 +95,33 @@ export const soldierSpriteDefinition: SpriteDefinition = {
   scale: SCALE,
 };
 
+export const beetleSpriteDefinition: SpriteDefinition = {
+  key: 'beetle',
+  source: getSpriteSource('beetle_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
+export const acidBlobSpriteDefinition: SpriteDefinition = {
+  key: 'acid-blob',
+  source: getSpriteSource('acid_blob_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
+export const slimeSpriteDefinition: SpriteDefinition = {
+  key: 'slime',
+  source: getSpriteSource('slime_spritesheet'),
+  frameWidth: 32,
+  frameHeight: 32,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
 export const fantasyIconsSpriteDefinition: SpriteDefinition = {
   key: 'fantasy-icons',
   source: getSpriteSource('fantasy_icons'),

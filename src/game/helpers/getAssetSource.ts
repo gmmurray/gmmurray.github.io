@@ -5,3 +5,5 @@ export const getTileSetSource = (filename: string) =>
   getTileSource(`${filename}.png`);
 
 export const getSpriteSource = (filename: string) => `sprites/${filename}.png`;
+
+export const getImageSource = (filename: string) => `images/${filename}.png`;

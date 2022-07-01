@@ -26,6 +26,11 @@ export interface TileMapDefinition {
   characterLayer?: CharacterLayerDefinition;
 }
 
+export interface ImageDefinition {
+  key: string;
+  source: string;
+}
+
 export interface CharacterLayerTransition {
   x: number;
   y: number;

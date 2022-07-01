@@ -10,13 +10,30 @@ export interface LevelFourEnemyDefinition {
     right: number;
   };
   damage: number;
+  name: string;
 }
 
 export interface LevelFourEnemy {
-  sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  container: Phaser.GameObjects.Container;
   definition: LevelFourEnemyDefinition;
   mapBounds: {
     left: number;
     right: number;
   };
+  sprite: Phaser.GameObjects.Sprite;
+}
+
+export interface LevelFourFoodDefinition {
+  id: string;
+  position: Coordinates;
+  textureKey: string;
+  name: string;
+  value: number;
+}
+
+export interface LevelFourObjectiveDefinition {
+  id: string;
+  position: Coordinates;
+  textureKey: string;
+  name: string;
 }
