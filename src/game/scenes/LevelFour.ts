@@ -3,9 +3,9 @@ import {
   ADD_DEBUFF_EVENT,
   HUD_INITIALIZED_EVENT,
   HUD_SHUTDOWN_EVENT,
+  UPDATE_BOTTOM_CENTER_TEXT_EVENT,
   UPDATE_CENTER_TEXT_EVENT,
   UPDATE_HEALTH_EVENT,
-  UPDATE_TOP_CENTER_TEXT_EVENT,
   UPDATE_TOP_LEFT_TEXT_EVENT,
   UPDATE_UNLOCKED_FEATURES_EVENT,
 } from '../ui/events';
@@ -54,11 +54,12 @@ import { levelFourMapDefinition } from '../assetDefinitions/tiles';
 import { loadUnlockedFeatures } from '../helpers/localStorage';
 import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
+import { showAlert } from '../helpers/sweetAlerts';
 
 // const START_X = 0;
 // const START_Y = 34;
-const START_X = 113;
-const START_Y = 37;
+const START_X = 142;
+const START_Y = 36;
 
 export class LevelFour extends Scene {
   public uiEventEmitter: UIEventEmitter;
@@ -94,6 +95,7 @@ export class LevelFour extends Scene {
   private _playerHealth = 100;
   private _invulnerable = false;
   private _damageOverride = false;
+  private _introMessageOverride = true;
   private _centerMessageVisible = false;
   private _completedObjectiveCount = 0;
 
@@ -131,6 +133,8 @@ export class LevelFour extends Scene {
 
     this.uiEventEmitter = uiEventEmitter;
     this._initializeHUD();
+
+    this._showIntroText();
   };
 
   public update = () => {
@@ -613,7 +617,7 @@ export class LevelFour extends Scene {
   private _handleDeath = () => {
     this.cameras.main.setAlpha(0.5);
     this.scene.pause();
-    this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You died!');
+    this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, 'You failed!');
     setTimeout(() => {
       this.scene.restart();
       this._playerHealth = 100;
@@ -672,14 +676,14 @@ export class LevelFour extends Scene {
     this._centerMessageVisible = true;
 
     this.uiEventEmitter.emit(
-      UPDATE_TOP_CENTER_TEXT_EVENT,
+      UPDATE_BOTTOM_CENTER_TEXT_EVENT,
       'You already have full health!',
     );
 
     this.time.delayedCall(
       LEVEL_FOUR_MESSAGE_DISPLAY_DURATION,
       () => {
-        this.uiEventEmitter.emit(UPDATE_TOP_CENTER_TEXT_EVENT, '');
+        this.uiEventEmitter.emit(UPDATE_BOTTOM_CENTER_TEXT_EVENT, '');
         this._centerMessageVisible = false;
       },
       [],
@@ -746,5 +750,17 @@ export class LevelFour extends Scene {
     if (!this.player) return;
 
     this.player.setX(position.x).setY(position.y);
+  };
+
+  private _showIntroText = () => {
+    if (this._introMessageOverride) return;
+    this.scene.pause();
+    showAlert(
+      'Welcome',
+      `You must prove your worth as a high quality developer by mastering the latest flavor of the month JavaScript frameworks as soon as possible. You will encounter the same challenges that all developers face but if you are resourceful you may find ways to endure.`,
+      () => {
+        this.scene.resume();
+      },
+    );
   };
 }
