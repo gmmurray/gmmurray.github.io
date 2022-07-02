@@ -278,5 +278,10 @@ export const levelFourMapDefinition: TileMapDefinition = {
       key: 'water-tiles',
       source: getTileSetSource('water_tileset'),
     },
+    {
+      name: 'ladder_tileset',
+      key: 'ladder-tiles',
+      source: getTileSetSource('ladder_tileset'),
+    },
   ],
 };

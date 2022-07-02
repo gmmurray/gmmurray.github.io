@@ -27,8 +27,8 @@ import {
 } from '../constants';
 import {
   LevelFourEnemy,
-  LevelFourEnemyDefinition,
   LevelFourFoodDefinition,
+  LevelFourInvisibleInteractionDefinition,
   LevelFourObjectiveDefinition,
 } from '../types/levelFour';
 import { Scene, Tilemaps } from 'phaser';
@@ -36,12 +36,14 @@ import {
   levelFourAnimations,
   levelFourEnemies,
   levelFourFoods,
+  levelFourInvisibleInteractions,
   levelFourLayers,
   levelFourObjectives,
 } from '../cast/levelFour';
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { Coordinates } from '../types/position';
 import { OverlayContentKey } from '../types/overlayContent';
 import { TileMapDefinition } from '../types/assetDefinitions';
 import { UIEventEmitter } from '../ui/eventEmitter';
@@ -53,10 +55,10 @@ import { loadUnlockedFeatures } from '../helpers/localStorage';
 import { overlayActions } from '../redux/overlaySlice';
 import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
-const START_X = 0;
-const START_Y = 34;
-// const START_X = 74;
-// const START_Y = 51;
+// const START_X = 0;
+// const START_Y = 34;
+const START_X = 113;
+const START_Y = 37;
 
 export class LevelFour extends Scene {
   public uiEventEmitter: UIEventEmitter;
@@ -77,6 +79,10 @@ export class LevelFour extends Scene {
       container: Phaser.GameObjects.Container;
     }
   >;
+  public invisibleInteractions: {
+    defintion: LevelFourInvisibleInteractionDefinition;
+    rectangle: Phaser.GameObjects.Rectangle;
+  }[];
 
   private _map: Tilemaps.Tilemap | null = null;
   private _mapDefinition: TileMapDefinition;
@@ -105,6 +111,8 @@ export class LevelFour extends Scene {
     this._setFood();
 
     this._setObjectives();
+
+    this._setInvisibleInteractions();
 
     // set map layers
     const tilesets = this._addMapTilesets();
@@ -298,7 +306,6 @@ export class LevelFour extends Scene {
     }
 
     const names = generateJavascriptFrameworks();
-    console.log(names);
 
     levelFourObjectives.forEach((lfo, i) => {
       lfo.name = names[i];
@@ -339,6 +346,40 @@ export class LevelFour extends Scene {
     });
 
     return this;
+  };
+
+  private _setInvisibleInteractions = () => {
+    if (!this._map) return;
+
+    if (!this.invisibleInteractions) {
+      this.invisibleInteractions = [];
+    }
+
+    levelFourInvisibleInteractions.forEach((lfii, index) => {
+      const position = this._map!.tileToWorldXY(
+        lfii.position.x,
+        lfii.position.y,
+      );
+
+      const rectangle = this.add.rectangle(
+        position.x,
+        position.y,
+        lfii.width,
+        lfii.height,
+      );
+
+      this.physics.world.enable(rectangle);
+
+      (rectangle.body as Phaser.Physics.Arcade.Body)
+        .setCollideWorldBounds(true)
+        .setImmovable(true);
+
+      this.physics.add.collider(rectangle, this.player, () =>
+        this._handleInvisibleInteraction(lfii),
+      );
+
+      this.invisibleInteractions.push({ defintion: lfii, rectangle });
+    });
   };
 
   private _addMapTilesets = () => {
@@ -682,4 +723,28 @@ export class LevelFour extends Scene {
 
   private _getObjectiveText = () =>
     `Javascript Frameworks Mastered: ${this._completedObjectiveCount}/${levelFourObjectives.length}`;
+
+  private _handleInvisibleInteraction = (
+    definition: LevelFourInvisibleInteractionDefinition,
+  ) => {
+    if (definition.handlerKey === 'ladder') {
+      this._handleLadderCollision(definition.payload.position);
+    }
+
+    return this;
+  };
+
+  private _handleLadderCollision = (position: Coordinates) => {
+    if (!this._map) return;
+
+    const newPos = this._map!.tileToWorldXY(position.x, position.y);
+
+    this._movePlayer(newPos);
+  };
+
+  private _movePlayer = (position: Coordinates) => {
+    if (!this.player) return;
+
+    this.player.setX(position.x).setY(position.y);
+  };
 }

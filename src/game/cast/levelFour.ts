@@ -1,11 +1,13 @@
 import {
   LevelFourEnemyDefinition,
   LevelFourFoodDefinition,
+  LevelFourInvisibleInteractionDefinition,
   LevelFourObjectiveDefinition,
 } from '../types/levelFour';
 
 import { AnimationDefinitionMap } from '../types/animations';
 import { LayerDefinition } from '../types/assetDefinitions';
+import { TILE_SIZE } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
 
 export const levelFourLayers: LayerDefinition = {
@@ -28,6 +30,12 @@ export const levelFourLayers: LayerDefinition = {
       Object.keys(level.objectives).forEach(key => {
         if (level.objectives[key] && level.objectives[key].container) {
           level.physics.add.collider(layer, level.objectives[key].container);
+        }
+      });
+
+      (level.invisibleInteractions ?? []).forEach(ii => {
+        if (ii.rectangle) {
+          level.physics.add.collider(layer, ii.rectangle);
         }
       });
     },
@@ -330,5 +338,23 @@ export const levelFourObjectives: LevelFourObjectiveDefinition[] = [
     },
     name: '',
     textureKey: 'javascript-pixel-image',
+  },
+];
+
+export const levelFourInvisibleInteractions: LevelFourInvisibleInteractionDefinition[] = [
+  {
+    position: {
+      x: 109,
+      y: 35,
+    },
+    width: TILE_SIZE,
+    height: TILE_SIZE,
+    handlerKey: 'ladder',
+    payload: {
+      position: {
+        x: 108,
+        y: 8,
+      },
+    },
   },
 ];

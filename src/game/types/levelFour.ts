@@ -37,3 +37,11 @@ export interface LevelFourObjectiveDefinition {
   textureKey: string;
   name: string;
 }
+
+export interface LevelFourInvisibleInteractionDefinition {
+  position: Coordinates;
+  width: number;
+  height: number;
+  handlerKey: 'ladder';
+  payload: Record<string, any>;
+}
