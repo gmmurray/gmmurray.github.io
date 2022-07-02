@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { CreditsScene } from './scenes/CreditsScene';
 import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
 import { LevelFour } from './scenes/LevelFour';
@@ -49,7 +50,15 @@ export const gameConfig = {
   audio: {
     disableWebAudio: false,
   },
-  scene: [LoadingScene, LevelOne, LevelTwo, LevelThree, LevelFour, UIScene],
+  scene: [
+    LoadingScene,
+    LevelOne,
+    LevelTwo,
+    LevelThree,
+    LevelFour,
+    UIScene,
+    CreditsScene,
+  ],
   plugins: {
     scene: [
       {
