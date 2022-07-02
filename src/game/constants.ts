@@ -27,6 +27,7 @@ export const LEVEL_TWO_SCENE_KEY = 'level-two';
 export const LEVEL_THREE_SCENE_KEY = 'level-three';
 export const LEVEL_FOUR_SCENE_KEY = 'level-four';
 export const UI_SCENE_KEY = 'ui-scene';
+export const CREDIT_SCENE_KEY = 'credits';
 
 // plugin keys
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';

@@ -22,6 +22,7 @@ import {
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
   playerSpriteDefinition,
+  purplePortalSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
   slimeSpriteDefinition,
@@ -62,6 +63,7 @@ const spriteDefinitions = [
   beetleSpriteDefinition,
   acidBlobSpriteDefinition,
   slimeSpriteDefinition,
+  purplePortalSpriteDefinition,
 ];
 const tileDefinitions = [
   levelOneMapDefinition,

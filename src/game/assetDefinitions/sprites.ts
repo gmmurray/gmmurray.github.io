@@ -122,6 +122,15 @@ export const slimeSpriteDefinition: SpriteDefinition = {
   scale: SCALE,
 };
 
+export const purplePortalSpriteDefinition: SpriteDefinition = {
+  key: 'purple-portal',
+  source: getSpriteSource('purple_portal_spritesheet'),
+  frameWidth: 64,
+  frameHeight: 64,
+  walkingAnimationMapping: 0,
+  scale: SCALE,
+};
+
 export const fantasyIconsSpriteDefinition: SpriteDefinition = {
   key: 'fantasy-icons',
   source: getSpriteSource('fantasy_icons'),

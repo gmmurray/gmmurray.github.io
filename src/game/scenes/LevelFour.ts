@@ -10,6 +10,7 @@ import {
   UPDATE_UNLOCKED_FEATURES_EVENT,
 } from '../ui/events';
 import {
+  CREDIT_SCENE_KEY,
   INVENTORY_PHASER_EVENT_KEY,
   LEVEL_FOUR_BATTLE_TEXT_DURATION,
   LEVEL_FOUR_DAMAGE_DELAY_MS,
@@ -35,11 +36,16 @@ import { Scene, Tilemaps } from 'phaser';
 import {
   levelFourAnimations,
   levelFourEnemies,
+  levelFourExitPortal,
   levelFourFoods,
   levelFourInvisibleInteractions,
   levelFourLayers,
   levelFourObjectives,
 } from '../cast/levelFour';
+import {
+  playerSpriteDefinition,
+  purplePortalSpriteDefinition,
+} from '../assetDefinitions/sprites';
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
@@ -53,7 +59,6 @@ import { generateJavascriptFrameworks } from '../helpers/generateJavascriptFrame
 import { levelFourMapDefinition } from '../assetDefinitions/tiles';
 import { loadUnlockedFeatures } from '../helpers/localStorage';
 import { overlayActions } from '../redux/overlaySlice';
-import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 import { showAlert } from '../helpers/sweetAlerts';
 
 // const START_X = 0;
@@ -84,6 +89,7 @@ export class LevelFour extends Scene {
     defintion: LevelFourInvisibleInteractionDefinition;
     rectangle: Phaser.GameObjects.Rectangle;
   }[];
+  public exitPortal: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
   private _map: Tilemaps.Tilemap | null = null;
   private _mapDefinition: TileMapDefinition;
@@ -98,6 +104,7 @@ export class LevelFour extends Scene {
   private _introMessageOverride = true;
   private _centerMessageVisible = false;
   private _completedObjectiveCount = 0;
+  private _completedObjectiveOverride = true;
 
   constructor() {
     super(LEVEL_FOUR_SCENE_KEY);
@@ -107,6 +114,8 @@ export class LevelFour extends Scene {
   public create = (uiEventEmitter: UIEventEmitter) => {
     // set map and player character
     this._setMap()._setPlayer();
+
+    this._setExitPortal();
 
     this._setEnemies();
 
@@ -192,6 +201,32 @@ export class LevelFour extends Scene {
     this.player.body.setSize(this.player.width * 0.8, this.player.height, true);
 
     return this;
+  };
+
+  private _setExitPortal = () => {
+    if (!this._map) return;
+
+    const position = this._map.tileToWorldXY(
+      levelFourExitPortal.position.x,
+      levelFourExitPortal.position.y,
+    );
+
+    this.exitPortal = this.physics.add
+      .sprite(position.x, position.y, purplePortalSpriteDefinition.key)
+      .setDepth(LEVEL_FOUR_PLAYER_DEPTH)
+      .setImmovable(true);
+
+    this.exitPortal.setFlipX(true).setSize(TILE_SIZE, this.exitPortal.height);
+
+    createAnimation(
+      this,
+      {
+        ...levelFourExitPortal.anim,
+      },
+      purplePortalSpriteDefinition.key,
+    );
+
+    this.exitPortal.setVisible(false);
   };
 
   private _setEnemies = () => {
@@ -703,14 +738,18 @@ export class LevelFour extends Scene {
       this._getObjectiveText(),
     );
 
-    let messageText =
-      this._completedObjectiveCount === levelFourObjectives.length
-        ? `You've learned enough to escape this place.`
-        : `You mastered ${this.objectives[id].definition.name} in ${Math.floor(
-            Math.random() * 7,
-          )} day(s)!`;
+    let messageText: string;
 
-    if (this._completedObjectiveCount === levelFourObjectives.length) {
+    if (
+      this._completedObjectiveCount === levelFourObjectives.length ||
+      this._completedObjectiveOverride
+    ) {
+      messageText = `You've learned enough to escape this place.`;
+      this._enableExitPortal();
+    } else {
+      messageText = `You mastered ${
+        this.objectives[id].definition.name
+      } in ${Math.floor(Math.random() * 7)} day(s)!`;
     }
 
     this.uiEventEmitter.emit(UPDATE_CENTER_TEXT_EVENT, messageText);
@@ -762,5 +801,30 @@ export class LevelFour extends Scene {
         this.scene.resume();
       },
     );
+  };
+
+  private _enableExitPortal = () => {
+    this.exitPortal.setVisible(true);
+    this.exitPortal.anims.play(levelFourExitPortal.anim.key, true);
+    this.physics.add.collider(
+      this.exitPortal,
+      this.player,
+      this._handleLevelComplete,
+    );
+  };
+
+  private _handleLevelComplete = () => {
+    this.time.delayedCall(
+      1000,
+      () => {
+        this.cameras.main.fade(2500, 0, 0, 0);
+      },
+      [],
+      this,
+    );
+    setTimeout(() => {
+      this.scene.start(CREDIT_SCENE_KEY);
+      this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
+    }, 3500);
   };
 }

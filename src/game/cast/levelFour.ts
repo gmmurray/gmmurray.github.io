@@ -16,28 +16,42 @@ export const levelFourLayers: LayerDefinition = {
       layer.setCollisionByExclusion([-1]);
       level.physics.world.bounds.width = layer.width;
       level.physics.world.bounds.height = layer.height;
+
+      // setup player collider
       level.physics.add.collider(layer, level.player);
+
+      // setup enemy collider
       Object.keys(level.enemies).forEach(key => {
         if (level.enemies[key] && level.enemies[key].container) {
           level.physics.add.collider(layer, level.enemies[key].container);
         }
       });
+
+      // setup food collider
       Object.keys(level.food).forEach(key => {
         if (level.food[key] && level.food[key].container) {
           level.physics.add.collider(layer, level.food[key].container);
         }
       });
+
+      // setup objective (js frameworks) collider
       Object.keys(level.objectives).forEach(key => {
         if (level.objectives[key] && level.objectives[key].container) {
           level.physics.add.collider(layer, level.objectives[key].container);
         }
       });
 
+      // setup invis interaction collider
       (level.invisibleInteractions ?? []).forEach(ii => {
         if (ii.rectangle) {
           level.physics.add.collider(layer, ii.rectangle);
         }
       });
+
+      // setup exit portal collider
+      if (level.exitPortal) {
+        level.physics.add.collider(layer, level.exitPortal);
+      }
     },
   },
   ['lava']: {
@@ -358,3 +372,16 @@ export const levelFourInvisibleInteractions: LevelFourInvisibleInteractionDefini
     },
   },
 ];
+
+export const levelFourExitPortal = {
+  position: {
+    x: 149,
+    y: 38,
+  },
+  anim: {
+    key: 'purple-portal-animation',
+    frames: [0, 1, 2, 3, 4, 5, 6, 7],
+    frameRate: 6,
+    repeat: -1,
+  },
+};
