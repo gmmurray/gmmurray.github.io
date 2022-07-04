@@ -215,7 +215,7 @@ export class LoadingScene extends Scene {
       this.isDev ? 0 : 2000,
       () => {
         this.scene.launch(UI_SCENE_KEY, this.uiEmitter);
-        this.scene.start(CREDIT_SCENE_KEY, this.uiEmitter);
+        this.scene.start(LEVEL_FOUR_SCENE_KEY, this.uiEmitter);
       },
       [],
       this,

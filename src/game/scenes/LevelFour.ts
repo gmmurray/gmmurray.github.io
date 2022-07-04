@@ -61,10 +61,10 @@ import { loadUnlockedFeatures } from '../helpers/localStorage';
 import { overlayActions } from '../redux/overlaySlice';
 import { showAlert } from '../helpers/sweetAlerts';
 
-// const START_X = 0;
-// const START_Y = 34;
-const START_X = 142;
-const START_Y = 36;
+const START_X = 0;
+const START_Y = 34;
+// const START_X = 142;
+// const START_Y = 36;
 
 export class LevelFour extends Scene {
   public uiEventEmitter: UIEventEmitter;
@@ -101,10 +101,10 @@ export class LevelFour extends Scene {
   private _playerHealth = 100;
   private _invulnerable = false;
   private _damageOverride = false;
-  private _introMessageOverride = true;
+  private _introMessageOverride = false;
   private _centerMessageVisible = false;
   private _completedObjectiveCount = 0;
-  private _completedObjectiveOverride = true;
+  private _completedObjectiveOverride = false;
 
   constructor() {
     super(LEVEL_FOUR_SCENE_KEY);
