@@ -11,7 +11,6 @@ import {
   LevelCast,
   NpcCharacter,
   PerformInteraction,
-  PlayerCharacter,
   PortalDefinition,
   PortalType,
 } from '../types/interactions';
@@ -21,13 +20,12 @@ import {
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
-import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Direction } from 'grid-engine';
 import { LevelOne } from '../scenes/LevelOne';
 import { OverlayContentKey } from '../types/overlayContent';
+import { SpriteDefinition } from '../types/assetDefinitions';
 
-const player: PlayerCharacter = {
-  definition: CharacterSelector.getInstance().getPlayerDefinition(),
+const player = {
   startingX: 24,
   startingY: 52,
   startingSpeed: BASE_PLAYER_SPEED,
@@ -203,10 +201,13 @@ const doors: DoorDefinition[] = [
   },
 ];
 
-export const levelOneCast: LevelCast = {
-  player,
+export const getLevelOneCast = (definition: SpriteDefinition): LevelCast => ({
   npcs,
   items,
   portals,
   doors,
-};
+  player: {
+    ...player,
+    definition,
+  },
+});

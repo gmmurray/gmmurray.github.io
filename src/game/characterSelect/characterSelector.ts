@@ -1,5 +1,5 @@
-import { playerCharacterOptions } from '../assetDefinitions/sprites';
 import { SpriteDefinition } from '../types/assetDefinitions';
+import { playerCharacterOptions } from '../assetDefinitions/sprites';
 
 let instance: CharacterSelector | null = null;
 export class CharacterSelector {
@@ -11,13 +11,22 @@ export class CharacterSelector {
   }
 
   private _createDefaultCharacter = () => {
-    const num = Math.floor(Math.random() * playerCharacterOptions.length);
+    const options = Object.values(playerCharacterOptions);
 
-    return playerCharacterOptions[num];
+    const num = Math.floor(Math.random() * options.length);
+
+    return options[0];
   };
 
-  public getPlayerDefinition = () =>
-    this._selectedPlayerDefinition ?? this._defaultPlayerDefinition;
+  public getPlayerDefinition = () => {
+    return this._selectedPlayerDefinition ?? this._defaultPlayerDefinition;
+  };
+
+  public setPlayerDefinition = () => {
+    // TODO:
+
+    this._selectedPlayerDefinition = playerCharacterOptions['irabel'];
+  };
 
   static getInstance = () => instance ?? new CharacterSelector();
 }

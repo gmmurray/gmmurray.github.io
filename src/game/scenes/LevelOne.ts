@@ -6,9 +6,10 @@ import {
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { LevelScene } from './LevelScene';
 import { SceneConfig } from '../types/SceneConfig';
-import { levelOneCast } from '../cast/levelOne';
+import { getLevelOneCast } from '../cast/levelOne';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
 export class LevelOne extends LevelScene {
@@ -16,12 +17,12 @@ export class LevelOne extends LevelScene {
     super(LEVEL_ONE_SCENE_KEY);
     this.levelNumber = 1;
     this.mapDefinition = levelOneMapDefinition;
-    this.cast = levelOneCast;
   }
 
   public create = ({ uiEmitter, characterSelector }: SceneConfig) => {
     this.uiEventEmitter = uiEmitter;
     this.characterSelector = characterSelector;
+    this.cast = getLevelOneCast(this.characterSelector.getPlayerDefinition());
 
     this.setCharacters()
       ?.setItems()

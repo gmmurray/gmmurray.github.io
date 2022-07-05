@@ -25,11 +25,7 @@ import {
   PotionType,
 } from '../types/levelThree';
 import {
-  levelThreeActions,
-  levelThreeSelectors,
-} from '../redux/levelThreeSlice';
-import {
-  levelThreeCast,
+  getLevelThreeCast,
   levelThreeDifficultySettingsMap,
   levelThreeEnemiesDefinition,
   levelThreeFireBarrierLocations,
@@ -37,6 +33,10 @@ import {
   levelThreeFireExplosionLocations,
   orbMap,
 } from '../cast/levelThree';
+import {
+  levelThreeActions,
+  levelThreeSelectors,
+} from '../redux/levelThreeSlice';
 import {
   levelThreeFireBarrierDefinition,
   levelThreeFireExplosionDefinition,
@@ -48,7 +48,6 @@ import { CharacterData } from 'grid-engine';
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
 import { SceneConfig } from '../types/SceneConfig';
-import { UIEventEmitter } from '../ui/eventEmitter';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
 import { showConfirm } from '../helpers/sweetAlerts';
 import { v4 as uuidv4 } from 'uuid';
@@ -60,11 +59,13 @@ export class LevelThree extends LevelScene {
     super(LEVEL_THREE_SCENE_KEY);
     this.levelNumber = 3;
     this.mapDefinition = levelThreeMapDefinition;
-    this.cast = levelThreeCast;
   }
 
-  public create = ({ uiEmitter }: SceneConfig) => {
+  public create = ({ uiEmitter, characterSelector }: SceneConfig) => {
     this.uiEventEmitter = uiEmitter;
+    this.characterSelector = characterSelector;
+    this.cast = getLevelThreeCast(this.characterSelector.getPlayerDefinition());
+
     this.setCharacters()!
       .setItems()!
       .setPortals()!

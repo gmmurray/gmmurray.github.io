@@ -31,6 +31,7 @@ import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
 import { OverlayContentKey } from '../types/overlayContent';
+import { SpriteDefinition } from '../types/assetDefinitions';
 
 export const orbMap: OrbMap = {
   1: {
@@ -137,8 +138,7 @@ export const orbMap: OrbMap = {
   },
 };
 
-const player: PlayerCharacter = {
-  definition: CharacterSelector.getInstance().getPlayerDefinition(),
+const player = {
   startingX: 4,
   startingY: 47,
   // startingX: 47,
@@ -428,13 +428,16 @@ const doors: DoorDefinition[] = [
   },
 ];
 
-export const levelThreeCast: LevelCast = {
-  player,
+export const getLevelThreeCast = (definition: SpriteDefinition): LevelCast => ({
+  player: {
+    ...player,
+    definition,
+  },
   npcs,
   items,
   portals,
   doors,
-};
+});
 
 export const levelThreeDifficultySettingsMap: LevelThreeDifficultySettingsMap = {
   [LevelThreeDifficulty.EASY]: {

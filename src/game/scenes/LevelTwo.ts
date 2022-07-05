@@ -28,7 +28,7 @@ import {
 import {
   angelMessages,
   fireStartLocations,
-  levelTwoCast,
+  getLevelTwoCast,
   pillarTwoSolutions,
 } from '../cast/levelTwo';
 import {
@@ -62,13 +62,15 @@ export class LevelTwo extends LevelScene {
     super(LEVEL_TWO_SCENE_KEY);
     this.levelNumber = 2;
     this.mapDefinition = levelTwoMapDefinition;
-    this.cast = levelTwoCast;
     this.puzzleFireState = new PillarThreeState();
     this.progress = new LevelTwoProgress();
   }
 
-  public create = ({ uiEmitter }: SceneConfig) => {
+  public create = ({ uiEmitter, characterSelector }: SceneConfig) => {
     this.uiEventEmitter = uiEmitter;
+    this.characterSelector = characterSelector;
+    this.cast = getLevelTwoCast(this.characterSelector.getPlayerDefinition());
+
     this.setCharacters()
       ?.setItems()
       ?.setPortals()

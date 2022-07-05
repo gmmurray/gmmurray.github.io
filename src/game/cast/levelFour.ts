@@ -6,6 +6,7 @@ import {
 } from '../types/levelFour';
 
 import { AnimationDefinitionMap } from '../types/animations';
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { LayerDefinition } from '../types/assetDefinitions';
 import { TILE_SIZE } from '../constants';
 import { v4 as uuidv4 } from 'uuid';
@@ -101,8 +102,10 @@ const acidBlob: EnemyDescription = {
   damage: 10,
 };
 
-export const levelFourAnimations: AnimationDefinitionMap = {
-  player: {
+export const getLevelFourAnimationMap = (
+  key: string,
+): AnimationDefinitionMap => ({
+  [key]: {
     walk: {
       key: 'player-walk',
       frames: [6, 7, 8],
@@ -150,7 +153,7 @@ export const levelFourAnimations: AnimationDefinitionMap = {
       frames: [1],
     },
   },
-};
+});
 
 const createEnemyId = () => `enemy-${uuidv4()}`;
 

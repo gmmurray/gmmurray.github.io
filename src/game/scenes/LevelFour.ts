@@ -34,7 +34,7 @@ import {
 } from '../types/levelFour';
 import { Scene, Tilemaps } from 'phaser';
 import {
-  levelFourAnimations,
+  getLevelFourAnimationMap,
   levelFourEnemies,
   levelFourExitPortal,
   levelFourFoods,
@@ -501,13 +501,14 @@ export class LevelFour extends Scene {
   };
 
   private _createAnimations = () => {
-    Object.keys(levelFourAnimations).forEach(spriteKey => {
-      Object.keys(levelFourAnimations[spriteKey]).forEach(animationKey => {
-        createAnimation(
-          this,
-          levelFourAnimations[spriteKey][animationKey],
-          spriteKey,
-        );
+    const {
+      key: playerDefinitionKey,
+    } = this.characterSelector.getPlayerDefinition();
+    const animationMap = getLevelFourAnimationMap(playerDefinitionKey);
+
+    Object.keys(animationMap).forEach(spriteKey => {
+      Object.keys(animationMap[spriteKey]).forEach(animationKey => {
+        createAnimation(this, animationMap[spriteKey][animationKey], spriteKey);
       });
     });
 
@@ -517,17 +518,28 @@ export class LevelFour extends Scene {
   private _handlePlayerMovement = () => {
     if (!this.player) return;
 
+    const {
+      key: playerDefinitionKey,
+    } = this.characterSelector.getPlayerDefinition();
+    const animationMap = getLevelFourAnimationMap(playerDefinitionKey);
+
     if (this._cursors.left.isDown || this._wasd['A'].isDown) {
       this.player.body.setVelocityX(-LEVEL_FOUR_WALK_VELOCITY);
-      this.player.anims.play(levelFourAnimations['player']['walk'].key, true);
+      this.player.anims.play(
+        animationMap[playerDefinitionKey]['walk'].key,
+        true,
+      );
       this.player.flipX = true;
     } else if (this._cursors.right.isDown || this._wasd['D'].isDown) {
       this.player.body.setVelocityX(LEVEL_FOUR_WALK_VELOCITY);
-      this.player.anims.play(levelFourAnimations['player']['walk'].key, true);
+      this.player.anims.play(
+        animationMap[playerDefinitionKey]['walk'].key,
+        true,
+      );
       this.player.flipX = false;
     } else {
       this.player.body.setVelocityX(0);
-      this.player.anims.play(levelFourAnimations['player']['idle'].key);
+      this.player.anims.play(animationMap[playerDefinitionKey]['idle'].key);
     }
     if (
       (this._cursors.up.isDown || this._wasd['W'].isDown) &&
@@ -543,6 +555,10 @@ export class LevelFour extends Scene {
 
   private _moveEnemy = (id: string) => {
     if (!this._map || !this.enemies[id]) return;
+    const {
+      key: playerDefinitionKey,
+    } = this.characterSelector.getPlayerDefinition();
+    const animationMap = getLevelFourAnimationMap(playerDefinitionKey);
 
     // if enemy is at left bound, move right
     if (this.enemies[id].container.x <= this.enemies[id].mapBounds.left) {
@@ -550,10 +566,9 @@ export class LevelFour extends Scene {
         .body as Phaser.Physics.Arcade.Body).setVelocityX(
         LEVEL_FOUR_ENEMY_WALK_VELOCITY,
       );
-      if (levelFourAnimations[this.enemies[id].definition.textureKey]) {
+      if (animationMap[this.enemies[id].definition.textureKey]) {
         this.enemies[id].sprite.anims.play(
-          levelFourAnimations[this.enemies[id].definition.textureKey]['walk']
-            .key,
+          animationMap[this.enemies[id].definition.textureKey]['walk'].key,
           true,
         );
         this.enemies[id].sprite.flipX = true;
@@ -566,10 +581,9 @@ export class LevelFour extends Scene {
         .body as Phaser.Physics.Arcade.Body).setVelocityX(
         -LEVEL_FOUR_ENEMY_WALK_VELOCITY,
       );
-      if (levelFourAnimations[this.enemies[id].definition.textureKey]) {
+      if (animationMap[this.enemies[id].definition.textureKey]) {
         this.enemies[id].sprite.anims.play(
-          levelFourAnimations[this.enemies[id].definition.textureKey]['walk']
-            .key,
+          animationMap[this.enemies[id].definition.textureKey]['walk'].key,
           true,
         );
         this.enemies[id].sprite.flipX = false;

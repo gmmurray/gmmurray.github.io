@@ -50,7 +50,7 @@ import { SceneConfig } from '../types/SceneConfig';
 import { UIEventEmitter } from '../ui/eventEmitter';
 
 const spriteDefinitions = [
-  ...playerCharacterOptions,
+  ...Object.values(playerCharacterOptions),
   gregSpriteDefinition,
   greyCatSpriteDefinition,
   whiteCatSpriteDefinition,

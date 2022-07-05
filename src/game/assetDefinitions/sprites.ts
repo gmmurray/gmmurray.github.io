@@ -10,7 +10,7 @@ import { getFireColorName } from '../helpers/fireColor';
 import { getSpriteSource } from '../helpers/getAssetSource';
 
 const createPlayerSpriteDefinition = (source: string): SpriteDefinition => ({
-  key: 'player',
+  key: `player-${source}`,
   source: getSpriteSource(`${source}_spritesheet`),
   frameWidth: 32,
   frameHeight: 32,
@@ -18,16 +18,14 @@ const createPlayerSpriteDefinition = (source: string): SpriteDefinition => ({
   scale: SCALE,
 });
 
-export const playerCharacterOptions: SpriteDefinition[] = [
-  createPlayerSpriteDefinition('xion'),
-  createPlayerSpriteDefinition('irabel'),
-  createPlayerSpriteDefinition('zaya'),
-  createPlayerSpriteDefinition('orryn'),
-  createPlayerSpriteDefinition('happy_cat'),
-  createPlayerSpriteDefinition('wizard_cat'),
-];
-
-const randomCharacterNumber = Math.floor(Math.random() * 6);
+export const playerCharacterOptions: Record<string, SpriteDefinition> = {
+  xion: createPlayerSpriteDefinition('xion'),
+  irabel: createPlayerSpriteDefinition('irabel'),
+  zaya: createPlayerSpriteDefinition('zaya'),
+  orryn: createPlayerSpriteDefinition('orryn'),
+  ['happy_cat']: createPlayerSpriteDefinition('happy_cat'),
+  ['wizard_cat']: createPlayerSpriteDefinition('wizard_cat'),
+};
 
 export const gregSpriteDefinition: SpriteDefinition = {
   key: 'greg',
@@ -37,9 +35,6 @@ export const gregSpriteDefinition: SpriteDefinition = {
   walkingAnimationMapping: 0,
   scale: 2,
 };
-
-const playerSpriteDefinition: SpriteDefinition =
-  playerCharacterOptions[randomCharacterNumber];
 
 export const greyCatSpriteDefinition: SpriteDefinition = {
   key: 'grey-cat',

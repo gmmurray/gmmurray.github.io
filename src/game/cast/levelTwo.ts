@@ -15,10 +15,10 @@ import {
 import { CharacterSelector } from '../characterSelect/characterSelector';
 import { LevelTwo } from '../scenes/LevelTwo';
 import { OverlayContentKey } from '../types/overlayContent';
+import { SpriteDefinition } from '../types/assetDefinitions';
 import { gregSpriteDefinition } from '../assetDefinitions/sprites';
 
-const player: PlayerCharacter = {
-  definition: CharacterSelector.getInstance().getPlayerDefinition(),
+const player = {
   // startingX: 19,
   // startingY: 66,
   startingX: 23,
@@ -211,13 +211,16 @@ const portals: PortalDefinition[] = [
   },
 ];
 
-export const levelTwoCast: LevelCast = {
-  player,
+export const getLevelTwoCast = (definition: SpriteDefinition): LevelCast => ({
+  player: {
+    ...player,
+    definition,
+  },
   npcs,
   items,
   portals,
   doors: [],
-};
+});
 
 export const fireStartLocations = {
   [FireNumber.ONE]: {
