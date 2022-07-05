@@ -38,19 +38,23 @@ import {
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Coordinates } from '../types/position';
 import DialogPlugin from '../dialog/plugin';
 import { OverlayContentKey } from '../types/overlayContent';
 import PhaserTooltip from '../PhaserTooltip/phaserTooltip';
+import { SceneConfig } from '../types/SceneConfig';
 import { TileMapDefinition } from '../types/assetDefinitions';
 import { UIEventEmitter } from '../ui/eventEmitter';
 import { UnlockedFeatures } from '../types/savedData';
 import { overlayActions } from '../redux/overlaySlice';
-import { playerSpriteDefinition } from '../assetDefinitions/sprites';
 
 export class LevelScene extends Scene {
   // UI
   public uiEventEmitter: UIEventEmitter;
+
+  // character selector
+  public characterSelector: CharacterSelector;
 
   // plugins
   public gridEngine: GridEngine;
@@ -743,7 +747,7 @@ export class LevelScene extends Scene {
       if (!match.inactive) {
         this.cameras.main.flash(750, 0, 0, 0);
         this.gridEngine.setPosition(
-          playerSpriteDefinition.key,
+          this.characterSelector.getPlayerDefinition().key,
           match.to,
           match.layer,
         );
@@ -805,7 +809,10 @@ export class LevelScene extends Scene {
 
           this.handleCloseDialog(true);
           this.scene.sleep(this.scene.key);
-          this.scene.run(match.to as string, this.uiEventEmitter);
+          this.scene.run(
+            match.to as string,
+            new SceneConfig(this.uiEventEmitter, this.characterSelector),
+          );
           this.uiEventEmitter.emit(HUD_SHUTDOWN_EVENT);
           this.cameras.main.resetFX();
           this.gridEngine.setPosition(this.playerCharacter.definition.key, {

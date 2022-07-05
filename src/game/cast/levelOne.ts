@@ -18,16 +18,16 @@ import {
 import {
   gregSpriteDefinition,
   greyCatSpriteDefinition,
-  playerSpriteDefinition,
   whiteCatSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Direction } from 'grid-engine';
 import { LevelOne } from '../scenes/LevelOne';
 import { OverlayContentKey } from '../types/overlayContent';
 
 const player: PlayerCharacter = {
-  definition: playerSpriteDefinition,
+  definition: CharacterSelector.getInstance().getPlayerDefinition(),
   startingX: 24,
   startingY: 52,
   startingSpeed: BASE_PLAYER_SPEED,

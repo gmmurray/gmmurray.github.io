@@ -11,16 +11,14 @@ import {
   PortalDefinition,
   PortalType,
 } from '../types/interactions';
-import {
-  gregSpriteDefinition,
-  playerSpriteDefinition,
-} from '../assetDefinitions/sprites';
 
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { LevelTwo } from '../scenes/LevelTwo';
 import { OverlayContentKey } from '../types/overlayContent';
+import { gregSpriteDefinition } from '../assetDefinitions/sprites';
 
 const player: PlayerCharacter = {
-  definition: playerSpriteDefinition,
+  definition: CharacterSelector.getInstance().getPlayerDefinition(),
   // startingX: 19,
   // startingY: 66,
   startingX: 23,

@@ -42,15 +42,13 @@ import {
   levelFourLayers,
   levelFourObjectives,
 } from '../cast/levelFour';
-import {
-  playerSpriteDefinition,
-  purplePortalSpriteDefinition,
-} from '../assetDefinitions/sprites';
 import { store, storeDispatch } from '../redux/store';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Coordinates } from '../types/position';
 import { OverlayContentKey } from '../types/overlayContent';
+import { SceneConfig } from '../types/SceneConfig';
 import { TileMapDefinition } from '../types/assetDefinitions';
 import { UIEventEmitter } from '../ui/eventEmitter';
 import { UnlockedFeatures } from '../types/savedData';
@@ -59,6 +57,7 @@ import { generateJavascriptFrameworks } from '../helpers/generateJavascriptFrame
 import { levelFourMapDefinition } from '../assetDefinitions/tiles';
 import { loadUnlockedFeatures } from '../helpers/localStorage';
 import { overlayActions } from '../redux/overlaySlice';
+import { purplePortalSpriteDefinition } from '../assetDefinitions/sprites';
 import { showAlert } from '../helpers/sweetAlerts';
 
 const START_X = 0;
@@ -68,6 +67,7 @@ const START_Y = 34;
 
 export class LevelFour extends Scene {
   public uiEventEmitter: UIEventEmitter;
+  public characterSelector: CharacterSelector;
   public animatedTiles: AnimatedTilesPlugin;
   public player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   public enemies: Record<string, LevelFourEnemy>;
@@ -111,7 +111,10 @@ export class LevelFour extends Scene {
     this._mapDefinition = levelFourMapDefinition;
   }
 
-  public create = (uiEventEmitter: UIEventEmitter) => {
+  public create = ({ uiEmitter, characterSelector }: SceneConfig) => {
+    this.uiEventEmitter = uiEmitter;
+    this.characterSelector = characterSelector;
+
     // set map and player character
     this._setMap()._setPlayer();
 
@@ -140,7 +143,6 @@ export class LevelFour extends Scene {
     // create animations
     this._createAnimations();
 
-    this.uiEventEmitter = uiEventEmitter;
     this._initializeHUD();
 
     this._showIntroText();
@@ -194,7 +196,11 @@ export class LevelFour extends Scene {
     const startPosition = this._map.tileToWorldXY(START_X, START_Y);
 
     this.player = this.physics.add
-      .sprite(startPosition.x, startPosition.y, playerSpriteDefinition.key)
+      .sprite(
+        startPosition.x,
+        startPosition.y,
+        this.characterSelector.getPlayerDefinition().key,
+      )
       .setCollideWorldBounds(true)
       .setDepth(LEVEL_FOUR_PLAYER_DEPTH);
 

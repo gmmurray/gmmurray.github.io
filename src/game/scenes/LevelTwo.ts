@@ -41,6 +41,7 @@ import { showAlert, showConfirm } from '../helpers/sweetAlerts';
 import { LevelScene } from './LevelScene';
 import { LevelTwoSavedData } from '../types/savedData';
 import McDialogPlugin from '../mcDialog/plugin';
+import { SceneConfig } from '../types/SceneConfig';
 import { UIEventEmitter } from '../ui/eventEmitter';
 import { convertSecondsToTimeString } from '../helpers/time';
 import { getFireColorName } from '../helpers/fireColor';
@@ -66,7 +67,8 @@ export class LevelTwo extends LevelScene {
     this.progress = new LevelTwoProgress();
   }
 
-  public create = (eventEmitter: UIEventEmitter) => {
+  public create = ({ uiEmitter }: SceneConfig) => {
+    this.uiEventEmitter = uiEmitter;
     this.setCharacters()
       ?.setItems()
       ?.setPortals()
@@ -80,7 +82,6 @@ export class LevelTwo extends LevelScene {
       ?._createPillarTwoSolution()
       ?._createPillarThreeSolution();
 
-    this.uiEventEmitter = eventEmitter;
     this._initializeHUD();
 
     this.dialog.init();

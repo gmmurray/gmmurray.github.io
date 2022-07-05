@@ -7,7 +7,7 @@ import {
 } from '../assetDefinitions/sprites';
 
 import { LevelScene } from './LevelScene';
-import { UIEventEmitter } from '../ui/eventEmitter';
+import { SceneConfig } from '../types/SceneConfig';
 import { levelOneCast } from '../cast/levelOne';
 import { levelOneMapDefinition } from '../assetDefinitions/tiles';
 
@@ -19,7 +19,10 @@ export class LevelOne extends LevelScene {
     this.cast = levelOneCast;
   }
 
-  public create = (eventEmitter: UIEventEmitter) => {
+  public create = ({ uiEmitter, characterSelector }: SceneConfig) => {
+    this.uiEventEmitter = uiEmitter;
+    this.characterSelector = characterSelector;
+
     this.setCharacters()
       ?.setItems()
       ?.setPortals()
@@ -28,7 +31,6 @@ export class LevelOne extends LevelScene {
       ?.setMap()
       ?.attachKeyboardListener();
 
-    this.uiEventEmitter = eventEmitter;
     this._initializeHUD();
 
     this.dialog.init();
@@ -55,31 +57,31 @@ export class LevelOne extends LevelScene {
 
   public initialCharacterMovement = () => {
     const greg = this.characters.find(
-      c => c.definition.key === gregSpriteDefinition.key,
+      c => c.definition!.key === gregSpriteDefinition.key,
     );
     const khufu = this.characters.find(
-      c => c.definition.key === greyCatSpriteDefinition.key,
+      c => c.definition!.key === greyCatSpriteDefinition.key,
     );
     const dre = this.characters.find(
-      c => c.definition.key === whiteCatSpriteDefinition.key,
+      c => c.definition!.key === whiteCatSpriteDefinition.key,
     );
 
     // start with greg off screen and running towards player. then go to walking speed
     if (greg) {
-      this.gridEngine.moveTo(greg.definition.key, { x: 24, y: 50 });
-      this.gridEngine.setSpeed(greg.definition.key, 2);
+      this.gridEngine.moveTo(greg.definition!.key, { x: 24, y: 50 });
+      this.gridEngine.setSpeed(greg.definition!.key, 2);
     }
     // start the cats mving around randomly with delay so they aren't synchronized
     if (khufu) {
       this.gridEngine.moveRandomly(
-        khufu.definition.key,
+        khufu.definition!.key,
         RANDOM_MOVEMENT_DELAY,
         khufu.startingSpeed,
       );
     }
     if (dre) {
       this.gridEngine.moveRandomly(
-        dre.definition.key,
+        dre.definition!.key,
         RANDOM_MOVEMENT_DELAY + 200,
         dre.startingSpeed,
       );

@@ -38,7 +38,7 @@ export const gregSpriteDefinition: SpriteDefinition = {
   scale: 2,
 };
 
-export const playerSpriteDefinition: SpriteDefinition =
+const playerSpriteDefinition: SpriteDefinition =
   playerCharacterOptions[randomCharacterNumber];
 
 export const greyCatSpriteDefinition: SpriteDefinition = {

@@ -21,12 +21,12 @@ import {
 } from '../types/levelThree';
 import {
   goblinSpriteDefinition,
-  playerSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
   soldierSpriteDefinition,
 } from '../assetDefinitions/sprites';
 
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Coordinates } from '../types/position';
 import { Direction } from 'grid-engine';
 import { LevelThree } from '../scenes/LevelThree';
@@ -138,7 +138,7 @@ export const orbMap: OrbMap = {
 };
 
 const player: PlayerCharacter = {
-  definition: playerSpriteDefinition,
+  definition: CharacterSelector.getInstance().getPlayerDefinition(),
   startingX: 4,
   startingY: 47,
   // startingX: 47,

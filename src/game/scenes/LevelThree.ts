@@ -47,6 +47,7 @@ import { store, storeDispatch } from '../redux/store';
 import { CharacterData } from 'grid-engine';
 import { Coordinates } from '../types/position';
 import { LevelScene } from './LevelScene';
+import { SceneConfig } from '../types/SceneConfig';
 import { UIEventEmitter } from '../ui/eventEmitter';
 import { levelThreeMapDefinition } from '../assetDefinitions/tiles';
 import { showConfirm } from '../helpers/sweetAlerts';
@@ -62,7 +63,8 @@ export class LevelThree extends LevelScene {
     this.cast = levelThreeCast;
   }
 
-  public create = (eventEmitter: UIEventEmitter) => {
+  public create = ({ uiEmitter }: SceneConfig) => {
+    this.uiEventEmitter = uiEmitter;
     this.setCharacters()!
       .setItems()!
       .setPortals()!
@@ -79,7 +81,6 @@ export class LevelThree extends LevelScene {
       ._initializeEnemyCharacters()!
       .attachKeyboardListener();
 
-    this.uiEventEmitter = eventEmitter;
     this._initializeHUD();
 
     this.dialog.init();

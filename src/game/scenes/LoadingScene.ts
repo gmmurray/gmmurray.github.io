@@ -22,7 +22,7 @@ import {
   levelThreeFireBarrierDefinition,
   levelThreeFireExplosionDefinition,
   levelthreeFireColumnDefinition,
-  playerSpriteDefinition,
+  playerCharacterOptions,
   purplePortalSpriteDefinition,
   skeletonOneSpriteDefinition,
   skeletonTwoSpriteDefinition,
@@ -44,11 +44,13 @@ import {
   levelTwoMapDefinition,
 } from '../assetDefinitions/tiles';
 
+import { CharacterSelector } from '../characterSelect/characterSelector';
 import { Scene } from 'phaser';
+import { SceneConfig } from '../types/SceneConfig';
 import { UIEventEmitter } from '../ui/eventEmitter';
 
 const spriteDefinitions = [
-  playerSpriteDefinition,
+  ...playerCharacterOptions,
   gregSpriteDefinition,
   greyCatSpriteDefinition,
   whiteCatSpriteDefinition,
@@ -86,9 +88,11 @@ export class LoadingScene extends Scene {
   public progressText?: Phaser.GameObjects.Text;
   public progressBar?: Phaser.GameObjects.Graphics;
   public uiEmitter: UIEventEmitter;
+  public characterSelector: CharacterSelector;
   constructor() {
     super(LOADING_SCENE_KEY);
     this.uiEmitter = UIEventEmitter.getInstance();
+    this.characterSelector = CharacterSelector.getInstance();
   }
 
   public preload = () => {
@@ -215,7 +219,10 @@ export class LoadingScene extends Scene {
       this.isDev ? 0 : 2000,
       () => {
         this.scene.launch(UI_SCENE_KEY, this.uiEmitter);
-        this.scene.start(LEVEL_FOUR_SCENE_KEY, this.uiEmitter);
+        this.scene.start(
+          LEVEL_ONE_SCENE_KEY,
+          new SceneConfig(this.uiEmitter, this.characterSelector),
+        );
       },
       [],
       this,
