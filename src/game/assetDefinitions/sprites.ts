@@ -1,5 +1,6 @@
 import {
   FireSpriteDefinition,
+  PlayerSpriteDefinition,
   SpriteDefinition,
 } from '../types/assetDefinitions';
 
@@ -9,22 +10,55 @@ import { SCALE } from '../constants';
 import { getFireColorName } from '../helpers/fireColor';
 import { getSpriteSource } from '../helpers/getAssetSource';
 
-const createPlayerSpriteDefinition = (source: string): SpriteDefinition => ({
+const createPlayerSpriteDefinition = (
+  source: string,
+): PlayerSpriteDefinition => ({
   key: `player-${source}`,
   source: getSpriteSource(`${source}_spritesheet`),
   frameWidth: 32,
   frameHeight: 32,
   walkingAnimationMapping: 0,
   scale: SCALE,
+  infoKey: source,
 });
 
-export const playerCharacterOptions: Record<string, SpriteDefinition> = {
+export const playerCharacterOptions: Record<string, PlayerSpriteDefinition> = {
   xion: createPlayerSpriteDefinition('xion'),
   irabel: createPlayerSpriteDefinition('irabel'),
   zaya: createPlayerSpriteDefinition('zaya'),
   orryn: createPlayerSpriteDefinition('orryn'),
   ['happy_cat']: createPlayerSpriteDefinition('happy_cat'),
   ['wizard_cat']: createPlayerSpriteDefinition('wizard_cat'),
+};
+
+export const playerCharacterInformation: Record<
+  string,
+  { name: string; description: string }
+> = {
+  xion: {
+    name: 'Xion',
+    description: 'stuff',
+  },
+  irabel: {
+    name: 'Irabel',
+    description: 'stuff',
+  },
+  zaya: {
+    name: 'Zaya',
+    description: 'stuff',
+  },
+  orryn: {
+    name: 'Orryn',
+    description: 'stuff',
+  },
+  ['happy_cat']: {
+    name: 'Happy Cat',
+    description: 'stuff',
+  },
+  ['wizard_cat']: {
+    name: 'Wizard Cat',
+    description: 'stuff',
+  },
 };
 
 export const gregSpriteDefinition: SpriteDefinition = {

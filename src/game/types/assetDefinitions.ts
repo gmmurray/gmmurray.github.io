@@ -12,6 +12,10 @@ export interface SpriteDefinition {
   scale: number;
 }
 
+export interface PlayerSpriteDefinition extends SpriteDefinition {
+  infoKey: string;
+}
+
 export interface TileSetDefinition {
   name: string;
   key: string;

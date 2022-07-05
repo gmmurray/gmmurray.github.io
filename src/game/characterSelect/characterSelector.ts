@@ -1,4 +1,8 @@
-import { SpriteDefinition } from '../types/assetDefinitions';
+import {
+  PlayerSpriteDefinition,
+  SpriteDefinition,
+} from '../types/assetDefinitions';
+
 import { playerCharacterOptions } from '../assetDefinitions/sprites';
 
 let instance: CharacterSelector | null = null;
@@ -22,10 +26,9 @@ export class CharacterSelector {
     return this._selectedPlayerDefinition ?? this._defaultPlayerDefinition;
   };
 
-  public setPlayerDefinition = () => {
-    // TODO:
-
-    this._selectedPlayerDefinition = playerCharacterOptions['irabel'];
+  public setPlayerDefinition = (definition: PlayerSpriteDefinition) => {
+    console.log('setting definition to: ' + definition.infoKey);
+    this._selectedPlayerDefinition = definition;
   };
 
   static getInstance = () => instance ?? new CharacterSelector();

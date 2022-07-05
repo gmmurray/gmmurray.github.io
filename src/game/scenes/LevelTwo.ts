@@ -42,7 +42,6 @@ import { LevelScene } from './LevelScene';
 import { LevelTwoSavedData } from '../types/savedData';
 import McDialogPlugin from '../mcDialog/plugin';
 import { SceneConfig } from '../types/SceneConfig';
-import { UIEventEmitter } from '../ui/eventEmitter';
 import { convertSecondsToTimeString } from '../helpers/time';
 import { getFireColorName } from '../helpers/fireColor';
 import { levelTwoMapDefinition } from '../assetDefinitions/tiles';

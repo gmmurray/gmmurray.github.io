@@ -8,6 +8,7 @@ import {
 } from './constants';
 
 import AnimatedTilesPlugin from 'phaser-animated-tiles-phaser3.5';
+import { CharacterSelectScene } from './scenes/CharacterSelectScene';
 import { CreditsScene } from './scenes/CreditsScene';
 import DialogPlugin from './dialog/plugin';
 import { GridEngine } from 'grid-engine';
@@ -58,6 +59,7 @@ export const gameConfig = {
     LevelFour,
     UIScene,
     CreditsScene,
+    CharacterSelectScene,
   ],
   plugins: {
     scene: [

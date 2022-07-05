@@ -28,6 +28,7 @@ export const LEVEL_THREE_SCENE_KEY = 'level-three';
 export const LEVEL_FOUR_SCENE_KEY = 'level-four';
 export const UI_SCENE_KEY = 'ui-scene';
 export const CREDIT_SCENE_KEY = 'credits';
+export const CHARACTER_SELECT_SCENE_KEY = 'character-select';
 
 // plugin keys
 export const GRID_ENGINE_PLUGIN_KEY = 'gridEngine';
@@ -72,6 +73,7 @@ export const DEFAULT_PORTAL_TEXT =
 // colors
 export const THEME_DARK_BLUE = '#050a2b';
 export const THEME_DARK_BLUE_NUMBER = 0x050a2b;
+export const THEME_SECONDARY_BLUE_NUMBER = 0x131d68;
 
 export const THEME_YELLOW = '#ebaa02';
 export const THEME_YELLOW_NUMBER = 0xebaa02;

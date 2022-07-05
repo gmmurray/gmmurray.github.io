@@ -1,10 +1,6 @@
 import {
   ASSETS_BASE_URL,
-  CREDIT_SCENE_KEY,
-  LEVEL_FOUR_SCENE_KEY,
-  LEVEL_ONE_SCENE_KEY,
-  LEVEL_THREE_SCENE_KEY,
-  LEVEL_TWO_SCENE_KEY,
+  CHARACTER_SELECT_SCENE_KEY,
   LOADING_SCENE_KEY,
   THEME_DARK_YELLOW_NUMBER,
   THEME_WHITE,
@@ -220,7 +216,7 @@ export class LoadingScene extends Scene {
       () => {
         this.scene.launch(UI_SCENE_KEY, this.uiEmitter);
         this.scene.start(
-          LEVEL_ONE_SCENE_KEY,
+          CHARACTER_SELECT_SCENE_KEY,
           new SceneConfig(this.uiEmitter, this.characterSelector),
         );
       },
