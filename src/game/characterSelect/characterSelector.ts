@@ -19,16 +19,15 @@ export class CharacterSelector {
 
     const num = Math.floor(Math.random() * options.length);
 
-    return options[0];
+    return options[num];
   };
 
   public getPlayerDefinition = () => {
     return this._selectedPlayerDefinition ?? this._defaultPlayerDefinition;
   };
 
-  public setPlayerDefinition = (definition: PlayerSpriteDefinition) => {
-    console.log('setting definition to: ' + definition.infoKey);
-    this._selectedPlayerDefinition = definition;
+  public setPlayerDefinition = (definition?: PlayerSpriteDefinition) => {
+    this._selectedPlayerDefinition = definition ?? null;
   };
 
   static getInstance = () => instance ?? new CharacterSelector();

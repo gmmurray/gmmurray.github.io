@@ -37,27 +37,28 @@ export const playerCharacterInformation: Record<
 > = {
   xion: {
     name: 'Xion',
-    description: 'stuff',
+    description: `A force to be reckoned with that always does what he feels is right`,
   },
   irabel: {
     name: 'Irabel',
-    description: 'stuff',
+    description:
+      'A wise woman whose knowledge of the dark arts is well-known across the lands',
   },
   zaya: {
     name: 'Zaya',
-    description: 'stuff',
+    description: `The princess of Varrock, Zaya's impressive regality is only matched by her skill in combat`,
   },
   orryn: {
     name: 'Orryn',
-    description: 'stuff',
+    description: 'A hardened warrior and veteran of the Second War',
   },
   ['happy_cat']: {
     name: 'Happy Cat',
-    description: 'stuff',
+    description: `The embodiment of cuteness, Happy Cat's purr is said to shake mountains`,
   },
   ['wizard_cat']: {
     name: 'Wizard Cat',
-    description: 'stuff',
+    description: `A scientific experiment gone wrong. Wizard Cat was created with sugar, spice, everything nice, and a wizard hat`,
   },
 };
 
