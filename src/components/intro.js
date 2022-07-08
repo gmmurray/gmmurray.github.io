@@ -1,8 +1,9 @@
 import React, { useCallback, useState } from 'react';
-import PropTypes from 'prop-types';
 
-import logo from '../images/icons/personal_logo_resize.png';
 import ContactModal from './contactModal/';
+import { Link } from 'gatsby';
+import PropTypes from 'prop-types';
+import logo from '../images/icons/personal_logo_resize.png';
 
 const Intro = ({
   lead,
@@ -39,12 +40,24 @@ const Intro = ({
             <div className="column">
               <h1 className="title is-1">{lead}</h1>
               <h2 className="subtitle is-2">{subtitle}</h2>
-              <button
-                className="button is-link font-dark-blue"
-                onClick={toggleModal}
-              >
-                {cta}
-              </button>
+              <div className="cta-button-container">
+                <button
+                  className="button is-link font-dark-blue"
+                  onClick={toggleModal}
+                >
+                  {cta}
+                </button>
+              </div>
+              <div className="cta-button-container">
+                <Link className="button is-link font-dark-blue" to="/game">
+                  Game
+                </Link>
+              </div>
+              <div className="cta-button-container">
+                <button className="button is-link font-dark-blue" disabled>
+                  Blog (coming soon)
+                </button>
+              </div>
             </div>
           </div>
         </div>
