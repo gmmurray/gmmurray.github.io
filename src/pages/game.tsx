@@ -16,25 +16,40 @@ const GamePage: FC<GamePageProps> = ({ data }) => {
   const isSSR = typeof window === 'undefined';
   return (
     <div className="game-page">
-      <div className="game-page__back-button">
-        <Link to="/">Back</Link>
-      </div>
-      {!isSSR && (
-        <Suspense
-          fallback={
-            <div className="game-fallback">
-              <div>
-                <progress
-                  className="progress is-small is-secondary"
-                  max={100}
-                ></progress>
+      <div className="game-page__container">
+        <div className="game-page__back-button">
+          {/* @ts-ignore */}
+          <Link to="/">Back</Link>
+        </div>
+        {!isSSR && (
+          <Suspense
+            fallback={
+              <div className="game-fallback">
+                <div>
+                  <progress
+                    className="progress is-small is-secondary"
+                    max={100}
+                  ></progress>
+                </div>
               </div>
-            </div>
-          }
-        >
-          <GameApp cmsContent={data.graphCmsGregmurrayHome} />
-        </Suspense>
-      )}
+            }
+          >
+            <GameApp cmsContent={data.graphCmsGregmurrayHome} />
+          </Suspense>
+        )}
+      </div>
+      <div className="game-page__small-viewport">
+        <div className="subtitle is-2">
+          This game is best experienced on larger screens and is not available
+          for your current screen size.
+        </div>
+        <div>
+          {/* @ts-ignore */}
+          <Link className="button is-link font-dark-blue" to="/">
+            Home
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

@@ -46,6 +46,8 @@ export class LevelOne extends LevelScene {
     this.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
       this.dialog.updateDimensions(gameSize);
     });
+
+    this.events.on('wake', () => this._initializeHUD());
   };
 
   public update = () => {

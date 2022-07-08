@@ -12,7 +12,7 @@ import { CharacterData, Direction, GridEngine } from 'grid-engine';
 import {
   ENTER_EVENT_KEY,
   INVENTORY_PHASER_EVENT_KEY,
-  LOCAL_STORAGE_KEY,
+  LEVEL_ONE_SCENE_KEY,
   PLAYER_MOVED_EVENT,
   QUESTS_PHASER_EVENT_KEY,
   RANDOM_MOVEMENT_DELAY,
@@ -808,7 +808,13 @@ export class LevelScene extends Scene {
           if (!this.playerCharacter) return;
 
           this.handleCloseDialog(true);
-          this.scene.sleep(this.scene.key);
+
+          if (this.scene.key === LEVEL_ONE_SCENE_KEY) {
+            this.scene.sleep(this.scene.key);
+          } else {
+            this.scene.stop();
+          }
+
           this.scene.run(
             match.to as string,
             new SceneConfig(this.uiEventEmitter, this.characterSelector),
