@@ -194,7 +194,7 @@ export class LoadingScene extends Scene {
   };
 
   private _loadImages = () => {
-    this.load.image('logo', 'images/logo_transparent.png');
+    this.load.image('logo', '../../../assets/game/images/logo_transparent.png');
 
     imageDefinitions.forEach(({ key, source }) => {
       this.load.image(key, source);
