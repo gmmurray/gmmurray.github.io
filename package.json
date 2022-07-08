@@ -2,7 +2,7 @@
   "name": "greg-personal-site",
   "private": true,
   "description": "A simple personal website for Greg Murray",
-  "version": "2.0.1",
+  "version": "2.9.9",
   "author": "Greg Murray",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.1.1",
