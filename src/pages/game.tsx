@@ -1,8 +1,9 @@
-import React, { FC, Suspense, useEffect } from 'react';
+import '../game/gameStyles.scss';
+
+import { Link, graphql } from 'gatsby';
+import React, { FC, Suspense } from 'react';
 
 import { GameCmsContent } from '../game/types/cmsContent';
-import { constructTechTree } from '../game/helpers/constructTechTree';
-import { graphql } from 'gatsby';
 import { lazy } from '@loadable/component';
 
 const GameApp = lazy(() => import('../game/GameApp'));
@@ -17,8 +18,22 @@ const GamePage: FC<GamePageProps> = ({ data }) => {
   const isSSR = typeof window === 'undefined';
   return (
     <div className="game-page">
+      <div className="game-page__back-button">
+        <Link to="/">Back</Link>
+      </div>
       {!isSSR && (
-        <Suspense fallback={<div>loading...</div>}>
+        <Suspense
+          fallback={
+            <div className="game-fallback">
+              <div>
+                <progress
+                  className="progress is-small is-secondary"
+                  max={100}
+                ></progress>
+              </div>
+            </div>
+          }
+        >
           <GameApp cmsContent={data.graphCmsGregmurrayHome} />
         </Suspense>
       )}

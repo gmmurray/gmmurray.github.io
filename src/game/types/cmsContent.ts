@@ -100,21 +100,21 @@ export interface OtherProject {
 }
 
 export interface IGameCmsContent {
-  aboutContent: string;
-  technologyContent: TechnologyContent;
-  technologyTree: TechnologyTreeFlattened;
-  experiencesContent: Experience[];
-  featuredContent: IFeaturedProject[];
-  otherContent: OtherProject[];
+  aboutContent: string | null;
+  technologyContent: TechnologyContent | null;
+  technologyTree: TechnologyTreeFlattened | null;
+  experiencesContent: Experience[] | null;
+  featuredContent: IFeaturedProject[] | null;
+  otherContent: OtherProject[] | null;
 }
 
 export class GameCmsContent implements IGameCmsContent {
-  public aboutContent: string;
-  public technologyContent: TechnologyContent;
-  public technologyTree: TechnologyTreeFlattened;
-  public experiencesContent: Experience[];
-  public featuredContent: FeaturedProject[];
-  public otherContent: OtherProject[];
+  public aboutContent: string | null;
+  public technologyContent: TechnologyContent | null;
+  public technologyTree: TechnologyTreeFlattened | null;
+  public experiencesContent: Experience[] | null;
+  public featuredContent: FeaturedProject[] | null;
+  public otherContent: OtherProject[] | null;
 
   constructor() {
     this.aboutContent = null;

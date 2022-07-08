@@ -8,12 +8,13 @@ import {
   useRef,
   useState,
 } from 'react';
+import { PLUGIN_KEYS, TILE_SIZE } from './constants';
 
 import { Game } from 'phaser';
 import React from 'react';
-import { TILE_SIZE } from './constants';
 import { gameConfig } from './config';
 import { getMaxSquareScreenDimension } from './helpers/gameDimensions';
+import { useLocation } from '@reach/router';
 import { useWindowSize } from '../helpers/useWindowSize';
 
 type GameContextType = {
@@ -27,6 +28,7 @@ const GameContext = createContext<GameContextType | null>(null);
 export const useGameContext = () => useContext(GameContext);
 
 export const GameContextProvider: FC = ({ children }) => {
+  const location = useLocation();
   const [game, setGame] = useState<Game | null>(null);
   const gameRef = useRef(null);
   const [dimension, setDimension] = useState(0);
@@ -35,11 +37,15 @@ export const GameContextProvider: FC = ({ children }) => {
 
   // create a new game instance on load
   useEffect(() => {
-    if (game) return;
-
-    const phaserGame = new Game(gameConfig);
+    let phaserGame = new Game(gameConfig);
     setGame(phaserGame);
-  }, [game]);
+    return () => {
+      PLUGIN_KEYS.forEach(key => {
+        phaserGame.plugins.removeScenePlugin(key);
+      });
+      phaserGame.destroy(false, false);
+    };
+  }, []);
 
   // handle window/game resizing
   const handleResizeEvent = useCallback(() => {

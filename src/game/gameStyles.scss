@@ -1,5 +1,17 @@
 @import '../styles/config';
 
+.game-fallback {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  div {
+    width: 30%;
+  }
+}
+
 .game-page {
   width: 100vw;
   height: 100vh;
@@ -12,6 +24,16 @@
     canvas {
       margin: auto;
     }
+  }
+
+  &__back-button {
+    background-color: $theme-dark-yellow;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+    text-align: center;
+    opacity: 0.8;
   }
 }
 

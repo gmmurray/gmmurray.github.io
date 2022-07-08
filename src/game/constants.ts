@@ -37,6 +37,14 @@ export const ANIMATED_TILES_PLUGIN_KEY = 'animatedTiles';
 export const MC_DIALOG_PLUGIN_KEY = 'mcDialog';
 export const PHASER_TOOLTIP_PLUGIN_KEY = 'phaserTooltip';
 
+export const PLUGIN_KEYS = [
+  GRID_ENGINE_PLUGIN_KEY,
+  DIALOG_PLUGIN_KEY,
+  ANIMATED_TILES_PLUGIN_KEY,
+  MC_DIALOG_PLUGIN_KEY,
+  PHASER_TOOLTIP_PLUGIN_KEY,
+];
+
 // level two
 export const DEFAULT_FIRE_ANIMATION_FPS = 10;
 export const PILLAR_ONE_ACTIVE_NAME = 'active1';
