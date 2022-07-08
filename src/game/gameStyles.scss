@@ -1,0 +1,307 @@
+@import '../styles/config';
+
+.game-fallback {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  div {
+    width: 30%;
+  }
+}
+
+.game-page {
+  width: 100vw;
+  height: 100vh;
+
+  .game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    canvas {
+      margin: auto;
+    }
+  }
+
+  &__back-button {
+    background-color: $theme-dark-yellow;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5rem;
+    text-align: center;
+    opacity: 0.8;
+  }
+}
+
+.game-overlay {
+  font-family: monospace;
+  transition: fade all 5s;
+
+  &.game-overlay-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100% !important;
+    width: 100% !important;
+    display: flex;
+
+    .game-overlay-backdrop {
+      background-color: rgba(0, 0, 0, 0.65);
+      margin: auto;
+
+      .game-overlay-message-container {
+        height: 100%;
+        width: 100%;
+
+        @media only screen and (max-width: 600px) {
+          padding: 1rem;
+        }
+
+        @media only screen and (min-width: 600px) {
+          padding: 2rem;
+        }
+
+        @media only screen and (min-width: 768px) {
+          padding: 3rem;
+        }
+
+        @media only screen and (min-width: 990px) {
+          padding: 4rem;
+        }
+
+        @media only screen and (min-width: 1200px) {
+          padding: 5rem;
+        }
+
+        .game-overlay-message {
+          min-height: 100%;
+          max-height: 100%;
+          width: 100%;
+          background-color: (#{$theme-dark-blue}e6);
+          border: 2px solid $theme-yellow;
+          overflow: scroll;
+          overflow-wrap: break-word;
+          overflow-y: auto;
+          overflow-x: auto;
+          padding: 1rem;
+          display: flex;
+          flex-direction: column;
+
+          &-close-button-container {
+            display: flex;
+
+            .game-overlay-message-close-button {
+              background-color: transparent;
+              border: none;
+              margin-left: auto;
+              color: $theme-yellow;
+
+              &:hover {
+                color: $theme-dark-yellow;
+              }
+            }
+          }
+
+          &-content-container {
+            color: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .game-overlay-message-component-container {
+              flex: 1;
+            }
+
+            .diploma-container {
+              text-align: center;
+              position: relative;
+              opacity: 0;
+              transition: all ease-in 1s;
+
+              &-visible {
+                opacity: 1;
+              }
+
+              .diploma-image {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                height: 90%;
+                max-height: 90%;
+              }
+
+              .diploma-content {
+                color: black;
+                font-family: 'Courier New', monospace;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: small;
+
+                &-school {
+                  font-weight: bolder;
+                  font-size: medium;
+                }
+              }
+            }
+
+            .talent-tree {
+              display: flex;
+
+              .talent-tree-container {
+                width: 100%;
+                opacity: 0;
+                transition: opacity ease-in 1s;
+
+                &-visible {
+                  opacity: 1;
+                }
+
+                .talent-tree-row {
+                  display: flex;
+                  margin-bottom: 5rem;
+
+                  &-node {
+                    margin-left: auto;
+                    margin-right: auto;
+                    font-size: 2rem;
+                    color: $theme-dark-yellow;
+                    border: 0.25rem solid $theme-dark-yellow;
+                    width: 5rem;
+                    height: 5rem;
+                    text-align: center;
+                    transition: all ease 250ms;
+                    cursor: pointer;
+
+                    &:hover,
+                    &-selected {
+                      border-color: $theme-yellow;
+                      color: $theme-yellow;
+                    }
+
+                    &-active {
+                      color: $theme-light-grey;
+                      border-color: $theme-light-grey;
+
+                      &:hover {
+                        border-color: $theme-white;
+                        color: $theme-white;
+                      }
+
+                      &-selected {
+                        border-color: $theme-white;
+                        color: $theme-white;
+                      }
+                    }
+
+                    .talent-tree-points {
+                      font-size: 1rem;
+                    }
+                  }
+                }
+
+                &-shifted {
+                  width: 60%;
+                }
+
+                .talent-tree-selector {
+                  display: flex;
+                  margin-bottom: 0.5rem;
+
+                  button {
+                    background-color: transparent;
+                    border: none;
+                    color: $theme-yellow;
+
+                    &:hover {
+                      color: $theme-dark-yellow;
+                    }
+
+                    &:focus {
+                      box-shadow: none;
+                    }
+                  }
+
+                  .talent-tree-selector-next {
+                    margin-left: auto;
+                  }
+                }
+              }
+
+              .talent-tree-info {
+                width: 40%;
+                margin-left: 1rem;
+                border-left: 2px solid $theme-light-grey;
+                padding: 1rem;
+                opacity: 0;
+                transition: opacity ease-in 500ms;
+
+                &-visible {
+                  opacity: 1;
+                }
+
+                &-header {
+                  display: flex;
+
+                  &-title {
+                    font-weight: bold;
+                  }
+
+                  &-points {
+                    margin-left: auto;
+                  }
+                }
+
+                &-content {
+                  font-size: 0.8rem;
+                }
+              }
+            }
+
+            .simple-text-container {
+              opacity: 0;
+              transition: all ease-in 1s;
+              display: flex;
+
+              &-visible {
+                opacity: 1;
+              }
+
+              .simple-text-content {
+                margin: auto;
+                padding: 1rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@import 'sweetalert2/src/variables';
+
+$swal2-border: 1px solid $theme-yellow;
+$swal2-border-radius: 0;
+$swal2-background: $theme-dark-blue;
+$swal2-font: monospace;
+$swal2-color: $theme-yellow;
+$swal2-confirm-button-border: 0;
+$swal2-confirm-button-border-radius: 0;
+$swal2-confirm-button-background-color: $theme-yellow;
+$swal2-confirm-button-color: $theme-dark-blue;
+$swal2-confirm-button-focus-box-shadow: 0 0 0 0.125em rgb(235 170 2 / 25%);
+
+$swal2-cancel-button-border: 1px solid $theme-yellow;
+$swal2-cancel-button-border-radius: 0;
+$swal2-cancel-button-background-color: $theme-dark-blue;
+$swal2-cancel-button-color: $theme-yellow;
+$swal2-cancel-button-focus-box-shadow: 0 0 0 0.125em rgb(235 170 2 / 25%);
+
+@import 'sweetalert2/src/sweetalert2';
