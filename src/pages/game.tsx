@@ -8,8 +8,6 @@ import { lazy } from '@loadable/component';
 
 const GameApp = lazy(() => import('../game/GameApp'));
 
-// TODO: fallback component
-
 type GamePageProps = {
   data: Record<'graphCmsGregmurrayHome', GameCmsContent>;
 };
