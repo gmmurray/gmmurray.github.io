@@ -54,9 +54,12 @@ const Intro = ({
                 </Link>
               </div>
               <div className="cta-button-container">
-                <button className="button is-link font-dark-blue" disabled>
-                  Blog (coming soon)
-                </button>
+                <a
+                  className="button is-link font-dark-blue"
+                  href="https://blog.gregmurray.org"
+                >
+                  Blog
+                </a>
               </div>
             </div>
           </div>
