@@ -3,14 +3,18 @@
   position: relative;
 }
 
+div.tabs {
+  padding-bottom: 1rem;
+}
+
 .tabs ul li a {
   transition: color 300ms linear, border-color 300ms linear;
 }
 
 .tabs ul {
-    border-bottom: initial !important;
+  border-bottom: initial !important;
 }
 
 .tabs li.is-active a {
-    border-bottom: 2px solid $theme-yellow;
+  border-bottom: 2px solid $theme-yellow;
 }

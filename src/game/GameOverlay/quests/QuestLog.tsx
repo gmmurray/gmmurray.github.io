@@ -44,9 +44,10 @@ const QuestLog = () => {
     IdentifiableExperience[]
   >([]);
 
-  const identifiedQuests = useMemo(() => identifyQuests(experiencesContent), [
-    experiencesContent,
-  ]);
+  const identifiedQuests = useMemo(
+    () => identifyQuests(experiencesContent ?? []),
+    [experiencesContent],
+  );
 
   useEffect(
     () => setFilteredQuests(filterQuests(identifiedQuests, activeTab)),
