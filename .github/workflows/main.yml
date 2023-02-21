@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     env:
       GRAPHCMS_ENDPOINT: ${{ secrets.GRAPHCMS_ENDPOINT }}
       GRAPHCMS_TOKEN: ${{ secrets.GRAPHCMS_TOKEN }}
