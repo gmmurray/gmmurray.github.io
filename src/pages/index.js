@@ -1,14 +1,15 @@
 import React, { Fragment, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
-import Intro from '../components/intro';
+
 import About from '../components/about/about';
 import Experiences from '../components/experiences/experiences';
-import Projects from '../components/projects/projects';
-import Navigation from '../components/navigation';
 import Footer from '../components/footer';
-import { spyScrolling } from '../helpers/spyScrolling';
-import { graphql } from 'gatsby';
+import { Helmet } from 'react-helmet';
+import Intro from '../components/intro';
+import Navigation from '../components/navigation';
+import Projects from '../components/projects/projects';
 import SEO from '../components/seo';
+import { graphql } from 'gatsby';
+import { spyScrolling } from '../helpers/spyScrolling';
 
 const IndexPage = ({ data }) => {
   const {
@@ -66,6 +67,7 @@ const IndexPage = ({ data }) => {
         contactModalFailureTitle={contactModalFailureTitle}
         contactModalSuccessText={contactModalSuccessText}
         contactModalFailureText={contactModalFailureText}
+        linkedInUrl={linkedInUrl}
       />
       <Navigation />
       <About

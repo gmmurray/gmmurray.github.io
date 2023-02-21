@@ -18,6 +18,7 @@ const Intro = ({
   contactModalFailureTitle,
   contactModalSuccessText,
   contactModalFailureText,
+  linkedInUrl,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -41,13 +42,18 @@ const Intro = ({
               <h1 className="title is-1">{lead}</h1>
               <h2 className="subtitle is-2">{subtitle}</h2>
               <div className="cta-button-container">
+                <a className="button is-link font-dark-blue" href={linkedInUrl}>
+                  {cta}
+                </a>
+              </div>
+              {/* <div className="cta-button-container">
                 <button
                   className="button is-link font-dark-blue"
                   onClick={toggleModal}
                 >
                   {cta}
                 </button>
-              </div>
+              </div> */}
               <div className="cta-button-container">
                 <Link className="button is-link font-dark-blue" to="/game">
                   Game
